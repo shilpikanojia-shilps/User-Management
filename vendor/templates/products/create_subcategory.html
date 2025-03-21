@@ -1,0 +1,115 @@
+{% extends "vendor/base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Add Sub-Category | User Management</title>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">Add Sub-Category</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow">
+            <div class="card-body">
+
+                {% if messages %}
+                <div id="messages-container">
+                    {% for message in messages %}
+                    <div class="alert alert-success alert-dismissible">
+                        {{ message }}
+                        <button type="button" class="close" onclick="closeMessage(this)">&times;</button>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="category">Select Category</label>
+                        <select name="category" class="form-control" required>
+                            <option value="">-- Select --</option>
+                            {% for cat in categories %}
+                            <option value="{{ cat.id }}">{{ cat.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label for="name">Subcategory Name</label>
+                        <input type="text" name="name" class="form-control" placeholder="Enter subcategory name"
+                            required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-2">Add Subcategory</button>
+                </form>
+            </div>
+
+
+            <!-- Subcategory List Table -->
+            <div class="card mt-4 shadow">
+                <div class="card-body">
+                    <h5 class="mb-3">Existing Subcategories</h5>
+                    {% if subcategories %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Sno.</th>
+                                    <th>Subcategory Name</th>
+                                    <th>Category</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for subcat in subcategories %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ subcat.name }}</td>
+                                    <td>{{ subcat.category.name }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p>No subcategories created yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+{% block extra_js%}
+<script src="{% static 'vendor/assets/libs/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/assets/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'vendor/assets/libs/metismenu/metisMenu.min.js' %}"></script>
+<script src="{% static 'vendor/assets/libs/simplebar/simplebar.min.js' %}"></script>
+<script src="{% static 'vendor/assets/libs/node-waves/waves.min.js' %}"></script>
+
+<!-- apexcharts -->
+<script src="{% static 'vendor/assets/libs/apexcharts/apexcharts.min.js' %}"></script>
+
+<script src="{% static 'vendor/assets/js/pages/dashboard-2.init.js' %}"></script>
+
+<script src="{% static 'vendor/assets/js/app.js' %}"></script>
+<script>
+    function closeMessage(button) {
+        const alertDiv = button.parentElement;
+        alertDiv.style.display = 'none';
+    }
+
+</script>
+{% endblock %}

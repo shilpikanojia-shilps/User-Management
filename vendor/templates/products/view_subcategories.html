@@ -1,0 +1,57 @@
+{% extends 'vendor/base.html' %}
+
+{% block title %}
+<title>Subcategories | {{ category.name }}</title>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">Subcategories of {{ category.name }}</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow">
+            <div class="card-body">
+
+            <!-- Card Box -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            {% if subcategories %}
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped mb-0">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Sno.</th>
+                                            <th>Subcategory Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for subcat in subcategories %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ subcat.name }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <p class="text-muted mb-0">No subcategories found for this category.</p>
+                            {% endif %}
+                        </div>
+                        <a href="{% url 'vendor:create_category' %}" class="btn btn-secondary">Back</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

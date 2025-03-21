@@ -1,0 +1,210 @@
+{% extends 'enroll/base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Manage Subcategories | Category Management</title>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+  <div class="page-content">
+    <div class="row">
+      <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+          <h4 class="page-title mb-0 font-size-18">Manage Subcategories</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <form method="GET" action="{% url 'enroll:manage_subcategories' %}">
+        {% csrf_token %}
+        <div class="form-group d-flex justify-content-between align-items-center">
+          <div class="flex-grow-1">
+            <label for="search">Search</label>
+            <input type="text" id="search" name="search" class="form-control" placeholder="Search by SubCategory Name"
+              value="{{ request.GET.search }}">
+          </div>
+          <button type="submit" class="btn btn-primary ml-4" style="margin-bottom: -28px;">Search</button>
+          <a href="{% url 'enroll:manage_subcategories' %}" class="btn btn-secondary ml-2"
+            style="margin-bottom: -28px; margin-left: 10px;">
+            <i class="fas fa-undo"></i> Reset
+          </a>
+        </div>
+      </form>
+
+      <div class="row justify-content-center table-container">
+        <div class="col-md-12">
+          <div class="card shadow">
+            <div class="card-body">
+              <div class="text-right mb-3">
+                <a href="{% url 'enroll:add_subcategory' %}" class="btn"
+                  style="background-color: darkgreen; color: white;">Add Sub-Category</a>
+              </div>
+
+              {% if messages %}
+              <div id="messages-container">
+                {% for message in messages %}
+                <div class="alert alert-success alert-dismissible">
+                  {{ message }}
+                  <button type="button" class="close" onclick="closeMessage(this)">&times;</button>
+                </div>
+                {% endfor %}
+              </div>
+              {% endif %}
+
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Sno.</th>
+                    <th>SubCategory Name</th>
+                    <th>Category</th>
+                    <th>Child SubCategory Count</th>
+                    <th>Feature Category</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for subcategory in page_obj %}
+                  <tr>
+                    <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                    <td>{{ subcategory.name }}</td> 
+                    <td>{{ subcategory.category.category_name }}</td>                 
+                    <td>
+                      <a href="{% url 'enroll:manage_child_subcategories' %}?subcategory_id={{ subcategory.id }}"
+                        class="btn btn-link">
+                        {{ subcategory.child_subcategory_count }}
+                      </a>
+                    </td>
+                    <td>{{ subcategory.feature_category|yesno:"Yes,No" }}</td>
+                    <td>
+                      {% if subcategory.status == True %}
+                      <span class="badge badge-success">Active</span>
+                      {% else %}
+                      <span class="badge badge-danger">Inactive</span>
+                      {% endif %}
+                    </td>
+
+
+                    <td>
+                      <a href="{% url 'enroll:edit_subcategory' subcategory.id %}"
+                        class="btn btn-warning btn-sm">Edit</a>
+                      <a href="{% url 'enroll:delete_subcategory' subcategory.id %}" class="btn btn-danger btn-sm"
+                        onclick="return confirm('Are you sure you want to delete this SubCategory?');">Delete</a>
+                    </td>
+                    <td><a href="{% url 'enroll:view_subcategory' subcategory.id %}">View</a></td>
+                  </tr>
+
+
+                  
+                  {% endfor %}
+                </tbody>
+              </table>
+
+              <div class="pagination">
+                <span class="step-links">
+                  {% if page_obj.has_previous %}
+                  <a href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">&laquo;
+                    first</a>
+                  <a
+                    href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">Previous</a>
+                  {% endif %}
+
+                  <span class="current">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+                  {% if page_obj.has_next %}
+                  <a
+                    href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">next</a>
+                  <a
+                    href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">last
+                    &raquo;</a>
+                  {% endif %}
+                </span>
+              </div>
+              <style>
+                .pagination {
+                  text-align: center;
+                  margin-top: 20px;
+                }
+
+                .pagination .step-links {
+                  display: inline-block;
+                }
+
+                .pagination a {
+                  padding: 8px 12px;
+                  margin: 2px;
+                  text-decoration: none;
+                  border: 1px solid #ddd;
+                  background: #f8f8f8;
+                  color: #333;
+                  border-radius: 4px;
+                }
+
+                .pagination a:hover {
+                  background: #ddd;
+                }
+
+                .pagination .current {
+                  font-weight: bold;
+                  padding: 8px 12px;
+                  background: #007bff;
+                  color: white;
+                  border-radius: 4px;
+                }
+              </style>
+
+              <div id="child-subcategories-container"></div>
+              <script>
+
+                function closeMessage(button) {
+                  const alertDiv = button.parentElement;
+                  alertDiv.style.display = 'none';
+                }
+
+
+                document.addEventListener("DOMContentLoaded", function () {
+                  document.querySelectorAll(".child-subcategory-toggle").forEach(button => {
+                    button.addEventListener("click", function () {
+                      let subcategoryId = this.getAttribute("data-subcategory-id");
+
+                      // Pehle se jo bhi list dikh rahi ho, usko remove karein
+                      document.getElementById("child-subcategories-container").innerHTML = "";
+
+                      fetch(`/get-child-subcategories/${subcategoryId}/`)
+                        .then(response => response.json())
+                        .then(data => {
+                          let subcategoryList = document.createElement("ul");
+                          subcategoryList.style.border = "1px solid #ddd";
+                          subcategoryList.style.padding = "10px";
+                          subcategoryList.style.marginTop = "10px";
+                          subcategoryList.style.listStyleType = "none";
+
+                          if (data.length === 0) {
+                            let listItem = document.createElement("li");
+                            listItem.innerText = "No child subcategories available.";
+                            subcategoryList.appendChild(listItem);
+                          } else {
+                            data.forEach(subcategory => {
+                              let listItem = document.createElement("li");
+                              listItem.innerText = subcategory.name;
+                              subcategoryList.appendChild(listItem);
+                            });
+                          }
+
+                          document.getElementById("child-subcategories-container").appendChild(subcategoryList);
+                        })
+                        .catch(error => console.error("Error fetching child subcategories:", error));
+                    });
+                  });
+                });             
+              </script>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

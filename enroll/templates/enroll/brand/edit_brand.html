@@ -1,0 +1,72 @@
+{% extends 'enroll/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18"> EDIT BRAND</h4>
+                </div>
+            </div>
+        </div>
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Brand Name</label>
+                            <input type="text" name="brand_name" class="form-control" value="{{ brand.brand_name }}" required>
+                        </div>
+
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Short Description</label>
+                        <textarea name="short_description" class="form-control" rows="2"
+                            required>{{ brand.short_description|striptags }}</textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Long Description</label>
+                        <textarea name="long_description" class="form-control"
+                            rows="4">{{ brand.long_description|striptags }}</textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Meta Title</label>
+                        <input type="text" name="meta_title" class="form-control" value="{{ brand.meta_title }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Meta Description</label>
+                        <textarea name="meta_description" class="form-control"
+                            rows="3">{{ brand.meta_description|striptags }}</textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Image</label>
+                        <input type="file" name="image" class="form-control">
+                        {% if brand.image %}
+                        <img src="{{ brand.image.url }}" alt="Brand Image" width="120" class="mt-2 rounded border">
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Update Brand</button>
+                    <a href="{% url 'enroll:brands' %}" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endblock %}

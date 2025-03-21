@@ -1,0 +1,156 @@
+{% extends "enroll/base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Add Category | Category Management</title>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="main-content">
+    <div class="page-content">
+        <div class="container-fluid">
+
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+                <h4 class="page-title mb-0 font-size-18">Add Category</h4>
+            </div>
+
+            {% if messages %}
+            <div class="alert alert-dismissible">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="row">
+                <div class="col-12">
+                    <form method="POST" enctype="multipart/form-data" class="p-4 shadow-sm bg-white rounded">
+                        {% csrf_token %}
+                        <div class="row" style="align-items: center;">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="category_name">Category Name</label>
+                                    <input type="text" id="category_name" name="category_name"
+                                        class="form-control form-control-lg" required placeholder="Enter category name">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="slug">Slug</label>
+                                    <input type="text" id="slug" name="slug" pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$"
+                                        value="" style="background-color: #f8f9fa; color: #444444;"
+                                        class="form-control form-control-lg" placeholder="Enter slug" readonly>
+                                </div>
+                                <div class="invalid-feedback">
+                                    Please enter a valid slug (lowercase letters, numbers, and hyphens only).
+                                </div>
+                                <small class="form-text text-muted">
+                                    Slug will be automatically generated from the page name
+                                </small>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="category_name">Image</label>
+                                    <input type="file" id="image" name="image" class="form-control form-control-lg">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="category_name">Feature Category</label>
+                                    <select id="feature_category" name="feature_category" class="form-control form-control-lg">                                 
+                                        <option value="Yes">Yes</option>
+                                        <option value="No" selected>No</option>
+                                </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="category_name">Status</label>
+                                    <select id="status" name="status" class="form-control form-control-lg" style="width: 100%;
+                                    height: auto;
+                                    position: static;
+                                    left: 50%;
+                                    top: 50%;
+                                    margin: 0;
+                                ">
+                                        <option value="Active" selected>Active</option>
+                                        <option value="Inactive">Inactive</option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="category_name">Short Description</label>
+                                    <textarea id="short_description" name="short_description"  class="form-control form-control-lg" rows="3" placeholder="Enter short description"></textarea>      
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="category_name">Long Description</label>
+                                    <textarea id="long_description" name="long_description" class="form-control form-control-lg" rows="4" placeholder="Enter long description"></textarea>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="category_name">Meta Title</label>
+                                    <input type="text" id="meta_title" name="meta_title"  class="form-control form-control-lg" placeholder="Enter meta title">
+                                           
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="category_name">Meta Description</label>
+                                    <textarea id="meta_description" name="meta_description" class="form-control form-control-lg" rows="3" placeholder="Enter meta description"></textarea>
+                                </div>
+                            </div>
+                        
+                       
+                    <button type="submit" class="btn btn-primary btn-lg px-5" style="margin-right: 10px; background-color: #273c92; border-color: #273c92;">Add</button>
+                    <a href="{% url 'enroll:manage_categories' %}" class="btn btn-secondary btn-lg px-5" >Back</a> 
+                            
+                      
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let categoryInput = document.querySelector("input[name='category_name']");
+        let slugInput = document.querySelector("input[name='slug']");
+
+        if (categoryInput && slugInput) {
+
+            // Ensure fields exist
+            categoryInput.addEventListener("input", function () {
+                let slugText = categoryInput.value.toLowerCase().trim().replace(/[\s]+/g, "-") // Replace spaces with '-'
+                    .replace(/[^a-z0-9-]/g, ""); // Remove special characters
+
+                slugInput.value = slugText;
+            });
+        }
+    });
+</script>
+
+
+{% endblock %}

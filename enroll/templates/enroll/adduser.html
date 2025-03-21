@@ -1,0 +1,1706 @@
+{% extends "enroll/base.html" %}
+
+{% load static %}
+
+{% block title %}
+<title>Add User | User Management</title>
+{% endblock %}
+
+
+
+{% block content %}
+
+
+
+<!-- ============================================================== -->
+<!-- Start right Content here -->
+<!-- ============================================================== -->
+<div class="main-content">
+
+    <div class="page-content">
+
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">Add User</h4>
+
+
+                </div>
+            </div>
+        </div>
+        </header>
+        <div class="main-content">
+            <!-- <div class="page-content"> -->
+            <div class="container-fluid ml-0 pl-0">
+                <div class="row justify-content-start">
+                    <div class="col-md-12">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <form id="addUserForm" method="POST" enctype="multipart/form-data">
+                                    {% csrf_token %}
+
+                                    <!-- Image Upload Section -->
+                                    <div class="col-12 user-img"
+                                        style="text-align: center; margin: 20px 0; padding: 0;">
+                                        <label for="id_profile_pic" class="upload-label"
+                                            style="display: inline-block; position: relative; width: 120px; height: 120px; border-radius: 50%; overflow: hidden; cursor: pointer;">
+                                            <!-- Image Preview -->
+                                            <img id="imagePreview"
+                                                src="{% static 'enroll/assets/images/users/avatar-3.jpg' %}"
+                                                alt="Profile Picture" class="upload-icon"
+                                                style="width: 100%; height: 100%; object-fit: cover;">
+                                            <!-- Edit Icon -->
+                                            <div class="edit-overlay"
+                                                style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.5); padding: 5px; text-align: center;">
+                                                <i class="fas fa-camera" style="color: white;"></i>
+                                            </div>
+                                        </label>
+                                        <input type="file" id="id_profile_pic" name="profile_pic" accept="image/*"
+                                            style="display: none;" onchange="previewImage(event)">
+                                    </div>
+
+
+
+                                    <!-- Form Fields Section -->
+                                    <div class="form-group">
+                                        <label for="fullName" style="color: #000000;">Full Name</label>
+                                        <input type="text" class="form-control" id="fullName" name="fullname" {% if data.fullname %} value="{{ data.fullname }}" {% endif %}  placeholder="Enter your name">
+                                            
+                                           
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="email" style="color: #000000;">Email</label>
+                                        <input type="text" class="form-control" id="email" name="email" {% if data.email %} value="{{data.email}}" {% endif %} placeholder="Enter your email">
+                                            
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="Contact" style="color: #000000;">Contact</label>
+                                        <input type="number" class="form-control" id="contact" name="contact" {% if data.contact %} value="{{data.contact}}" {% endif %} placeholder="Enter your Contact" oninput="allowOnlyNumbers(this)"                                       
+                                            onkeydown="blockInvalidKeys(event)" maxlength="10">
+                                        <small class="error-message-contact" style="color: red; display: none;">Please
+                                            enter a valid contact number (10 digits).</small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="Age" style="color: #000000;">Age</label>
+                                        <input type="text" class="form-control" id="Age" name="age" {% if data.age %}
+                                            value="{{data.age}}" {% endif %} placeholder="Enter your Age"
+                                            oninput="allowOnlyNumbers(this)" onkeydown="blockInvalidKeys(event)"
+                                            maxlength="3">
+                                        <small class="error-message" style="color: red; display: none;">Please enter a
+                                            valid age.</small>
+                                    </div>
+
+
+                                    <!-- State Dropdown -->
+                                    <div class="form-group">
+                                        <label for="State">State <span class="text-danger">*</span></label>
+                                        <select class="form-control" id="State" name="state" {% if data.state %}
+                                            value="{{data.state}}" {% endif %}required>
+                                            <option value="">Select State</option>
+                                            {% for state in states %}
+                                            {{state.id}}
+                                            <option {% if data.state|stringformat:"s" == state.id|stringformat:"s" %} selected {% endif %}value="{{ state.id }}">{{ state.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="City">City <span class="text-danger">*</span></label>
+                                        <select class="form-control" id="City" name="city" required>
+                                            <option value="{{data.city}}">Select City</option>
+                                        </select>
+                                    </div>
+
+
+
+                                    <!-- Submit Button -->
+                                    <div class="form-buttons">
+                                        <button type="submit" id="submitBtn" class="btn btn-primary"
+                                            onclick="validateForm(event)">Submit</button>
+                                    </div>
+
+                                </form>
+
+                            </div>
+
+
+
+
+
+
+                            <!-- Success Message -->
+                            {% if messages %}
+                            <div id="messages-container">
+                                {% for message in messages %}
+                                <div class="alert alert-success alert-dismissible">
+                                    {{ message }}
+                                    <button type="button" class="close" onclick="closeMessage(this)">
+                                        &times;
+                                    </button>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+
+                            {% endblock %}
+
+                            {% block extra_js %}
+
+
+                            <script src="{% static 'enroll/assets/libs/jquery/jquery.min.js' %}"></script>
+                            <script src="{% static 'enroll/assets/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+                            <script src="{% static 'enroll/assets/libs/metismenu/metisMenu.min.js' %}"></script>
+                            <script src="{% static 'enroll/assets/libs/simplebar/simplebar.min.js' %}"></script>
+                            <script src="{% static 'enroll/assets/libs/node-waves/waves.min.js' %}"></script>
+
+                            <!-- apexcharts -->
+                            <script src="{% static 'enroll/assets/libs/apexcharts/apexcharts.min.js' %}"></script>
+
+                            <script src="{% static 'enroll/assets/js/pages/dashboard-2.init.js' %}"></script>
+
+                            <script src="{% static 'enroll/assets/js/app.js' %}"></script>
+                            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                            
+                            <script>
+                                function previewImage(event) {
+                                    const file = event.target.files[0];
+                                    const preview = document.getElementById('imagePreview');
+
+                                    if (file) {
+                                        const reader = new FileReader();
+                                        reader.onload = function (e) {
+                                            preview.src = e.target.result;
+                                            preview.style.display = 'block';
+                                        }
+                                        reader.readAsDataURL(file);
+                                    }
+                                }
+
+
+                                function allowOnlyNumbers(input) {
+                                    input.value = input.value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+                                }
+
+                                // Block invalid keys like 'e', 'E', '+', '-', etc.
+                                function blockInvalidKeys(event) {
+                                    const invalidKeys = ["e", "E", "+", "-", "."]; // Keys to block
+                                    if (invalidKeys.includes(event.key)) {
+                                        event.preventDefault(); // Prevent the key press
+                                    }
+                                }
+
+                                // Validate form on submission
+                                function validateForm(event) {
+                                    validateAge(event);
+                                    validateContact(event);
+                                }
+
+                                function validateAge(event) {
+                                    const ageInput = document.getElementById("Age");
+                                    const errorMessage = document.querySelector(".error-message");
+                                    const ageValue = ageInput.value.trim();
+
+                                    if (ageValue === "" || !/^[0-9]+$/.test(ageValue)) {
+                                        event.preventDefault(); // Prevent form submission
+                                        errorMessage.style.display = "block"; // Show error message
+                                    } else {
+                                        errorMessage.style.display = "none"; // Hide error message
+                                    }
+                                }
+
+                                function validateContact(event) {
+                                    const contactInput = document.getElementById("Contact");
+                                    const errorMessageContact = document.querySelector(".error-message-contact");
+                                    const contactValue = contactInput.value.trim();
+
+                                    if (contactValue.length !== 10 || !/^[0-9]+$/.test(contactValue)) {
+                                        event.preventDefault(); // Prevent form submission
+                                        errorMessageContact.style.display = "block"; // Show error message
+                                    } else {
+                                        errorMessageContact.style.display = "none"; // Hide error message
+                                    }
+                                }
+
+
+                                $(document).ready(function () {
+                                    // Initialize Select2 for both dropdowns
+                                    $('#State, #City').select2({
+                                        width: '100%'
+                                    });
+
+                                    // Handle state change
+                                    $('#State').on('change', function () {
+                                        var stateId = $(this).val();
+                                        var citySelect = $('#City');
+
+                                        if (stateId) {
+                                            // Enable city dropdown and fetch cities
+                                            citySelect.prop('disabled', false);
+
+                                            $.ajax({
+                                                url: '/get-cities/',
+                                                data: {
+                                                    'state_id': stateId
+                                                },
+                                                success: function (data) {
+                                                    citySelect.empty();
+                                                    citySelect.append('<option value="">Select City</option>');
+                                                    console.log('data');
+                                                    
+
+                                                    $.each(data.cities, function (index, item) {
+                                                        citySelect.append(
+                                                            $('<option></option>')
+                                                                .val(item.id)
+                                                                .text(item.name)
+                                                        );
+                                                    });
+
+                                                    citySelect.trigger('change');
+                                                },
+                                                error: function () {
+                                                    citySelect.empty();
+                                                    citySelect.append('<option value="">Error loading cities</option>');
+                                                }
+                                            });
+                                        } else {
+                                            // Disable and reset city dropdown if no state is selected
+                                            citySelect.empty();
+                                            citySelect.append('<option value="">Select City</option>');
+                                            citySelect.prop('disabled', true);
+                                        }
+                                    });
+                                });
+
+
+
+
+                                function fetchCities(stateId) {
+                                    if (stateId) {
+                                        fetch(`/get-cities/?state_id=${stateId}`)
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                const cityDropdown = document.getElementById('City');
+                                                cityDropdown.innerHTML = '<option value="">Select City</option>'; // Reset the cities dropdown
+
+                                                data.cities.forEach(city => {
+                                                    const option = document.createElement('option');
+                                                    option.value = city.id;
+                                                    option.textContent = city.name;
+                                                    cityDropdown.appendChild(option);
+                                                });
+                                            })
+                                            .catch(error => console.error('Error fetching cities:', error));
+                                    }
+                                }
+
+                                document.getElementById('State').addEventListener('change', function () {
+                                    var stateId = this.value;  // Get the selected state ID
+                                    fetchCities(stateId);
+                                });
+
+                                function fetchCities(stateId) {
+                                    if (stateId) {
+                                        fetch('/get-cities/?state_id=' + stateId)
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                if (data.cities) {
+                                                    var citySelect = document.getElementById('City');
+                                                    citySelect.innerHTML = '<option value="">Select your City</option>';
+                                                    data.cities.forEach(function (city) {
+                                                        var option = document.createElement('option');
+                                                        option.value = city.id;
+                                                        option.textContent = city.name;
+                                                        citySelect.appendChild(option);
+                                                    });
+                                                } else if (data.error) {
+                                                    console.error(data.error);
+                                                }
+                                            })
+                                            .catch(error => console.error('Error fetching cities:', error));
+                                    }
+                                }
+                                function closeMessage(button) {
+                                    const alertDiv = button.parentElement;
+                                    alertDiv.style.display = 'none';
+                                }
+
+                                $(document).ready(function () {
+                                    // Listen for changes on the state dropdown
+                                    $('#State').on('change', function () {
+                                        const stateId = $(this).val(); // Get selected state ID
+
+                                        // Clear the city dropdown
+                                        $('#City').html('<option value="">Select City</option>');
+
+                                        if (stateId) {
+                                            // Make an AJAX request to fetch cities
+                                            $.ajax({
+                                                url: '/get_cities', // Your Django URL for fetching cities
+                                                type: 'GET',
+                                                data: { state_id: stateId },
+                                                success: function (response) {
+                                                    if (response.cities && response.cities.length > 0) {
+                                                        // Populate the city dropdown
+                                                        response.cities.forEach(city => {
+                                                            $('#City').append(
+                                                                `<option value="${city.id}">${city.name}</option>`
+                                                            );
+                                                        });
+                                                    } else {
+                                                        alert('No cities found for the selected state.');
+                                                    }
+                                                },
+                                                error: function () {
+                                                    console.log('An error occurred while fetching cities.');
+                                                }
+                                            });
+                                        }
+                                    });
+                                });
+
+
+
+                            </script>
+                            {% endblock %}
+
+
+
+
+
+                            <!-- JAVASCRIPT -->
+                            <!-- <script src="{% static 'enroll/assets/libs/jquery/jquery.min.js' % }"></script>
+                                                            <script src="{% static 'enroll/assets/libs/bootstrap/js/bootstrap.bundle.min.js' % }"></script>
+                                                            <script src="{% static 'enroll/assets/libs/metismenu/metisMenu.min.js' % }"></script>
+                                                            <script src="{% static 'enroll/assets/libs/simplebar/simplebar.min.js' % }"></script>
+                                                            <script src="{% static 'enroll/assets/libs/node-waves/waves.min.js' % }"></script>
+                                                            <script src="{% static 'enroll/assets/js/app.js' % }"></script> -->
+
+                            <!-- <script>
+                        
+                                                                document.getElementById("submitBtn").addEventListener("click", function(event) {
+                                                                    event.preventDefault(); // Prevent form submission
+                                                            
+                                                                    // Clear previous error messages
+                                                                    var errorMessages = document.querySelectorAll(".error-message");
+                                                                    errorMessages.forEach(function(msg) {
+                                                                        msg.style.display = "none";
+                                                                    });
+                                                            
+                                                                    var isValid = true;
+                                                            
+                                                                    // Validate Full Name
+                                                                    var fullName = document.getElementById("fullName").value;
+                                                                    var fullNamePattern = /^[a-zA-Z\s]+$/; 
+                                                                    if (fullName === "") {
+                                                                        document.getElementById("fullName-error").textContent = "Full Name is required.";
+                                                                        document.getElementById("fullName-error").style.display = "block";
+                                                                        isValid = false;
+                                                                    } else if (!fullNamePattern.test(fullName)) {
+                                                                        document.getElementById("fullName-error").textContent = "Full Name must contain only letters and spaces.";
+                                                                        document.getElementById("fullName-error").style.display = "block";
+                                                                        isValid = false;
+                                                                    }
+
+                                                                    // Validate Email
+                                                                    var email = document.getElementById("email").value;
+                                                                    var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/; // Basic email regex pattern
+                                                                    if (email === "") {
+                                                                        document.getElementById("email-error").textContent = "Email is required.";
+                                                                        document.getElementById("email-error").style.display = "block";
+                                                                        isValid = false;
+                                                                    } else if (!emailPattern.test(email)) {
+                                                                        document.getElementById("email-error").textContent = "Please enter a valid email address.";
+                                                                        document.getElementById("email-error").style.display = "block";
+                                                                        isValid = false;
+                                                                    }
+
+
+
+                                                                    var contact = document.getElementById("Contact").value;
+                                                                    var contactPattern = /^[0-9]{10}$/; // Ensure it's exactly 10 digits
+                                                                    if (contact === "") {
+                                                                        document.getElementById("contact-error").textContent = "Contact number is required.";
+                                                                        document.getElementById("contact-error").style.display = "block";
+                                                                        isValid = false;
+                                                                    } else if (!contactPattern.test(contact)) {
+                                                                        document.getElementById("contact-error").textContent = "Please enter a valid contact number (10 digits).";
+                                                                        document.getElementById("contact-error").style.display = "block";
+                                                                        isValid = false;
+                                                                    }
+
+                                                                    // Validate City, State, and Country (Only letters and spaces)
+                                                                    var fields = ["City", "State", "Country"];
+                                                                    fields.forEach(function(field) {
+                                                                        var fieldValue = document.getElementById(field).value;
+                                                                        var fieldPattern = /^[a-zA-Z\s]+$/; // Allow only letters and spaces
+                                                                        if (fieldValue === "") {
+                                                                            document.getElementById(field.toLowerCase() + "-error").textContent = field + " is required.";
+                                                                            document.getElementById(field.toLowerCase() + "-error").style.display = "block";
+                                                                            isValid = false;
+                                                                        } else if (!fieldPattern.test(fieldValue)) {
+                                                                            document.getElementById(field.toLowerCase() + "-error").textContent = field + " must contain only letters and spaces.";
+                                                                            document.getElementById(field.toLowerCase() + "-error").style.display = "block";
+                                                                            isValid = false;
+                                                                        }
+                                                                    });
+
+                                                            
+                                                                    // If all validations pass, show success message or proceed with form submission
+                                                                    if (isValid) {
+                                                                        alert("Form submitted successfully!");
+                                                                        // Optionally, you can submit the form here
+                                                                        // document.getElementById("yourFormId").submit();
+                                                                    }
+                                                                });
+                                                            </script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        // Initialize Select2 for State and City
+        $('#State, #City').select2({
+            placeholder: "Select...",
+            allowClear: true,
+            width: '100%'
+        });
+
+        // Handle state change
+        $('#State').on('change', function() {
+            var stateId = $(this).val();
+            var citySelect = $('#City');
+            
+            citySelect.empty().append('<option value="">Select City</option>').trigger('change');
+            
+            if (stateId) {
+                citySelect.prop('disabled', true);
+                
+                $.ajax({
+                    url: '{% url "enroll:get_cities" %}',
+                    data: { 'state_id': stateId },
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.cities && data.cities.length > 0) {
+                            $.each(data.cities, function(index, item) {
+                                citySelect.append(new Option(item.name, item.id));
+                            });
+                        }
+                    },
+                    error: function() {
+                        alert('Error loading cities. Please try again.');
+                    },
+                    complete: function() {
+                        citySelect.prop('disabled', false);
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        // Initialize Select2 for both State and City dropdowns
+        $('#State, #City').select2({
+            width: '100%',
+            placeholder: "Select an option"
+        });
+
+        // Handle state change event
+        $('#State').on('change', function() {
+            var stateId = $(this).val();
+            if (stateId) {
+                $.ajax({
+                    url: '/get-cities/',
+                    data: {
+                        'state_id': stateId
+                    },
+                    success: function(data) {
+                        var citySelect = $('#City');
+                        citySelect.empty();
+                        citySelect.append('<option value="">Select City</option>');
+                        
+                        $.each(data.cities, function(index, item) {
+                            citySelect.append(
+                                $('<option></option>').val(item.id).html(item.name)
+                            );
+                        });
+                        
+                        citySelect.prop('disabled', false);
+                        citySelect.trigger('change');
+                    }
+                });
+            } else {
+                $('#City').empty().append('<option value="">Select City</option>').prop('disabled', true);
+            }
+        });
+    });
+</script>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

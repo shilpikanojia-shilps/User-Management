@@ -1,0 +1,207 @@
+{% extends "vendor/base.html" %}
+
+{% block title %}
+<title>Edit Product | User Management</title>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">Edit Product</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow">
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data" style="display: block;">
+                    {% csrf_token %}
+
+                    <!-- Product Info Section -->
+                    <h4 class="mt-4 mb-3">🟦 Product Information</h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Product Name</label>
+                                <input type="text" name="product_name" class="form-control" value="{{ product.product_name }}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Category</label>
+                                <select name="category" id="category-select" class="form-control" required>
+                                    <option value="">Select Category</option>
+                                    {% for cat in categories %}
+                                    <option value="{{ cat.id }}" {% if cat.id == product.category.id %}selected{% endif %}>{{ cat.category_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Tags (comma separated)</label>
+                                <input type="text" name="tags" class="form-control" value="{{ product.tags }}">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Brand</label>
+                                <input type="text" name="brand" class="form-control" value="{{ product.brand }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Subcategory</label>
+                                <select name="subcategory" id="subcategory-select" class="form-control" required>
+                                    <option value="">-- Select Subcategory --</option>
+                                    {% for subcat in subcategories %}
+                                    <option value="{{ subcat.id }}" {% if subcat.id == product.subcategory.id %}selected{% endif %}>{{ subcat.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Specifications -->
+                    <h4 class="mt-4 mb-3">🛠 Specifications</h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Price (₹)</label>
+                                <input type="number" name="price" class="form-control" value="{{ product.price }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Model number</label>
+                                <input type="text" name="model_number" class="form-control" value="{{ product.model_number }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>SKU</label>
+                                <input type="text" name="sku" class="form-control" value="{{ product.sku }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Dimensions (L x W x H cm)</label>
+                                <input type="text" name="dimensions" class="form-control" value="{{ product.dimensions }}">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Stock Quantity</label>
+                                <input type="number" name="stock_quantity" class="form-control" value="{{ product.stock_quantity }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Weight (kg)</label>
+                                <input type="text" name="weight" class="form-control" value="{{ product.weight }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Shipping Details</label>
+                                <input type="text" name="shipping_details" class="form-control" value="{{ product.shipping_details }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <h4 class="mt-4 mb-3">📝 Description</h4>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="description" name="description" class="form-control">{{ product.description|safe }}</textarea>
+                    </div>
+
+                    <!-- Warranty & Return -->
+                    <h4 class="mt-4 mb-3">📦 Warranty & Return</h4>
+                    <div class="form-group">
+                        <label>Warranty</label>
+                        <textarea id="warranty" name="warranty" class="form-control">{{ product.warranty }}</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Return Policy</label>
+                        <textarea id="return_policy" name="return_policy" class="form-control">{{ product.return_policy }}</textarea>
+                    </div>
+
+                    <!-- Product Status -->
+                    <div class="form-group">
+                        <label>Product Status</label>
+                        <select name="status" class="form-control">
+                            <option value="Select_Status" {% if product.status == "Select_Status" %}selected{% endif %}>Select_Status</option>
+                            <option value="Active" {% if product.status == "Active" %}selected{% endif %}>Active</option>
+                            <option value="Inactive" {% if product.status == "Inactive" %}selected{% endif %}>Inactive</option>
+                        </select>
+                    </div>
+
+                    <!-- Images -->
+                    <h4 class="mt-4 mb-3">🖼 Product Images</h4>
+                    <div class="form-group">
+                        <label>Update Images</label>
+                        <input type="file" name="images" class="form-control" multiple>
+                    </div>
+
+                    <!-- Meta Details -->
+                    <h4 class="mt-4 mb-3">🌐 Meta Details</h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Meta Title</label>
+                                <input type="text" name="meta_title" class="form-control" value="{{ product.meta_title }}">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Meta Keywords (comma separated)</label>
+                                <input type="text" name="meta_keywords" class="form-control" value="{{ product.meta_keywords }}">
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Meta Description</label>
+                                <textarea id="meta_description" name="meta_description" class="form-control" rows="4">{{ product.meta_description }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-primary">Update Product</button>
+                        <a href="{% url 'vendor:product_list' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.ckeditor.com/4.20.0/standard/ckeditor.js"></script>
+<script>
+    $('#category-select').on('change', function () {
+        var categoryId = $(this).val();
+        if (categoryId) {
+            $.ajax({
+                url: '/get_subcategories/',
+                data: { 'category_id': categoryId },
+                success: function (data) {
+                    $('#subcategory-select').empty().append('<option value="">-- Select Subcategory --</option>');
+                    data.forEach(function (subcat) {
+                        $('#subcategory-select').append('<option value="' + subcat.id + '">' + subcat.name + '</option>');
+                    });
+                }
+            });
+        }
+    });
+
+    CKEDITOR.replace('description');
+    CKEDITOR.replace('warranty');
+    CKEDITOR.replace('return_policy');
+    CKEDITOR.replace('meta_description');
+</script>
+{% endblock %}

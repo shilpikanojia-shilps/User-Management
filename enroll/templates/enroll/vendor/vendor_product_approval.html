@@ -1,0 +1,118 @@
+{% extends 'enroll/base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Vendor Product Approvals | User Management</title>
+{% endblock %}
+
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">Vendor Product Approvals</h4>
+                </div>
+            </div>
+        </div>
+
+        {% if messages %}
+        <div id="messages-container">
+            {% for message in messages %}
+            <div class="alert alert-success alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="close" onclick="closeMessage(this)">
+                    &times;
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="row">
+
+            <div class="card-body">
+                <form method="GET" action="">
+                    {% csrf_token %}
+                    <div class="form-group d-flex justify-content-between align-items-center">
+                        <div class="flex-grow-1">
+                            <label for="search">Search</label>
+                            <input type="text" id="search" name="search" class="form-control"
+                                placeholder="Search by name, SKU, or brand" value="{{ request.GET.search }}">
+                        </div>
+                        <button type="submit" class="btn btn-primary ml-4" style="margin-bottom: -28px;">Search</button>
+                        <a href="{% url 'enroll:vendor_product_approval' %}" class="btn btn-secondary ml-2"
+                            style="margin-bottom: -28px; margin-left: 10px;">
+                            <i class="fas fa-undo"></i> Reset
+                        </a>
+                    </div>
+                </form>
+                <div class="col-12">
+                    <div class="card">
+
+                        <div class="card-body">
+
+                            <h4 class="mb-3"></h4>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered text-center">
+                                    <thead>
+                                        <tr>
+                                            <th>Sno.</th>
+                                            <th>Product Name</th>
+                                            <th>Brand</th>
+                                            <th>Category</th>
+                                            <th>Subcategory</th>
+                                            <th>Pricee</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+
+
+                                    </thead>
+                                    <tbody>
+                                        {% for product in products %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ product.product_name }}</td>
+                                            <td>{{ product.brand}}</td>
+                                            <td>{{ product.category.category_name }}</td>
+                                            <td>{{ product.subcategory.name }}</td>
+                                            <td>{{ product.price }}</td>
+
+
+
+
+                                            <td>
+                                                {% if product.status == 'pending' %}
+                                                <span class="badge bg-warning text-dark">Pending</span>
+                                                {% elif product.status == 'approved' %}
+                                                <span class="badge bg-success">Approved</span>
+                                                {% else %}
+                                                <span class="badge bg-danger">Rejected</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-center">
+                                                {% if product.status == 'pending' %}
+                                                <a href="{% url 'enroll:approve_product' product.id %}"
+                                                    class="btn btn-success btn-sm me-1">Approve</a>
+                                                <a href="{% url 'enroll:reject_product' product.id %}"
+                                                    class="btn btn-danger btn-sm">Reject</a>
+                                                {% else %}
+                                                <em class="text-muted"></em>
+                                                {% endif %}
+                                            </td>
+                                            <td><a href="{% url 'enroll:view_product_detail' product.id %}"
+                                                    class="btn btn-primary btn-sm">View</a></td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="7" class="text-center text-muted">No products found.</td>
+                                        </tr>
+                                        {% endfor %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% endblock %}

@@ -1,0 +1,83 @@
+{% extends "enroll/base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Edit Role | User Management</title>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">Edit Role</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid ml-0 pl-0">
+            <div class="row justify-content-start">
+                <div class="col-md-12">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <form id="editRoleForm" method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+
+                                <!-- Form Fields Section -->
+                                <div class="form-group">
+                                    <label for="name" style="color: #000000;">Role Name</label>
+                                    <input type="text" class="form-control" id="name" name="name" value="{{ role.name }}" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="description" style="color: #000000;">Description</label>
+                                    <input type="text" class="form-control" id="description" name="description" value="{{ role.description }}" required>
+                                </div>
+
+                                <!-- Permissions Section -->
+                                <div class="form-group mt-4">
+                                    <label style="color: #000000;">Permissions</label>
+                                    <div id="permissions-container">
+                                        {% for permission in permissions %}
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="permissions[]" 
+                                                   value="{{ permission.codename }}" 
+                                                   id="permission_{{ permission.codename }}"
+                                                   {% if permission in role.permissions.all %}checked{% endif %}>
+                                            <label class="form-check-label" for="permission_{{ permission.codename }}">
+                                                {{ permission.name }}
+                                            </label>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                
+
+                                <div class="form-group text-center mt-4">
+                                    <button type="submit" class="btn btn-primary">Update Role</button>
+                                    <a href="{% url 'enroll:manage_roles' %}" class="btn btn-secondary">Cancel</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Form validation
+document.getElementById('editRoleForm').addEventListener('submit', function(e) {
+    // Ensure at least one permission is selected
+    const checkedPermissions = document.querySelectorAll('input[name="permissions[]"]:checked');
+    if (checkedPermissions.length === 0) {
+        e.preventDefault();
+        alert('Please select at least one permission');
+    }
+});
+</script>
+{% endblock %}

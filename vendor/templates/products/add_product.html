@@ -1,0 +1,408 @@
+{% extends "vendor/base.html" %}
+
+{% block title %}
+<title>Add Product | User Management</title>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">Add Product</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow">
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data" style="display: block;">
+                    {% csrf_token %}
+
+                    <!-- Product Info Section -->
+                    <h4 class="mt-4 mb-3">🟦 Product Information</h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <!-- Product Name -->
+                            <div class="form-group">
+                                <label>Product Name</label>
+                                <input type="text" id="product_name" name="product_name" class="form-control"
+                                    placeholder="Enter product name" required>
+                            </div>
+
+                            <!-- Category -->
+                            <div class="form-group">
+                                <label>Category</label>
+                                <select id="category-select" name="category" class="form-control" required>
+                                    <option value="">Select Category</option>
+                                    {% for cat in categories %}
+                                    <option value="{{ cat.id }}">{{ cat.category_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="child-subcategory-select">Child Subcategory</label>
+                                <select name="child_subcategory" id="child-subcategory-select" class="form-control">
+                                    <option value="">Select Child Subcategory</option>
+                                </select>
+                            </div>
+
+
+
+                            <!-- Tags -->
+
+                        </div>
+
+                        <div class="col-md-6">
+                            <!-- Brand -->
+                            <div class="form-group">
+                                <label>Brand</label>
+                                <select name="brand" id="brand-select" class="form-control" required>
+                                    <option value="">-- Select Brand --</option>
+                                </select>
+                            </div>
+
+                            <!-- Subcategory -->
+                            <div class="form-group">
+                                <label>Subcategory</label>
+                                <select name="subcategory" id="subcategory-select" class="form-control" required>
+                                    <option value="">-- Select Subcategory --</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Tags</label>
+                                <select name="tags" id="tag-select" class="form-control" required>
+                                    <option value="">-- Select Tags --</option>
+                                </select>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+
+                    <!-- Specifications -->
+                    <h4 class="mt-4 mb-3">🛠 Specifications</h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <!-- Price -->
+                            <div class="form-group">
+                                <label>Price (₹)</label>
+                                <input type="number" name="price" class="form-control" placeholder="Enter price">
+                            </div>
+
+                            <!-- Model Number -->
+                            <div class="form-group">
+                                <label>Model number</label>
+                                <input type="text" name="model_number" class="form-control"
+                                    placeholder="Enter model number">
+                            </div>
+
+                            <!-- SKU -->
+                            <div class="form-group">
+                                <label>SKU</label>
+                                <input type="text" name="sku" class="form-control" placeholder="Enter product SKU">
+                            </div>
+
+                            <!-- Dimensions -->
+                            <div class="form-group">
+                                <label>Dimensions (L x W x H cm)</label>
+                                <input type="text" name="dimensions" class="form-control"
+                                    placeholder="Enter dimensions">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <!-- Stock -->
+                            <div class="form-group">
+                                <label>Stock Quantity</label>
+                                <input type="number" name="stock_quantity" class="form-control"
+                                    placeholder="Enter stock quantity">
+                            </div>
+
+                            <!-- Weight -->
+                            <div class="form-group">
+                                <label>Weight (kg)</label>
+                                <input type="text" name="weight" class="form-control"
+                                    placeholder="Enter product weight">
+                            </div>
+
+                            <!-- Shipping -->
+                            <div class="form-group">
+                                <label>Shipping Details</label>
+                                <input type="text" name="shipping_details" class="form-control"
+                                    placeholder="Enter shipping details">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <h4 class="mt-4 mb-3">📝 Description</h4>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea id="description" name="description" class="form-control"
+                                    placeholder="Enter short description">{{description|striptags }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Details -->
+                    <h4 class="mt-4 mb-3">📦 Warranty & Return</h4>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <!-- Warranty -->
+                            <div class="form-group">
+                                <label>Warranty</label>
+                                <input type="text" id="warranty" name="warranty" class="form-control"
+                                    placeholder="Enter warranty details">
+                            </div>
+
+                            <!-- Return Policy -->
+
+                        </div>
+
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Return Policy</label>
+                                <textarea id="return_policy" name="return_policy" class="form-control"
+                                    placeholder="Enter return policy"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <!-- Product Status -->
+                            <div class="form-group">
+                                <label>Product Status</label>
+                                <select name="status" class="form-control">
+                                    <option value="Select_Status">Select_Status</option>
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Images -->
+                    <h4 class="mt-4 mb-3">🖼 Product Images</h4>
+                    <div class="form-group">
+                        <label>Product Images</label>
+                        <input type="file" name="images" class="form-control" multiple>
+                    </div>
+
+                    <!-- Meta Details -->
+                    <h4 class="mt-4 mb-3">🌐 Meta Details</h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Meta Title</label>
+                                <input type="text" name="meta_title" class="form-control"
+                                    placeholder="Enter meta title">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Meta Description</label>
+                                <textarea id="meta_description" name="meta_description" class="form-control" rows="4"
+                                    placeholder="Enter meta description"></textarea>
+                            </div>
+
+
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Meta Keywords (comma separated)</label>
+                                <input type="text" name="meta_keywords" class="form-control"
+                                    placeholder="e.g. electronics, gadgets, phones">
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <!-- Buttons -->
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-success">Add Product</button>
+                        <a href="{% url 'vendor:product_list' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+
+
+
+                </form>
+
+                {% endblock %}
+
+                {% block extra_js %}
+
+
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                <script src="https://cdn.ckeditor.com/4.20.0/standard/ckeditor.js"></script>
+                <script>
+                    $('#category-select').on('change', function () {
+                        var categoryId = $(this).val();
+
+                        if (categoryId) {
+                            $.ajax({
+                                url: '/get_subcategories/',  // ✅ Check this URL in urls.py
+                                data: {
+                                    'category_id': categoryId
+                                },
+                                success: function (data) {
+                                    $('#subcategory-select').empty();
+                                    $('#subcategory-select').append('<option value="">-- Select Subcategory --</option>');
+
+                                    data.forEach(function (subcat) {
+                                        $('#subcategory-select').append('<option value="' + subcat.id + '">' + subcat.name + '</option>');
+                                    });
+                                }
+                            });
+                        } else {
+                            $('#subcategory-select').empty();
+                            $('#subcategory-select').append('<option value="">-- Select Subcategory --</option>');
+                        }
+                    });
+
+
+                    CKEDITOR.replace('description', {
+                        height: 300,
+                        toolbarGroups: [
+                            { name: 'basicstyles', groups: ['basicstyles', 'cleanup'] },
+                            { name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align'] },
+                            { name: 'links' },
+                            { name: 'insert' },
+                            { name: 'styles' },
+                            { name: 'colors' }
+                        ],
+                        removeButtons: 'Subscript,Superscript,Anchor,Specialchar'
+                    });
+
+                    function updateCKEditor() {
+                        document.getElementById('description').value = CKEDITOR.instances.about.getData();
+                    }
+
+                    CKEDITOR.replace('return_policy', {
+                        height: 300,
+                        toolbarGroups: [
+                            { name: 'basicstyles', groups: ['basicstyles', 'cleanup'] },
+                            { name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align'] },
+                            { name: 'links' },
+                            { name: 'insert' },
+                            { name: 'styles' },
+                            { name: 'colors' }
+                        ],
+                        removeButtons: 'Subscript,Superscript,Anchor,Specialchar'
+                    });
+
+                    CKEDITOR.replace('warranty', {
+                        height: 300,
+                        toolbarGroups: [
+                            { name: 'basicstyles', groups: ['basicstyles', 'cleanup'] },
+                            { name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align'] },
+                            { name: 'links' },
+                            { name: 'insert' },
+                            { name: 'styles' },
+                            { name: 'colors' }
+                        ],
+                        removeButtons: 'Subscript,Superscript,Anchor,Specialchar'
+                    });
+
+                    CKEDITOR.replace('meta_description', {
+                        height: 300,
+                        toolbarGroups: [
+                            { name: 'basicstyles', groups: ['basicstyles', 'cleanup'] },
+                            { name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align'] },
+                            { name: 'links' },
+                            { name: 'insert' },
+                            { name: 'styles' },
+                            { name: 'colors' }
+                        ],
+                        removeButtons: 'Subscript,Superscript,Anchor,Specialchar'
+                    });
+
+                    function fetchChildSubcategories() {
+                        const categorySelect = document.getElementById('category-select');
+                        console.log(categorySelect)
+                        const subcategorySelect = document.getElementById('subcategory-select');
+                        const childSubcategorySelect = document.getElementById('child-subcategory-select');
+                        const categoryId = categorySelect.value;
+                        const subcategoryId = subcategorySelect.value;
+                        console.log(categoryId)
+                        if (categoryId && subcategoryId) {
+                            fetch(`/vendor/get_child_subcategories/?category_id=${categoryId}&subcategory_id=${subcategoryId}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    childSubcategorySelect.innerHTML = '<option value="">Select Child Subcategory</option>';
+                                    data.child_subcategories.forEach(function (childSub) {
+                                        const option = document.createElement('option');
+                                        option.value = childSub.id;
+                                        option.textContent = childSub.name;
+                                        childSubcategorySelect.appendChild(option);
+                                    });
+                                    categorySelect.addEventListener('change', fetchChildSubcategories);
+                                    subcategorySelect.addEventListener('change', fetchChildSubcategories);
+                                })
+                                .catch(error => {
+                                    console.error('Error fetching child subcategories:', error);
+                                });
+                        } else {
+                            childSubcategorySelect.innerHTML = '<option value="">Select Child Subcategory</option>';
+                        }
+                    }
+                    // Fetch brands and tags based on selected category and subcategory
+                    function fetchBrandsAndTags() {
+                        $.ajax({
+                            url: '/vendor/get_brands_tags/',  // Make sure this URL matches your Django URL pattern
+                            method: 'GET',
+                            success: function (data) {
+                                console.log("Fetched data:", data); // Debug log
+
+                                // Populate brands
+                                $('#brand-select').empty().append('<option value="">-- Select Brand --</option>');
+                                data.brands.forEach(function (brand) {
+                                    $('#brand-select').append('<option value="' + brand.id + '">' + brand.brand_name + '</option>');
+                                });
+
+                                // Populate tags
+                                $('#tag-select').empty().append('<option value="">-- Select Tag --</option>');
+                                data.tags.forEach(function (tag) {
+                                    $('#tag-select').append('<option value="' + tag.id + '">' + tag.tag_name + '</option>');
+                                });
+                            },
+                            error: function (xhr, status, error) {
+                                console.log("Error fetching brands and tags:", error);
+                            }
+                        });
+                    }
+
+                    // Call this on page load
+                    $(document).ready(function () {
+                        fetchBrandsAndTags();
+                    });
+
+
+
+
+                    // Trigger brand/tag update on category and subcategory change
+                    $('#subcategory-select').on('change', function () {
+                        fetchChildSubcategories();
+                    });
+
+
+
+                    // Fetch child subcategories based on selected category and subcategory
+
+
+
+
+
+                </script>
+
+
+
+
+                {% endblock %}

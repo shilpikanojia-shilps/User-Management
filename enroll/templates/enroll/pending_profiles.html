@@ -1,0 +1,78 @@
+{% extends "enroll/base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Vendor Profile Approvals | User Management</title>
+
+
+{% endblock %}
+
+{% block content %}
+
+<div class="main-content">
+    <div class="page-content">
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18"> Vendor Profile Approval Requests</h4>
+                </div>
+            </div>
+        </div>
+        {% if messages %}
+        <div id="messages-container">
+            {% for message in messages %}
+            <div class="alert alert-success alert-dismissible">
+                {{ message }}
+                <button type="button" class="close" onclick="closeMessage(this)">
+                    &times;
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+
+        <div class="table-responsive">
+            <table class="table table-centered mb-0">
+                <thead>
+                    <tr>
+                        <th>Sno.</th>
+                        <th>Business Name</th>
+                        <th>City</th>
+                        <th>State</th>
+                        <th>Approval Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for vendor in vendors %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ vendor.business_name }}</td>
+                        <td>{{ vendor.city }}</td>
+                        <td>{{ vendor.state }}</td>
+                        <td class="d-flex justify-content-around">
+                            <a href="{% url 'enroll:approve_profile' vendor.id %}"
+                                class="btn btn-sm btn-success">Approve</a>
+                            <button class="btn btn-sm btn-danger"
+                                onclick="deleteVendor({{ vendor.id }})">Delete</button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">No pending vendor approvals.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</table>
+{% endblock %}

@@ -1,0 +1,300 @@
+{% extends "enroll/base.html" %}
+
+{% load static %}
+
+{% block title %}
+<title>Edit User | User Management</title>
+{% endblock %}
+
+
+
+{% block content %}
+
+<!-- Then load Select2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+<!-- ============================================================== -->
+<!-- Start right Content here -->
+<!-- ============================================================== -->
+<div class="main-content">
+
+    <div class="page-content">
+
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-11">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">Edit User</h4>
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12 offset-lg-2">
+                <!-- Your form content goes here -->
+            </div>
+        </div>
+
+        <!-- Internal CSS for offset -->
+        <style>
+            .offset-lg-2 {
+                margin-left: 16.66667%;
+            }
+        </style>
+
+        <!-- Center the form -->
+        <div class="card">
+            <div class="card-body">
+                <form id="editUserForm" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+
+                    {% csrf_token %}
+                    <div class="col-md-12 mb-4 text-center">
+                        <div class="profile-pic-wrapper">
+                            <div class="pic-holder"
+                                style="width: 150px; height: 150px; margin: auto; position: relative;">
+                                <!-- Profile Picture -->
+                                {% if user.profile_pic %}
+                                <img id="imagePreview" src="{{ user.profile_pic.url }}" alt="Profile Picture"
+                                    class="upload-icon"
+                                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                                {% else %}
+                                <img id="imagePreview" src="{% static 'enroll/assets/images/users/avatar-1.jpg' %}"
+                                    alt="Default Profile" class="upload-icon"
+                                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                                {% endif %}
+
+                                <!-- Upload Icon -->
+                                <input type="file" name="profile_pic" id="profilePic" hidden class="uploadProfileInput"
+                                    accept="image/*">
+                                <label for="profilePic" class="upload-file-block"
+                                    style="position: absolute; bottom: 0; right: 0;">
+                                    <div class="text-center">
+                                        <i class="fas fa-camera"
+                                            style="color: #fff; background: #0d6efd; padding: 8px; border-radius: 50%;"></i>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- First Row -->
+                    <div class="row col-md-12">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="fullname" style="color: #000000;">Full Name</label>
+                                <input type="text" class="form-control" id="fullname" name="fullname"
+                                    value="{{ user.fullname }}" placeholder="Enter your name" required
+                                    style="color: #000000;">
+                                <!-- <small class="error-message" style="color: red; display: none;">Full Name is required.</small> -->
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="email" style="color: #000000;">Email</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                    value="{{ user.email }}" placeholder="Enter new email" required>
+                                <!-- <small class="error-message" style="color: red; display: none;">Please enter a valid email address.</small> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Second Row -->
+                    <div class="row col-md-12">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Contact" style="color: #000000;">Contact</label>
+                                <input type="text" class="form-control" id="Contact" name="contact"
+                                    value="{{ user.contact }}" placeholder="Enter your Contact"
+                                    oninput="allowOnlyNumbers(this)" onkeydown="blockInvalidKeys(event)" maxlength="10">
+                                <small class="error-message-contact" style="color: red; display: none;">Please enter a
+                                    valid contact number
+                                    (10 digits).</small>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Age" style="color: #000000;">Age</label>
+                                <input type="text" class="form-control" id="Age" name="age" value="{{ user.age }}"
+                                    placeholder="Enter your Age" oninput="allowOnlyNumbers(this)"
+                                    onkeydown="blockInvalidKeys(event)" maxlength="3">
+                                <small class="error-message" style="color: red; display: none;">Please enter
+                                    a valid age.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row col-md-12">
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+                                <label for="State" style="color: #000000;">State</label>
+                                <select class="form-control" id="State" name="state" required>
+                                    <option value="">Select State</option>
+                                    {% for state in states %}
+                                    <option value="{{ state.id }}" {% if current_state and current_state.id == state.id %}selected{% endif %}>
+                                        {{ state.name }}
+                                    </option>                                       
+                                       
+                                    {% endfor %}
+
+
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="City" style="color: #000000;">City</label>
+                                <select class="form-control" id="City" name="city" required>
+                                    <option value="">Select City</option>
+                                    {% for city in cities %}
+                                    <option value="{{ city.id }}" {% if city.name == current_city %}selected{% endif %}>
+                                        {{ city.name }}
+                                    </option>
+                                    
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-buttons" style="display: flex;">
+                        <button type="submit" id="submitBtn" class="btn btn-primary" style="margin-left: auto;"
+                            onclick="validateForm(event)">Save</button>
+                    </div>
+                </form>
+
+                <!-- Success Message -->
+
+            </div>
+        </div>
+        {% endblock %}
+
+        {% block extra_js %}
+        <script src="{% static 'enroll/assets/libs/jquery/jquery.min.js' %}"></script>
+                            <script src="{% static 'enroll/assets/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+                            <script src="{% static 'enroll/assets/libs/metismenu/metisMenu.min.js' %}"></script>
+                            <script src="{% static 'enroll/assets/libs/simplebar/simplebar.min.js' %}"></script>
+                            <script src="{% static 'enroll/assets/libs/node-waves/waves.min.js' %}"></script>
+
+                            <!-- apexcharts -->
+                            <script src="{% static 'enroll/assets/libs/apexcharts/apexcharts.min.js' %}"></script>
+
+                            <script src="{% static 'enroll/assets/js/pages/dashboard-2.init.js' %}"></script>
+
+                            <script src="{% static 'enroll/assets/js/app.js' %}"></script>
+       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            // Allow only numbers in input fields
+            function allowOnlyNumbers(input) {
+                input.value = input.value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+            }
+
+            // Block invalid keys like 'e', 'E', '+', '-', etc.
+            function blockInvalidKeys(event) {
+                const invalidKeys = ["e", "E", "+", "-", "."]; // Keys to block
+                if (invalidKeys.includes(event.key)) {
+                    event.preventDefault(); // Prevent the key press
+                }
+            }
+
+            // Validate form on submission
+            function validateForm(event) {
+                validateAge(event);
+                validateContact(event);
+            }
+
+            function validateAge(event) {
+                const ageInput = document.getElementById("Age");
+                const errorMessage = document.querySelector(".error-message");
+                const ageValue = ageInput.value.trim();
+
+                if (ageValue === "" || !/^[0-9]+$/.test(ageValue)) {
+                    event.preventDefault(); // Prevent form submission
+                    errorMessage.style.display = "block"; // Show error message
+                } else {
+                    errorMessage.style.display = "none"; // Hide error message
+                }
+            }
+
+            function validateContact(event) {
+                const contactInput = document.getElementById("Contact");
+                const errorMessageContact = document.querySelector(".error-message-contact");
+                const contactValue = contactInput.value.trim();
+
+                if (contactValue.length !== 10 || !/^[0-9]+$/.test(contactValue)) {
+                    event.preventDefault(); // Prevent form submission
+                    errorMessageContact.style.display = "block"; // Show error message
+                } else {
+                    errorMessageContact.style.display = "none"; // Hide error message
+                }
+            }
+
+            document.getElementById("profilePic").onchange = function () {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById("imagePreview").src = e.target.result;
+                };
+                reader.readAsDataURL(this.files[0]);
+            };
+
+            document.addEventListener('DOMContentLoaded', function () {
+    // Initialize Select2 for state and city dropdowns
+    var stateSelect = document.getElementById('State');
+    var citySelect = document.getElementById('City');
+
+    function loadCities(stateId) {
+        if (!stateId) return;
+
+        citySelect.disabled = true; // Disable the city dropdown while loading
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '{% url "enroll:get_cities" %}?state_id=' + stateId, true); // Send state_id in URL
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    citySelect.innerHTML = '<option value="">Select City</option>'; // Clear existing cities
+
+                    if (response.cities && response.cities.length > 0) {
+                        response.cities.forEach(function (city) {
+                            var option = document.createElement('option');
+                            option.value = city.id;
+                            option.textContent = city.name;
+                            citySelect.appendChild(option);
+                        });
+                    }
+                    citySelect.disabled = false; // Re-enable the city dropdown
+                } else {
+                    console.error('Error loading cities:', xhr.statusText);
+                    citySelect.innerHTML = '<option value="">Error loading cities</option>';
+                    citySelect.disabled = true; // Disable the city dropdown if error occurs
+                }
+            }
+        };
+
+        xhr.send();
+    }
+
+    // Handle state change event
+    stateSelect.addEventListener('change', function () {
+        var stateId = stateSelect.value;
+        loadCities(stateId);
+    });
+
+    // Load cities for the initial state if one is selected
+    var initialStateId = stateSelect.value;
+    if (initialStateId) {
+        loadCities(initialStateId);
+    }
+});
+        </script>
+
+
+
+    
+{% endblock %}

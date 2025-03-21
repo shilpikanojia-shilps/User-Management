@@ -1,0 +1,131 @@
+{% extends "enroll/base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Banner Details | Banner Management</title>
+<style>
+    .banner-image-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .banner-image-box {
+        text-align: center;
+        width: 200px;
+    }
+
+    .banner-image {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        padding: 5px;
+    }
+
+    .caption {
+        margin-top: 5px;
+        font-size: 14px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .info-table th {
+        width: 30%;
+        background: #f8f9fa;
+    }
+
+    .info-table td {
+        width: 70%;
+    }
+
+    .banner-image-container {
+        display: flex;
+        flex-wrap: nowrap;
+        /* Ensures all images stay in a single row */
+        overflow-x: auto;
+        /* Adds horizontal scrolling if images overflow */
+        gap: 15px;
+        justify-content: start;
+        /* Align images to the start */
+        padding: 10px;
+    }
+
+    .banner-image-box {
+        text-align: center;
+        min-width: 200px;
+        /* Ensures all images have equal width */
+    }
+
+    .banner-image {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        padding: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">Banner Details</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mt-3">
+            <div class="card-body">
+                <div class="row">
+                    <!-- Banner Details -->
+                    <div class="col-md-8">
+                        <table class="table table-bordered info-table">
+                            <tbody>
+                                <tr>
+                                    <th>Banner Title</th>
+                                    <td>{{ banner.title }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Content</th>
+                                    <td>{{ banner.content }}</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Images Section -->
+                <div class="banner-image-container">
+                    {% for image in banner.images.all %}
+                    <div class="banner-image-box">
+                        <img src="{{ image.images.url }}" alt="Banner Image" class="banner-image">
+                        <p class="caption">{{ image.caption }}</p>
+                        {% if image.link %}
+                        <p><a href="{{ image.link }}" target="_blank" rel="noopener noreferrer">{{ image.link }}</a></p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="text-center mt-4">
+                    <a href="{% url 'enroll:edit_banner' banner.id %}" class="btn btn-primary">
+                        <i class="fas fa-edit"></i> Edit Banner
+                    </a>
+                    <a href="{% url 'enroll:banner_list' %}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

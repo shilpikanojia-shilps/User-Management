@@ -1,0 +1,226 @@
+{% extends "enroll/base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Add Banner | User Management</title>
+
+<style>
+    .preview-img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .preview-img:hover {
+        transform: scale(1.1);
+    }
+
+    .remove-btn {
+        background-color: red;
+        color: white;
+        border: none;
+        font-size: 16px;
+        padding: 2px 8px;
+        cursor: pointer;
+    }
+
+    .remove-btn:hover {
+        background-color: darkred;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">ADD BANNER</h4>
+                </div>
+            </div>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+            {% csrf_token %}
+            <div class="form-group">
+                <div class="form-group">
+                    <label for="title" style="color: #000000; font-weight: 600;">Banner Title <span
+                            class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="title" name="title" required
+                        placeholder="Enter banner title">
+                    <div class="invalid-feedback">
+                        Please enter Banner Title.
+                    </div>
+                </div>
+
+
+
+
+                <div class="form-group mt-3">
+                    <label style="color: #000000; font-weight: 600;">Upload Images <span>*</span></label>
+                    <div class="custom-file">
+                        <input type="file" class="form-control" id="images" name="images" multiple accept="image/*"
+                            onchange="previewImages(event)">
+                        <label class="custom-file-label" for="images">Choose images</label>
+                        <div id="imagePreviewContainer" class="mt-3 d-flex flex-wrap">
+                            <!-- Uploaded images will be previewed here -->
+                        </div>
+                    </div>
+                </div>
+
+                
+
+
+                <div class="form-group mt-3">
+                    <label for="content" style="color: #000000; font-weight: 600;">Content <span
+                            class="text-danger">*</span></label>
+                    <textarea class="form-control" id="content" name="content" rows="5" required
+                        placeholder="Enter page content"></textarea>
+                    <div class="invalid-feedback">
+                        Please enter content.
+                    </div>
+                </div>
+
+
+
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">Create Banner</button>
+                    <a href="{% url 'enroll:banner_list' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+        </form>
+        <script src="https://cdn.ckeditor.com/4.20.0/standard/ckeditor.js"></script>
+
+
+        <div id="fullscreenImage" class="fullscreen-image" onclick="closeFullscreen()"></div>
+    </div>
+</div>
+
+<script>
+    function previewImages(event) {
+        const container = document.getElementById('imagePreviewContainer');
+        container.innerHTML = '';
+
+        const files = event.target.files;
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const previewDiv = document.createElement('div');
+                    previewDiv.className = 'image-preview position-relative m-2';
+
+                    previewDiv.innerHTML = `
+                    <div class="position-relative">
+                        <img src="${e.target.result}" onclick="openFullscreen('${e.target.result}')" class="preview-img">
+                        <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 remove-btn" onclick="removeImage(this)">×</button>
+                    </div>
+                    <input type="text" class="form-control mt-1" name="captions[]" placeholder="Caption">
+                    <input type="text" class="form-control mt-1" name="links[]" placeholder="Link">
+                `;
+
+                    container.appendChild(previewDiv);
+                };
+
+                reader.readAsDataURL(file);
+            }
+        }
+    }
+
+    function removeImage(button) {
+        button.closest('.image-preview').remove();
+    }
+
+
+    function openFullscreen(imageSrc) {
+        const fullscreenDiv = document.getElementById('fullscreenImage');
+        fullscreenDiv.innerHTML = `<img src="${imageSrc}" onclick="closeFullscreen()" style="max-width: 90%; max-height: 90%;">`;
+        fullscreenDiv.classList.add('active');
+    }
+
+    function closeFullscreen() {
+        document.getElementById('fullscreenImage').classList.remove('active');
+    }
+
+
+    CKEDITOR.replace('content', {
+        height: 300,
+        toolbarGroups: [
+            { name: 'basicstyles', groups: ['basicstyles', 'cleanup'] },
+            { name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align'] },
+            { name: 'links' },
+            { name: 'insert' },
+            { name: 'styles' },
+            { name: 'colors' }
+        ],
+        removeButtons: 'Subscript,Superscript,Anchor,Specialchar'
+    })
+
+    function openFullscreen(imageSrc) {
+        const fullscreenDiv = document.getElementById('fullscreenImage');
+        fullscreenDiv.innerHTML = `<img src="${imageSrc}" onclick="closeFullscreen()">`;
+        fullscreenDiv.classList.add('active');
+    }
+
+    function closeFullscreen() {
+        document.getElementById('fullscreenImage').classList.remove('active');
+    }
+</script>
+
+<style>
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 15px;
+    }
+
+    .image-preview {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 15px;
+    }
+
+    .image-preview img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .image-preview img:hover {
+        transform: scale(1.1);
+    }
+
+    .fullscreen-image {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .fullscreen-image img {
+        max-width: 90%;
+        max-height: 90%;
+    }
+
+    .fullscreen-image.active {
+        visibility: visible;
+        opacity: 1;
+    }
+</style>
+
+{% endblock %}

@@ -1,0 +1,73 @@
+<!-- {% extends "vendor/base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Dashboard | User Management</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">Vendor Dashboard</h4>
+                </div>
+            </div>
+        </div>
+
+        {% if messages %}
+        <div id="messages-container">
+            {% for message in messages %}
+            <div class="alert alert-success alert-dismissible">
+                {{ message }}
+                <button type="button" class="close" onclick="closeMessage(this)">
+                    &times;
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Profile Status Messages -->
+        <!-- {% if not vendor.is_profile_complete %}
+        <div class="alert alert-warning text-center mt-4" role="alert">
+            <h5 class="mb-0">🚀 Welcome, {{ vendor.name }}!</h5>
+            <p class="mt-2">To access all features, please complete your profile.</p>
+        </div>
+
+        {% elif vendor.is_profile_complete and not vendor.is_approved %}
+        <div class="alert alert-info text-center mt-4" role="alert">
+            <h5 class="mb-0">⏳ Profile Submitted for Approval!</h5>
+            <p class="mt-2">Please wait for admin verification.</p>
+        </div>
+
+        {% elif vendor.is_approved %}
+        <div class="alert alert-success text-center mt-4" role="alert">
+            <h5 class="mb-0">✅ Profile Approved!</h5>
+            <p class="mt-2">Your profile has been successfully approved.</p>
+        </div>
+
+        {% else %}
+        <div class="alert alert-warning text-center mt-4" role="alert">
+            <h5 class="mb-0">⚠️ Your profile is already completed and under review.</h5>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+
+    function closeMessage(button) {
+        var alertDiv = button.parentElement;
+        alertDiv.style.display = "none";
+    }
+</script>
+
+{% endblock %} --> -->

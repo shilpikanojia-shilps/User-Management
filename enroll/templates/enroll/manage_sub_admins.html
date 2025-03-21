@@ -1,0 +1,385 @@
+{% extends 'enroll/base.html' %}
+{% load static %}
+
+{% block title %}
+<title> Manage Sub-Admins | User Management</title>
+<!-- Bootstrap Bundle JS (including Popper.js) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<style>
+    .modal-backdrop.show {
+        opacity: -2.5;
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">Manage Sub-Admins</h4>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Sub-Admin List -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="header-title">Sub-Admins</h4>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#addSubAdminModal">
+                                Add New Sub-Admin
+                            </button>
+
+
+
+                        </div>
+                        {% if messages %}
+                        <div id="messages-container">
+                            {% for message in messages %}
+                            <div class="alert alert-success alert-dismissible">
+                                {{ message }}
+                                <button type="button" class="close" onclick="closeMessage(this)">
+                                    &times;
+                                </button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+
+                        <div class="table-responsive">
+                            <table class="table table-centered mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Profile</th>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>Type</th>
+                                        <th>Role</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for admin in sub_admins %}
+                                    <tr>
+                                        <td>
+                                            <img src="{% if admin.profile_pic %}{{ admin.profile_pic.url }}{% else %}{% static 'enroll/assets/images/users/avatar-1.jpg' %}{% endif %}" alt="Profile Picture"
+                                                class="rounded-circle" width="40">
+                                        </td>
+                                        
+                                        <td>{{ admin.username }}</td>
+                                        <td>{{ admin.email }}</td>
+                                        <td><span class="badge bg-primary">{{ admin.user_type }}</span></td>
+                                        <td>{{ admin.role.name|default:"No Role Assigned" }}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-info edit-sub-admin" data-id="{{ admin.id }}"
+                                                data-name="{{ admin.username }}" data-email="{{ admin.email }}"
+                                                data-contact="{{ admin.contact }}"
+                                                data-role="{{ admin.role.id|default:'' }}" data-bs-toggle="modal"
+                                                data-bs-target="#editSubAdminModal">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </button>
+                                            <button class="btn btn-sm btn-danger delete-sub-admin"
+                                                data-id="{{ admin.id }}" data-name="{{ admin.username }}">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Sub-Admin Modal -->
+    <div class="modal fade" id="addSubAdminModal" tabindex="-1" aria-labelledby="addSubAdminModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addSubAdminModalLabel">Add New Sub-Admin</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="addSubAdminForm" method="POST" action="{% url 'enroll:add_sub_admin' %}"
+                    enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="text-center mb-4">
+                            <label for="profile_pic" class="d-block">
+                                <div class="position-relative d-inline-block">
+                                    <img id="profilePreview"
+                                        src="{% static 'enroll/assets/images/users/avatar-3.jpg' %}"
+                                        class="rounded-circle" width="100" height="100" style="object-fit: cover;">
+                                    <div class="position-absolute bottom-0 end-0 bg-primary rounded-circle p-1">
+                                        <i class="fas fa-camera text-white"></i>
+                                    </div>
+                                </div>
+                            </label>
+                            <input type="file" id="profile_pic" name="profile_pic" class="d-none" accept="image/*"
+                                onchange="previewImage(this)">
+                        </div>
+
+                        <!-- Form Fields -->
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="contact" class="form-label">Contact</label>
+                            <input type="text" class="form-control" id="contact" name="contact" maxlength="10" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="new-password" required>
+                        </div>
+                        
+                        <label for="Role" class="form-label">Role</label>
+                        <select name="role" id="roleSelect">
+                            {% for role in roles %}
+                                <option value="{{ role.id }}" {% if subadmin and subadmin.role.id == role.id %}selected{% endif %}>{{ role.name }}</option>
+                            {% endfor %}
+                        </select>
+                        
+                        <div id="permissionsContainer">
+                            
+                            {% for permission in permissions %}
+                                <div class="permission-item" data-role="{{ permission.role.id }}">
+                                    
+                                    <input type="checkbox" name="permissions[]" value="{{ permission.id }}" 
+                                        {% if permission in selected_permissions %}checked{% endif %}>
+                                    {{ permission.name }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add Sub-Admin</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Sub-Admin Modal -->
+    <div class="modal fade" id="editSubAdminModal" tabindex="-1" aria-labelledby="editSubAdminModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editSubAdminModalLabel" >Edit Sub-Admin</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form id="editSubAdminForm" method="POST" action="{% url 'enroll:edit_sub_admin' admin_id=user.id %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" id="edit_admin_id" name="admin_id">
+                    <div class="modal-body">
+                        <!-- Profile Picture -->
+                        <div class="text-center mb-4">
+                            <label for="edit_profile_pic" class="d-block">
+                                <div class="position-relative d-inline-block">
+                                    <img id="editProfilePreview"
+                                        src="{% static 'enroll/assets/images/users/avatar-2.jpg' %}" class="rounded-circle"
+                                        width="100" height="100" style="object-fit: cover;">
+                                    <div class="position-absolute bottom-0 end-0 bg-primary rounded-circle p-1">
+                                        <i class="fas fa-camera text-white"></i>
+                                    </div>
+                                </div>
+                            </label>
+                            <input type="file" id="edit_profile_pic" name="profile_pic" class="d-none" accept="image/*"
+                                onchange="previewEditImage(this)">
+                        </div>
+                        
+                        
+
+                        <!-- Form Fields -->
+                        <div class="mb-3">
+                            <label for="edit_name" class="form-label">Name</label>
+                            <input type="hidden" name ="user_id" id="admin_usr_id">
+                            <input type="text" class="form-control" id="edit_name" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="edit_email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_contact" class="form-label">Contact</label>
+                            <input type="text" class="form-control" id="edit_contact" name="contact" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="edit_password" name="new-password">
+                            <small class="text-muted">Leave blank to keep current password</small>
+                        </div>
+                        <select name="role" id="roleSelect">
+                            {% for role in roles %}
+                                <option value="{{ role.id }}" {% if subadmin and subadmin.role.id == role.id %}selected{% endif %}>{{ role.name }}</option>
+                            {% endfor %}
+                        </select>
+                        
+                        <div id="permissionsContainer">
+                            
+                            {% for permission in permissions %}
+                                <div class="permission-item" data-role="{{ permission.role.id }}">
+                                    
+                                    <input type="checkbox" name="permissions[]" value="{{ permission.id }}" 
+                                        {% if permission in selected_permissions %}checked{% endif %}>
+                                    {{ permission.name }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script src="{% static 'enroll/assets/libs/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'enroll/assets/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'enroll/assets/libs/metismenu/metisMenu.min.js' %}"></script>
+<script src="{% static 'enroll/assets/libs/simplebar/simplebar.min.js' %}"></script>
+<script src="{% static 'enroll/assets/libs/node-waves/waves.min.js' %}"></script>
+
+<!-- apexcharts -->
+<script src="{% static 'enroll/assets/libs/apexcharts/apexcharts.min.js' %}"></script>
+
+<script src="{% static 'enroll/assets/js/pages/dashboard-2.init.js' %}"></script>
+
+<script src="{% static 'enroll/assets/js/app.js' %}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var addSubAdminModal = new bootstrap.Modal(document.getElementById('addSubAdminModal'));
+        document.querySelector('[data-bs-target="#addSubAdminModal"]').addEventListener("click", function () {
+            addSubAdminModal.show();
+        });
+    });
+
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('profilePreview').src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // Allow only numbers in contact field
+    document.getElementById('contact').addEventListener('input', function () {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+
+    function previewEditImage(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('editProfilePreview').src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // Handle edit button clicks
+    document.querySelectorAll('.edit-sub-admin').forEach(button => {
+        button.addEventListener('click', function () {
+            const id = this.dataset.id;
+            console.log(id, 'kkkkkkkkkkk')
+            const name = this.dataset.name;
+            const email = this.dataset.email;
+            const contact = this.dataset.contact;
+            const role = this.dataset.role;
+            const userType = this.closest('tr').querySelector('.badge').textContent;
+
+            document.getElementById('edit_admin_id').value = id;
+            console.log(id)
+            document.getElementById('admin_usr_id').value = id;
+            
+            document.getElementById('edit_name').value = name;
+            document.getElementById('edit_email').value = email;
+            document.getElementById('edit_contact').value = contact;
+            document.getElementById('edit_role').value = userType;
+
+            // Set form action
+            document.getElementById('editSubAdminForm').action = `/enroll/edit-sub-admin/${id}/`;
+
+        });
+    });
+
+    // Handle delete button clicks
+    document.querySelectorAll('.delete-sub-admin').forEach(button => {
+        button.addEventListener('click', function () {
+            const id = this.dataset.id;
+            const name = this.dataset.name;
+
+            if (confirm(`Are you sure you want to delete ${name}?`)) {
+                // Send delete request
+                fetch(`{% url 'enroll:delete_sub_admin' 0 %}`.replace('0', id), {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Remove the row from the table
+                            this.closest('tr').remove();
+                            alert('Sub-admin deleted successfully');
+                        } else {
+                            alert('Error deleting sub-admin: ' + data.error);
+                        }
+                    })
+                    .catch(error => {
+                        alert('Error deleting sub-admin');
+                        console.error('Error:', error);
+                    });
+            }
+        });
+    });
+
+
+    document.getElementById("roleSelect").addEventListener("change", function() {
+        let selectedRole = this.value;
+        document.querySelectorAll(".permission-item").forEach(item => {
+            if (item.dataset.role === selectedRole) {
+                item.style.display = "block";
+            } else {
+                item.style.display = "none";
+            }
+        });
+    });
+
+    function closeMessage(button) {
+        var alertDiv = button.parentElement;
+        alertDiv.style.display = "none";
+    }
+
+    
+</script>
+{% endblock %}

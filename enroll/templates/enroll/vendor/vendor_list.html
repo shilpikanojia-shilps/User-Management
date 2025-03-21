@@ -1,0 +1,115 @@
+{% extends 'enroll/base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Vendor Management | User Management</title>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">Manage Vendors</h4>
+                </div>
+            </div>
+        </div>
+
+        {% if messages %}
+        <div id="messages-container">
+            {% for message in messages %}
+            <div class="alert alert-success alert-dismissible">
+                {{ message }}
+                <button type="button" class="close" onclick="closeMessage(this)">
+                    &times;
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="mb-3">Manage Vendors</h4>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered text-center">
+                                <thead>
+                                    <tr>
+                                        <th>Sno.</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Contact</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for vendor in vendors %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ vendor.full_name }}</td>
+                                        <td>{{ vendor.email }}</td>
+                                        <td>{{ vendor.contact }}</td>
+                                        <td>
+                                            {% if not vendor.is_login_approved %}
+                                                <span class="badge bg-danger">Login Not Approved</span>
+                                            {% elif vendor.is_login_approved and not vendor.is_profile_submitted %}
+                                                <span class="badge bg-warning">Profile Not Submitted</span>
+                                            {% elif vendor.is_profile_submitted and not vendor.is_profile_approved %}
+                                                <span class="badge bg-primary">Profile Approval Pending </span>
+                                            {% else %}
+                                                <span class="badge bg-success"> Approved</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if not vendor.is_login_approved %}
+                                                <a href="{% url 'enroll:approve_vendor_login' vendor.id %}" class="btn btn-success">Approve Login</a>
+                                                <a href="{% url 'enroll:reject_vendor' vendor.id %}" class="btn btn-danger">Reject</a>
+                                            {% elif vendor.is_login_approved and not vendor.is_profile_submitted %}
+                                                <span class="badge bg-warning">Waiting for Profile Submission</span>
+                                            {% elif vendor.is_profile_submitted and not vendor.is_profile_approved %}
+                                                <a href="{% url 'enroll:approve_vendor_profile' vendor.id %}" class="btn btn-success">Approve Profile</a>
+                                                {% if vendor.is_profile_rejected %}
+                                                    <div class="alert alert-warning">
+                                                        Your profile was rejected. You can create a new business profile.
+                                                    </div>
+                                                     <a href="{% url 'enroll:reject_vendor_profile' vendor.id %}" class="btn btn-danger">Reject</a>
+                                                    {% endif %}
+                                            {% else %}
+                                                <span class="badge bg-success"> Approved</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if vendor.is_profile_submitted %}
+                                                <a href="{% url 'enroll:vendor_business_detail' vendor.id %}" class="btn btn-primary">View</a>
+                                            {% else %}
+                                                <span class="badge bg-secondary"></span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function closeMessage(button) {
+        var alertDiv = button.parentElement;
+        alertDiv.style.display = "none";
+    }
+</script>
+{% endblock %}

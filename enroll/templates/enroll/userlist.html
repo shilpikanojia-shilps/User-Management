@@ -1,0 +1,197 @@
+{% extends "enroll/base.html" %}
+
+{% load static %}
+
+
+{% block title %}
+<title>userlist | User Management</title>
+{% endblock %}
+
+
+
+{% block content %}
+
+<!-- ============================================================== -->
+<!-- Start right Content here -->
+<!-- ============================================================== -->
+<div class="main-content">
+
+    <div class="page-content">
+
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">User Management</h4>
+
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card-body">
+            <form method="GET" action="{% url 'enroll:userlist' %}">
+                {% csrf_token %}
+                <div class="form-group d-flex justify-content-between align-items-center">
+                    <div class="flex-grow-1">
+                        <label for="search">Search</label>
+                        <input type="text" id="search" name="search" class="form-control"
+                            placeholder="Search by name, email, or contact" value="{{ request.GET.search }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary ml-4" style="margin-bottom: -28px;">Search</button>
+                    <a href="{% url 'enroll:userlist' %}" class="btn btn-secondary ml-2"
+                        style="margin-bottom: -28px; margin-left: 10px;">
+                        <i class="fas fa-undo"></i> Reset
+                    </a>
+                </div>
+            </form>
+
+            <!-- User List Table -->
+            <div class="row justify-content-center table-container">
+                <div class="col-md-12">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <div class="text-right mb-3">
+                                <a href="/adduser/" class="btn" style="background-color: darkgreen; color: white;">Add
+                                    User</a>
+                            </div>
+                            {% if messages %}
+                            <div id="messages-container">
+                                {% for message in messages %}
+                                <div class="alert alert-success alert-dismissible">
+                                    {{ message }}
+                                    <button type="button" class="close" onclick="closeMessage(this)">
+                                        &times;
+                                    </button>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Sno.</th>
+                                        <th>Profile_pic</th>
+                                        <th>FullName</th>
+                                        <th>Email</th>
+                                        <th>Contact</th>
+                                        <th>Age</th>
+                                        <th>City</th>
+                                        <th>State</th>
+
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in page_obj %}
+                                    <tr>
+                                        <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                                        <td class="text-center">
+                                            {% if user.profile_pic %}
+                                            <img src="{{ user.profile_pic.url }}" alt="Profile Picture"
+                                                class="rounded-circle"
+                                                style="width: 50px; height: 50px; object-fit: cover;">
+                                            {% else %}
+                                            <img src="{% static 'enroll/assets/images/users/avatar-1.jpg' %}"
+                                                alt="Default Profile" class="rounded-circle"
+                                                style="width: 50px; height: 50px; object-fit: cover;">
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ user.fullname }}</td>
+                                        <td>{{ user.email }}</td>
+                                        <td>{{ user.contact }}</td>
+                                        <td>{{ user.age }}</td>
+                                        <td>{{ user.city }}</td>
+                                        <td>{{ user.state }}</td>
+                                        <td>
+                                            <a href="{% url 'enroll:edit_user' user.id %}"
+                                                class="btn btn-primary btn-sm">Edit</a>
+                                            <a href="{% url 'enroll:delete_user' user.id %}"
+                                                class="btn btn-danger btn-sm"
+                                                onclick="return confirmDelete();">Delete</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+
+                                </tbody>
+                            </table>
+
+                            <script>
+                                function confirmDelete() {
+                                    return confirm("Are you sure you want to delete this user?");
+                                }
+                            </script>
+                            </td>
+
+
+
+                            <!-- Pagination Controls -->
+                            <div class="pagination">
+                                <span class="step-links">
+                                    {% if page_obj.has_previous %}
+                                    <a href="?page=1">&laquo; first</a>
+                                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                                    {% endif %}
+
+                                    <span class="current">
+                                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                                    </span>
+
+                                    {% if page_obj.has_next %}
+                                    <a href="?page={{ page_obj.next_page_number }}">next</a>
+                                    <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                                    {% endif %}
+                                </span>
+                            </div>
+
+
+
+
+                            <!-- JAVASCRIPT -->
+
+                            {% endblock %}
+
+                            {% block extra_js %}
+
+                            <script src="{% static 'enroll/assets/libs/jquery/jquery.min.js' %}"></script>
+                            <script src="{% static 'enroll/assets/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+                            <script src="{% static 'enroll/assets/libs/metismenu/metisMenu.min.js' %}"></script>
+                            <script src="{% static 'enroll/assets/libs/simplebar/simplebar.min.js' %}"></script>
+                            <script src="{% static 'enroll/assets/libs/node-waves/waves.min.js' %}"></script>
+
+                            <!-- apexcharts -->
+                            <script src="{% static 'enroll/assets/libs/apexcharts/apexcharts.min.js' %}"></script>
+
+                            <script src="{% static 'enroll/assets/js/pages/dashboard-2.init.js' %}"></script>
+
+                            <script src="{% static 'enroll/assets/js/app.js' %}"></script>
+
+                            <script>
+                                function deleteUser(button) {
+                                    // Get user ID from the button's data-id attribute (if needed)
+                                    const userId = button.getAttribute('data-id');
+
+                                    // Show confirmation popup
+                                    const confirmDelete = confirm("Are you sure you want to delete this user?");
+
+                                    if (confirmDelete) {
+                                        // If confirmed, redirect to the delete URL or make an AJAX request
+                                        window.location.href = `/deleteuser/${userId}/`; // Adjust the URL based on your route
+                                    }
+                                }
+
+
+                                function closeMessage(button) {
+                                    const alertDiv = button.parentElement;
+                                    alertDiv.style.display = 'none';
+                                }
+
+                            </script>
+
+
+                            </body>
+
+                            </html>
+                            {% endblock %}

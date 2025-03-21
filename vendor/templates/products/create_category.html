@@ -1,0 +1,93 @@
+{% extends "vendor/base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Add Category | User Management</title>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">Add Category</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow">
+            <div class="card-body">
+
+                {% if messages %}
+                <div id="messages-container">
+                    {% for message in messages %}
+                    <div class="alert alert-success alert-dismissible">
+                        {{ message }}
+                        <button type="button" class="close" onclick="closeMessage(this)">&times;</button>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="name">Category Name</label>
+                        <input type="text" name="name" class="form-control" placeholder="Enter category name" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-2">Add</button>
+                </form>
+
+                <hr>
+                
+
+                <table class="table table-bordered mt-3">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Category Name</th>
+                            <th>Subcategory Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in categories %}
+                        <tr>
+                            <td>{{ category.name }}</td>
+                            <td>
+                                <a href="{% url 'vendor:view_subcategories' category.id %}">
+                                    {{ category.subcategory_count }}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="2" class="text-muted text-center">No categories added yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+            {% endblock %}
+
+            {% block extra_js%}
+
+            <script src="{% static 'vendor/assets/libs/jquery/jquery.min.js' %}"></script>
+            <script src="{% static 'vendor/assets/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+            <script src="{% static 'vendor/assets/libs/metismenu/metisMenu.min.js' %}"></script>
+            <script src="{% static 'vendor/assets/libs/simplebar/simplebar.min.js' %}"></script>
+            <script src="{% static 'vendor/assets/libs/node-waves/waves.min.js' %}"></script>
+
+            <!-- apexcharts -->
+            <script src="{% static 'vendor/assets/libs/apexcharts/apexcharts.min.js' %}"></script>
+
+            <script src="{% static 'vendor/assets/js/pages/dashboard-2.init.js' %}"></script>
+
+            <script src="{% static 'vendor/assets/js/app.js' %}"></script>
+            <script>
+                function closeMessage(button) {
+                    const alertDiv = button.parentElement;
+                    alertDiv.style.display = 'none';
+                }
+
+            </script>
+            {% endblock %}

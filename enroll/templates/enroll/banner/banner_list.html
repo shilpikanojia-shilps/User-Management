@@ -1,0 +1,118 @@
+{% extends "enroll/base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Banner Management | User Management</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">BANNER MANAGEMENT</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-3">
+                    <h4 class="card-title"></h4>
+                    <a href="{% url 'enroll:add_banner' %}" class="btn btn-primary btn-sm">Add New Banner</a>
+                </div>
+
+                <div class="table-responsive">
+                    {% if messages %}
+                    <div id="messages-container">
+                        {% for message in messages %}
+                        <div class="alert alert-success alert-dismissible">
+                            {{ message }}
+                            <button type="button" class="close" onclick="closeMessage(this)">
+                                &times;
+                            </button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Sno.</th>
+                                <th>Title</th>
+                                <th>Content</th>
+                                <th>Actions</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for banner in banners %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ banner.title }}</td>
+                                <td>{{ banner.content|striptags|truncatewords:15 }}</td>
+                                <td>
+                                    <a href="{% url 'enroll:edit_banner' banner.id %}"
+                                        class="btn btn-sm btn-info">Edit</a>
+                                    <button onclick="confirmDelete({{ banner.id }})" class="btn btn-sm btn-danger">
+                                        Delete
+                                    </button>
+                                </td>
+
+                                <script>
+                                    function confirmDelete(bannerId) {
+                                        if (confirm("Are you sure you want to delete this banner?")) {
+                                            fetch(`/delete-banner/${bannerId}/`, {
+                                                method: "DELETE", // Ensure this matches your Django view
+                                                headers: {
+                                                    "X-CSRFToken": "{{ csrf_token }}",
+                                                    "Content-Type": "application/json"
+                                                }
+                                            })
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    if (data.success) {
+                                                        alert("Banner deleted successfully!");
+                                                        location.reload();
+                                                    } else {
+                                                        alert("Failed to delete banner: " + data.error);
+                                                    }
+                                                })
+                                                .catch(error => {
+                                                    console.error("Error:", error);
+                                                    alert("An error occurred while deleting the banner.");
+                                                });
+                                        }
+                                    }
+
+
+                                    function closeMessage(button) {
+                                        const alertDiv = button.parentElement;
+                                        alertDiv.style.display = 'none';
+                                    }
+                                </script>
+
+                                <td>
+                                    <a href="{% url 'enroll:view_banner' banner.id %}">View</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center">No banners found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <style>
+
+                    </style>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

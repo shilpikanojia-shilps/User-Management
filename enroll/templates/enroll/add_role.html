@@ -1,0 +1,146 @@
+{% extends "enroll/base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Add Role | User Management</title>
+<style>
+    .role-management-dropdown {
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-top: 5px;
+        border-radius: 5px;
+        width: 200px;
+        display: none;
+    }
+
+    .dropdown-item {
+        padding: 8px;
+        cursor: pointer;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .dropdown-item:hover {
+        background-color: #e9e9e9;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">Add Role</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid ml-0 pl-0">
+            <div class="row justify-content-start">
+                <div class="col-md-12">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <form id="addRoleForm" method="POST">
+                                {% csrf_token %}
+
+                                <!-- Role Details -->
+
+
+                                <div class="form-group">
+                                    <label for="name" style="color: #000000;">Role Name</label>
+                                    <input type="text" class="form-control" id="role_name" name="role_name" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="description" style="color: #000000;">Description</label>
+                                    <textarea class="form-control" id="description" name="description" rows="3"
+                                        required></textarea>
+                                </div>
+
+                                <!-- Permissions Section -->
+                                <div class="form-group mt-4">
+                                    <div class="permissions-container">
+                                        <h3>Permissions</h3>
+                                        {% for permission in permissions %}
+                                        <div>
+                                            <input type="checkbox" id="{{ permission.name }}" name="permissions.name"
+                                                value="{{ permission.name }}">
+                                            <label for="{{ permission.name }}">{{ permission.name }}</label>
+                                        </div>
+                                        {% endfor %}
+                                        <!-- Additional permission groups can be added here -->
+                                    </div>
+                                </div>
+
+                                <style>
+                                    .permissions-container div {
+                                        display: flex;
+                                        align-items: center;
+                                        gap: 8px;
+                                        /* Checkbox aur label ke beech ka gap */
+                                        margin-bottom: 5px;
+                                        /* Thoda spacing har permission ke beech */
+                                    }
+
+                                    .permissions-container input[type="checkbox"] {
+                                        transform: scale(1.2);
+                                        /* Checkbox ko thoda bada dikhane ke liye */
+                                    }
+
+                                    
+                                </style>
+
+                                <div class="form-group text-center mt-4">
+                                    <button type="submit" class="btn btn-primary">Create Role</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function () {
+        // Initial update based on selected role
+        // updatePermissionsVisibility($('#role_type').val());
+    });
+
+
+
+    // Submit form validation
+    $('#addRoleForm').on('submit', function (e) {
+        e.preventDefault();
+
+        const selectedPermissions = [];
+        $('input[name="permissions[]"]:checked').each(function () {
+            selectedPermissions.push($(this).val());
+        });
+
+        if (selectedPermissions.length === 0) {
+            alert('Please select at least one permission');
+            return;
+        }
+        this.submit();
+    });
+
+
+    document.getElementById("roleManagementLabel").addEventListener("click", function () {
+        var dropdown = document.getElementById("roleManagementDropdown");
+        // Toggle the visibility of the dropdown
+        if (dropdown.style.display === "none" || dropdown.style.display === "") {
+            dropdown.style.display = "block";
+        } else {
+            dropdown.style.display = "none";
+        }
+    });
+
+</script>
+
+{% endblock %}

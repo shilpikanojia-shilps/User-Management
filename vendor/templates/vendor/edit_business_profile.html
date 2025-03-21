@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow-lg p-4">
+        <h2 class="text-center text-primary">Edit Business Profile</h2>
+
+        {% if business_profile.rejection_reason %}
+            <div class="alert alert-danger">
+                <strong>Profile Rejected:</strong> {{ business_profile.rejection_reason }}
+            </div>
+        {% endif %}
+
+        <p class="text-muted text-center">Update your details and resubmit for admin approval.</p>
+
+        <form method="post" enctype="multipart/form-data" class="mt-3">
+            {% csrf_token %}
+
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="company_name" class="form-label">Company Name:</label>
+                    <input type="text" id="company_name" name="company_name" class="form-control" value="{{ business_profile.company_name }}" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="business_registration_number" class="form-label">Registration Number:</label>
+                    <input type="text" id="business_registration_number" name="business_registration_number" class="form-control" value="{{ business_profile.business_registration_number }}">
+                </div>
+
+                <div class="col-md-6 mt-3">
+                    <label for="address" class="form-label">Address:</label>
+                    <input type="text" id="address" name="address" class="form-control" value="{{ business_profile.address }}" required>
+                </div>
+
+                <div class="col-md-6 mt-3">
+                    <label for="pincode" class="form-label">Pincode:</label>
+                    <input type="text" id="pincode" name="pincode" class="form-control" value="{{ business_profile.pincode }}" required>
+                </div>
+
+                <div class="col-md-6 mt-3">
+                    <label for="city" class="form-label">City:</label>
+                    <select id="city" name="city" class="form-select">
+                        <option value="" selected disabled>Select City</option>
+                        {% for city in cities %}
+                            <option value="{{ city.name }}" {% if business_profile.city.name == city.name %}selected{% endif %}>{{ city.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-6 mt-3">
+                    <label for="state" class="form-label">State:</label>
+                    <select id="state" name="state" class="form-select">
+                        <option value="" selected disabled>Select State</option>
+                        {% for state in states %}
+                            <option value="{{ state.name }}" {% if business_profile.state.name == state.name %}selected{% endif %}>{{ state.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-6 mt-3">
+                    <label for="country" class="form-label">Country:</label>
+                    <input type="text" id="country" name="country" class="form-control" value="{{ business_profile.country }}">
+                </div>
+
+                <div class="col-md-6 mt-3">
+                    <label for="website" class="form-label">Website:</label>
+                    <input type="url" id="website" name="website" class="form-control" value="{{ business_profile.website }}">
+                </div>
+
+                <div class="col-md-6 mt-3">
+                    <label for="services" class="form-label">Services:</label>
+                    <input type="text" id="services" name="services" class="form-control" value="{{ business_profile.services }}">
+                </div>
+
+                <div class="col-md-6 mt-3">
+                    <label for="about" class="form-label">About Business:</label>
+                    <textarea id="about" name="about" class="form-control" rows="3">{{ business_profile.about }}</textarea>
+                </div>
+
+                <div class="col-md-6 mt-3">
+                    <label for="business_logo" class="form-label">Business Logo:</label>
+                    <input type="file" id="business_logo" name="business_logo" class="form-control">
+                    {% if business_profile.business_logo %}
+                        <img src="{{ business_profile.business_logo.url }}" alt="Business Logo" class="mt-2 img-thumbnail" width="100">
+                    {% endif %}
+                </div>
+
+                <div class="col-md-6 mt-3">
+                    <label for="banner_images" class="form-label">Banner Images:</label>
+                    <input type="file" id="banner_images" name="banner_images" class="form-control" multiple>
+                    {% if business_profile.banners %}
+                        <img src="{{ business_profile.banners.url }}" alt="Banner" class="mt-2 img-thumbnail" width="150">
+                    {% endif %}
+                </div>
+
+                <div class="col-md-12 mt-4 text-center">
+                    <button type="submit" class="btn btn-success w-50">Resubmit for Approval</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

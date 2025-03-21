@@ -1,0 +1,120 @@
+{% extends "enroll/base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Child SubCategory Details | Category Management</title>
+<style>
+    .childsubcategory-image-container {
+        display: flex;
+        justify-content: center;
+        /* Center image horizontally */
+        align-items: center;
+        /* Center image vertically */
+        height: 200px;
+        /* Set height for proper spacing */
+    }
+
+    .childsubcategory-image {
+        width: 100%;
+        /* Increase size */
+        height: 100%;
+        /* Keep it square */
+        object-fit: contain;
+        /* Ensure full image is visible */
+        border-radius: 10px;
+        /* Optional rounded corners */
+    }
+</style>
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">Child SubCategory Details</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mt-3">
+            <div class="card-body">
+                <div class="row">
+                    <!-- Child SubCategory Image -->
+                    <div class="col-md-4 text-center">
+                        {% if childsubcategory.image %}
+                        <img src="{{ childsubcategory.image.url }}" alt="Child SubCategory Image"
+                            class="childsubcategory-image" height="100%" width="100%">
+                        {% else %}
+                        <p>No Image Available</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Child SubCategory Details -->
+                    <div class="col-md-8">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th>Category Name</th>
+                                    <td>{{ childsubcategory.subcategory.category.category_name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Subcategory Name</th>
+                                    <td>{{ childsubcategory.subcategory.name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Child SubCategory Name</th>
+                                    <td>{{ childsubcategory.name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Status</th>
+                                    <td>
+                                        {% if childsubcategory.status == True %}
+                                        <span class="badge badge-success">Active</span>
+                                        {% else %}
+                                        <span class="badge badge-danger">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Feature Category</th>
+                                    <td>{{ childsubcategory.feature_category }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Short Description</th>
+                                    <td>{{ childsubcategory.short_description }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Long Description</th>
+                                    <td>{{ childsubcategory.long_description }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Meta Title</th>
+                                    <td>{{ childsubcategory.meta_title }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Meta Description</th>
+                                    <td>{{ childsubcategory.meta_description }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Edit Button -->
+                <div class="text-center mt-4">
+                    <a href="{% url 'enroll:edit_child_subcategory' childsubcategory.id %}" class="btn btn-primary">
+                        <i class="fas fa-edit"></i> Edit Child SubCategory
+                    </a>
+                    <a href="{% url 'enroll:manage_child_subcategories' %}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

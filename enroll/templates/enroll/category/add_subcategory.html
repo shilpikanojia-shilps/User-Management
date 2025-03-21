@@ -1,0 +1,191 @@
+{% extends 'enroll/base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Add Sub-Category | Category Management</title>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="container-fluid">
+
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+                <h4 class="page-title mb-0 font-size-18">Add Sub-Category</h4>
+            </div>
+
+            {% if messages %}
+            <div class="alert alert-dismissible">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="row">
+                <div class="col-12">
+                    <form method="POST" enctype="multipart/form-data" class="p-4 shadow-sm bg-white rounded">
+                        {% csrf_token %}
+                        <div class="row" style="align-items: center;">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="category">Select Category</label>
+                                    <select id="category" name="category" class="form-control form-control-lg" required>
+                                        <option value="">-- Select a Category --</option>
+                                        {% for category in categories %}
+                                        <option value="{{ category.id }}">{{ category.category_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="images">Image</label>
+                                    <input type="file" id="images" name="images" class="form-control form-control-lg">
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="name">SubCategory Name</label>
+                                    <div id="subcategory-container">
+                                        <div class="subcategory-input d-flex subcategoriesmb-2">
+                                            <input type="text" name="subcategories[]" class="form-control"
+                                                placeholder="Enter subcategory" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="slug">Slug</label>
+                                    <input type="text" id="sub_slug" name="sub_slug"
+                                        pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$" value=""
+                                        style="background-color: #f8f9fa; color: #444444;"
+                                        class="form-control form-control-lg" placeholder="Enter slug" readonly>
+                                </div>
+                                <div class="invalid-feedback">
+                                    Please enter a valid slug (lowercase letters, numbers, and hyphens only).
+                                </div>
+                                <small class="form-text text-muted">
+                                    Slug will be automatically generated from the page name
+                                </small>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="description">Short Description</label>
+                                    <input type="text" name="short_descriptions" class="form-control"
+                                        placeholder="Enter description">
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="description">Long Description</label>
+                                    <input type="text" name="long_descriptions" class="form-control"
+                                        placeholder="Enter description">
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="description">Meta Title</label>
+                                    <input type="text" name="meta_titles" class="form-control"
+                                        placeholder="Enter description">
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="description">Meta Description</label>
+                                    <input type="text" name="meta_descriptions" class="form-control"
+                                        placeholder="Enter description">
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="status">Status</label>
+                                    <select name="status" class="form-control">
+                                        <option value="active" selected>---Select Status---</option>
+                                        <option value="active">Active</option>
+                                        <option value="inactive">Inactive</option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Feature Category</label>
+                                    <select  name="feature_category"
+                                        class="form-control form-control-lg" placeholder="Select Feature Category">
+                                        <option value="yes" selected>---Select Feature Category---</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No" >No</option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+
+                            <button type="submit" class="btn btn-primary btn-lg px-5"
+                                style="margin-right: 10px; background-color: #273c92; border-color: #273c92;">Add</button>
+                            <a href="{% url 'enroll:manage_subcategories' %}"
+                                class="btn btn-secondary btn-lg px-5">Back</a>
+                    </form>
+
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            document.querySelector(".add-subcategory").addEventListener("click", function () {
+                                let container = document.getElementById("subcategory-container");
+                                let newInput = document.createElement("div");
+                                newInput.classList.add("subcategory-input", "d-flex", "mb-2");
+                                newInput.innerHTML = `
+                <input type="text" name="subcategories[]" class="form-control" placeholder="Enter subcategory" required>
+                <button type="button" class="btn btn-danger ml-2 remove-subcategory">-</button>
+            `;
+                                container.appendChild(newInput);
+                            });
+
+                            document.addEventListener("click", function (event) {
+                                if (event.target.classList.contains("remove-subcategory")) {
+                                    event.target.parentElement.remove();
+                                }
+                            });
+                        });
+
+
+
+
+                        document.addEventListener("DOMContentLoaded", function () {
+                            let categoryInput = document.querySelector("input[name='subcategories[]']");
+                            let slugInput = document.querySelector("input[name='sub_slug']");
+
+                            if (categoryInput && slugInput) {
+
+                                // Ensure fields exist
+                                categoryInput.addEventListener("input", function () {
+                                    let slugText = categoryInput.value.toLowerCase().trim().replace(/[\s]+/g, "-") // Replace spaces with '-'
+                                        .replace(/[^a-z0-9-]/g, ""); // Remove special characters
+
+                                    slugInput.value = slugText;
+                                });
+                            }
+                        });
+
+
+                    </script>
+                </div>
+                {% endblock %}

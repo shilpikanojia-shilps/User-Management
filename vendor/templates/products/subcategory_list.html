@@ -1,0 +1,24 @@
+{% extends 'vendor/base.html' %}
+{% block content %}
+<div class="container">
+    <h2>Subcategories</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Subcategory Name</th>
+                <th>Category</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for subcat in subcategories %}
+            <tr>
+                <td>{{ subcat.name }}</td>
+                <td>{{ subcat.category.name }}</td>
+                <td>{{ subcat.description }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

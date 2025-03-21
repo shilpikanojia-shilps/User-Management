@@ -1,0 +1,133 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Sign Up | User Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="User Management System" name="description" />
+    <meta content="Themesbrand" name="author" />
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://kit-pro.fontawesome.com/releases/v5.13.1/css/pro.min.css" media="screen" />
+    
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="{% static 'enroll/assets/images/favicon.ico' %}">
+
+    <!-- Bootstrap Css -->
+    <link href="{% static 'enroll/assets/css/bootstrap.min.css' %}" id="bootstrap-style" rel="stylesheet" type="text/css" />
+    <!-- Icons Css -->
+    <link href="{% static 'enroll/assets/css/icons.min.css' %}" rel="stylesheet" type="text/css" />
+    <!-- App Css-->
+    <link href="{% static 'enroll/assets/css/app.min.css' %}" id="app-style" rel="stylesheet" type="text/css" />
+    <link href="{% static 'enroll/assets/css/app.css' %}" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div class="home-btn d-none d-sm-block">
+        <a href="{% url 'enroll:dashboard' %}" class="text-dark"><i class="fas fa-home h2"></i></a>
+    </div>
+    <div class="account-pages my-5 pt-sm-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6 col-xl-5">
+                    <div class="card overflow-hidden">
+                        <div class="bg-login text-center">
+                            <div class="bg-login-overlay"></div>
+                            <div class="position-relative">
+                                <h5 class="text-white font-size-20">Create Account</h5>
+                                <p class="text-white-50 mb-0">Get your free account now</p>
+                                <a href="{% url 'enroll:dashboard' %}" class="logo logo-admin mt-4">
+                                    <img src="{% static 'enroll/assets/images/logo-sm-dark.png' %}" alt="" height="30">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body pt-5">
+                            <div class="p-2">
+                                {% if messages %}
+                                <div class="messages">
+                                    {% for message in messages %}
+                                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                                        {{ message }}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                
+                                <form class="form-horizontal" action="{% url 'enroll:signup' %}" method="POST">
+                                    {% csrf_token %}
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="first_name">First Name</label>
+                                                <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter first name" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="last_name">Last Name</label>
+                                                <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter last name" required>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="username">Username</label>
+                                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" required>
+                                    </div>
+
+                                    <!-- <div class="form-group">
+                                        <label for="user_type">User Type</label>
+                                        <select class="form-control" id="user_type" name="user_type" required>
+                                            <option value="Employee">Employee</option>
+                                            <option value="HR">HR</option>
+                                            <option value="Accounts">Accounts</option>
+                                        </select>
+                                    </div> -->
+
+                                    <div class="form-group">
+                                        <label for="pass1">Password</label>
+                                        <input type="password" class="form-control" id="pass1" name="pass1" placeholder="Enter password" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="pass2">Confirm Password</label>
+                                        <input type="password" class="form-control" id="pass2" name="pass2" placeholder="Confirm password" required>
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <button class="btn btn-primary btn-block waves-effect waves-light" type="submit">Sign Up</button>
+                                    </div>
+
+                                    <div class="mt-4 text-center">
+                                        <p>Already have an account? <a href="{% url 'enroll:user_login' %}" class="font-weight-medium text-primary">Login</a></p>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-5 text-center">
+                        <p> 2025 User Management. Crafted with <i class="mdi mdi-heart text-danger"></i></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script src="{% static 'enroll/assets/libs/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'enroll/assets/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'enroll/assets/libs/metismenu/metisMenu.min.js' %}"></script>
+    <script src="{% static 'enroll/assets/libs/simplebar/simplebar.min.js' %}"></script>
+    <script src="{% static 'enroll/assets/libs/node-waves/waves.min.js' %}"></script>
+
+    <!-- App js -->
+    <script src="{% static 'enroll/assets/js/app.js' %}"></script>
+</body>
+</html>

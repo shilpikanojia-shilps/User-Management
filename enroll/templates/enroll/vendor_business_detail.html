@@ -1,0 +1,209 @@
+{% extends 'enroll/base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Vendor Profile View</title>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18 fw-bold">Vendor Business Profile</h4>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card shadow mt-4">
+            <div class="card-body text-center">
+                <div class="row justify-content-center">
+                    <!-- Business Profile Image -->
+                    <div class="col-md-4 text-center">
+                        
+                            {% if vendor.business_profile.business_logo %}
+                            <img src="{{ vendor.business_profile.business_logo.url }}" alt="Business Image"
+                                class="profile-image">
+                            {% else %}
+                            <img src="{% static 'vendor/assets/images/fullstackimg.png' %}" alt="No Image"
+                                class="profile-image">
+                            {% endif %}
+                            <p class="text-dark mt-2 fw-bold" style="color: #0f0d0d;">Business Logo</p>
+                            
+
+                           
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Business Details Section -->
+        {% if vendor.business_profile %}
+        <div class="card shadow mt-4">
+            <div class="card-body">
+                <h4 class="mb-3 text-primary"></h4>
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Company Name</th>
+                        <td>{{ vendor.business_profile.company_name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{{ vendor.business_profile.email }}</td>
+                    </tr>
+                    <tr>
+                        <th>Contact</th>
+                        <td>{{ vendor.business_profile.contact }}</td>
+                    </tr>
+                    <tr>
+                        <th>Services</th>
+                        <td>{{ vendor.business_profile.services }}</td>
+                    </tr>
+                    <tr>
+                        <th>About Us</th>
+                        <td>{{ vendor.business_profile.about }}</td>
+                    </tr>
+                    <tr>
+                        <th>Business Registration Number</th>
+                        <td>{{ vendor.business_profile.business_registration_number }}</td>
+                    </tr>
+                    <tr>
+                        <th>Business Address</th>
+                        <td>{{ vendor.business_profile.address }}, {{ vendor.business_profile.city }}, {{ vendor.business_profile.state }} 
+                            
+                            {{ vendor.business_profile.pincode }}, {{ vendor.business_profile.country }}</td>
+                    </tr>
+
+
+                    <tr>
+                        <th>Business Documents</th>
+                        <td>
+                            {% if vendor.business_profile.gst_certificate %}
+                            <a href="{{ vendor.business_profile.gst_certificate.url }}" target="_blank"
+                                class="btn btn-sm btn-info">GST Certificate</a>
+                            {% endif %}
+                            {% if vendor.business_profile.aadhaar_pan %}
+                            <a href="{{ vendor.business_profile.aadhaar_pan.url }}" target="_blank"
+                                class="btn btn-sm btn-info">Aadhaar/PAN</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Website</th>
+                        <td>
+                            {% if vendor.business_profile.website %}
+                            <a href="{{ vendor.business_profile.website }}" target="_blank"
+                                class="btn btn-sm btn-primary">Visit Website</a>
+                            {% else %}
+                            <span class="text-danger">No Website Available</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Social Links</th>
+                        <td>
+                            {% if vendor.business_profile.instagram %}
+                            <a href="{{ vendor.business_profile.instagram }}" target="_blank"
+                                class="btn btn-sm btn-dark">Instagram</a>
+                            {% endif %}
+                            {% if vendor.business_profile.facebook %}
+                            <a href="{{ vendor.business_profile.facebook }}" target="_blank"
+                                class="btn btn-sm btn-primary">Facebook</a>
+                            {% endif %}
+                            {% if vendor.business_profile.linkedin %}
+                            <a href="{{ vendor.business_profile.linkedin }}" target="_blank"
+                                class="btn btn-sm btn-info">LinkedIn</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>Banners</th>
+                        <td>
+                            {% if business_profile.banners %}
+                                {{ business_profile.banners }}
+                                {% for banner in banner_list %}
+                                    {{ banner }}
+                                    <img src="/media/{{ banner }}" alt="Banner" class="banner-image" style="width: 100px; height: auto;">
+                                {% endfor %}
+                            {% else %}
+                                <p>No banners uploaded.</p>
+                            {% endif %}
+                        </td>
+                    </tr>
+                   
+                    
+                    
+                    
+                    
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-danger mt-4">No business profile found for this vendor.</div>
+        {% endif %}
+
+        <!-- Profile Approval Buttons -->
+        {% if vendor.is_profile_submitted and not vendor.is_profile_approved %}
+        <div class="text-center mt-4">
+            <a href="{% url 'enroll:approve_vendor_profile' vendor.id %}" class="btn btn-success btn-lg">Approve</a>
+            <a href="{% url 'enroll:vendor_list' %}" class="btn btn-secondary btn-lg">Back</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Custom Styling -->
+<style>
+    .profile-image {
+        width: 100%;
+        max-width: 150px;
+        height: 150px;
+        border-radius: 15px;
+        object-fit: cover;
+        border: 2px solid #ddd;
+        padding: 5px;
+    }
+
+    .image-container {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    table th {
+        background-color: #f0f2f5;
+        color: rgb(7, 6, 6);
+        text-align: left;
+        padding: 10px;
+    }
+
+    table td {
+        padding: 10px;
+        color: #0f0d0d;
+        font-weight: 500;
+    }
+
+    table tr:nth-child(even) {
+        background-color: #f8f9fa;
+    }
+
+    .btn-sm {
+        margin-right: 5px;
+        padding: 5px 10px;
+    }
+
+    .text-primary {
+        color: #007bff !important;
+    }
+
+    .text-danger {
+        color: #dc3545 !important;
+    }
+</style>
+
+{% endblock %}

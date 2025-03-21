@@ -1,0 +1,187 @@
+{% extends 'enroll/base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Product Details</title>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        
+        <!-- Page Heading -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18 fw-bold">Product Details</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- 📦 Product Basic Details -->
+        <div class="card shadow mt-4">
+            <div class="card-body">
+                <h4 class="mb-3 text-primary">📦 Product Details</h4>
+                <table class="table table-bordered">
+                    <tr><th>Product Name</th><td>{{ product.product_name }}</td></tr>
+                    <tr><th>SKU</th><td>{{ product.sku }}</td></tr>
+                    <tr><th>Category</th><td>{{ product.category.name }}</td></tr>
+                    <tr><th>Subcategory</th><td>{{ product.subcategory.name }}</td></tr>
+                    <tr><th>Brand</th><td>{{ product.brand }}</td></tr>
+                    <tr><th>Model Number</th><td>{{ product.model_number }}</td></tr>
+                    <tr>
+                        <th>Status</th>
+                        <td>
+                            {% if product.status == 'approved' %}
+                                <span class="badge bg-success">Approved</span>
+                            {% elif product.status == 'rejected' %}
+                                <span class="badge bg-danger">Rejected</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- 💰 Price & Stock -->
+        <div class="card shadow mt-4">
+            <div class="card-body">
+                <h4 class="mb-3 text-primary">💰 Price & Stock</h4>
+                <table class="table table-bordered">
+                    <tr><th>Price</th><td>₹{{ product.price }}</td></tr>
+                    <tr><th>Discount Price</th><td>₹{{ product.discount_price }}</td></tr>
+                    <tr><th>Stock Quantity</th><td>{{ product.stock_quantity }}</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- ⚖️ Dimensions & Weight -->
+        <div class="card shadow mt-4">
+            <div class="card-body">
+                <h4 class="mb-3 text-primary">⚖️ Dimensions & Weight</h4>
+                <table class="table table-bordered">
+                    <tr><th>Weight</th><td>{{ product.weight }}</td></tr>
+                    <tr><th>Dimensions</th><td>{{ product.dimensions }}</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- 🚚 Shipping Details -->
+        <div class="card shadow mt-4">
+            <div class="card-body">
+                <h4 class="mb-3 text-primary">🚚 Shipping Details</h4>
+                <table class="table table-bordered">
+                    <tr><th>Shipping Details</th><td>{{ product.shipping_details }}</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- 🛡 Warranty & Return -->
+        <div class="card shadow mt-4">
+            <div class="card-body">
+                <h4 class="mb-3 text-primary">🛡 Warranty & Return</h4>
+                <table class="table table-bordered">
+                    <tr><th>Warranty</th><td>{{ product.warranty }}</td></tr>
+                    <tr><th>Return Policy</th><td>{{ product.return_policy }}</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- 🖼 Product Images -->
+        <div class="card shadow mt-4">
+            <div class="card-body text-center">
+                <h4 class="mb-3 text-primary">🖼 Product Images</h4>
+                <div class="row justify-content-center">
+                    {% if product.images.all %}
+                        {% for img in product.images.all %}
+                            <div class="col-md-3 mb-3">
+                                <img src="{{ img.image.url }}" alt="Product Image" class="profile-image">
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="col-md-4">
+                            <img src="{% static 'vendor/assets/images/default-product.png' %}" alt="No Image" class="profile-image">
+                            <p class="text-dark mt-2 fw-bold">No Image Available</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- 🌐 Meta Details -->
+        <div class="card shadow mt-4">
+            <div class="card-body">
+                <h4 class="mb-3 text-primary">🌐 Meta Details</h4>
+                <table class="table table-bordered">
+                    <tr><th>Meta Title</th><td>{{ product.meta_title }}</td></tr>
+                    <tr><th>Meta Description</th><td>{{ product.meta_description }}</td></tr>
+                    <tr><th>Meta Keywords</th><td>{{ product.meta_keywords }}</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- 📝 Description -->
+        <div class="card shadow mt-4">
+            <div class="card-body">
+                <h4 class="mb-3 text-primary">📝 Description</h4>
+                <p>{{ product.description }}</p>
+            </div>
+        </div>
+
+        <!-- 🏷 Tags -->
+        <div class="card shadow mt-4">
+            <div class="card-body">
+                <h4 class="mb-3 text-primary">🏷 Tags</h4>
+                <p>{{ product.tags }}</p>
+            </div>
+        </div>
+
+        <!-- 🔙 Back Button -->
+        <div class="text-center mt-4">
+            <a href="{% url 'enroll:vendor_product_approval' %}" class="btn btn-secondary btn-lg">Back</a>
+        </div>
+
+    </div>
+</div>
+
+<!-- Custom Style -->
+<style>
+    .profile-image {
+        width: 100%;
+        max-width: 150px;
+        height: 150px;
+        border-radius: 15px;
+        object-fit: cover;
+        border: 2px solid #ddd;
+        padding: 5px;
+    }
+
+    table th {
+        background-color: #f0f2f5;
+        color: rgb(7, 6, 6);
+        text-align: left;
+        padding: 10px;
+    }
+
+    table td {
+        padding: 10px;
+        color: #0f0d0d;
+        font-weight: 500;
+    }
+
+    table tr:nth-child(even) {
+        background-color: #f8f9fa;
+    }
+
+    .text-primary {
+        color: #007bff !important;
+    }
+
+    .badge {
+        padding: 6px 12px;
+        font-size: 14px;
+    }
+</style>
+{% endblock %}

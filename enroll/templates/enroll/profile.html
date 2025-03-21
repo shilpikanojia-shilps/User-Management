@@ -1,0 +1,291 @@
+{% extends "enroll/base.html" %}
+
+{% load static %}
+
+{% block title %}
+<title>Profie | User Management</title>
+{% endblock %}
+
+
+
+{% block content %}
+
+<!-- ============================================================== -->
+<!-- Start right Content here -->
+<!-- ============================================================== -->
+<div class="main-content">
+
+    <div class="page-content">
+
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">Profile</h4>
+
+
+
+                </div>
+            </div>
+        </div>
+        <!-- end page title -->
+
+        <!-- start row -->
+        <div class="row">
+            <div class="col-md-12 col-xl-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="profile-section">
+                            <div class="profile-header">
+                                <div class="profile-picture" style="padding-left: 622px"></div>
+
+
+                                <form id="profilePicForm" enctype="multipart/form-data" method="POST"
+                                    action="{% url 'enroll:update_profile_pic'  %}">
+                                    {% csrf_token %}
+                                    <img id="profilePreview"
+                                        src="{% if request.user.profile_pic %}{{ request.user.profile_pic.url }}{% else %}{% static 'enroll/assets/images/users/avatar-2.jpg' %}{% endif %}"
+                                        alt="Profile Picture" class="avatar-md mx-auto rounded-circle">
+                                    <label for="profilePic" class="edit-icon">
+                                        <i class="fas fa-camera"></i>
+                                    </label>
+                                    <input type="file" id="profilePic" name="profile_pic" accept="image/*"
+                                        class="d-none" onchange="previewAndSubmit(this)">
+                                </form>
+                            </div>
+                            <div class="profile-info">
+                                <h2 class="profile-name"></h2>
+                               
+                            </div>
+                        </div>
+                       
+                        {% if messages %}
+                        <div id="messages-container">
+                            {% for message in messages %}
+                            <div class="alert alert-success alert-dismissible">
+                                {{ message }}
+                                <button type="button" class="close" onclick="closeMessage(this)">
+                                    &times;
+                                </button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <form id="personalInfoForm" method="POST" action="{% url 'enroll:update_profile' %}">
+                            {% csrf_token %}
+                            
+                                
+                                    <div class="form-group">
+                                        <label for="first_name" style="color: #000000;">First Name</label>
+                                        <input type="text" class="form-control" id="first_name" name="first_name"
+                                            value="{{ first_name }}" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="last_name" style="color: #000000;">Last Name</label>
+                                        <input type="text" class="form-control" id="last_name" name="last_name"
+                                            value="{{ last_name  }}" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="email" style="color: #000000;">Email</label>
+                                        <input type="email" class="form-control" id="email" name="email"
+                                            value="{{ email }}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="contact" style="color: #000000;">Contact</label>
+                                        <input type="text" class="form-control" id="contact" name="contact"
+                                            value="{{ contact }}">
+                                    </div>
+
+                                    <div class="form-group about-textarea">
+                                        <label for="about" style="color: #000000;">About</label>
+                                        <textarea class="form-control" id="about" name="about" value=""
+                                            rows="4">{{about|default:''}}</textarea>
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-save">Save</button>
+                                    <div class="mt-0">
+                                        <a href="{% url 'enroll:profile_change_password' %}"
+                                            class="btn btn-primary waves-effect waves-light">
+                                            <i class="fas fa-key mr-2"></i>Change Password
+                                        </a>
+                                    </div>
+                                </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="card-title mb-0">My Top Skills</h5>
+                            <button type="button" class="btn btn-sm btn-primary" onclick="toggleAddSkillForm()">
+                                <i class="fas fa-plus"></i> Add Skill
+                            </button>
+                        </div> -->
+
+    <div id="skillsList">
+        {% for skill in user.profile.skills.all %}
+        <div class="skill-tag">
+            {{ skill.name }}
+            <span class="remove-skill" onclick="removeSkill('{{ skill.id }}')">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div id="addSkillForm" class="add-skill-form d-none">
+        <input type="text" class="form-control" id="newSkill" placeholder="Enter skill">
+        <button type="button" class="btn btn-primary" onclick="addSkill()">Add</button>
+    </div>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+</div>
+
+
+
+</div>
+</div>
+</div> <!-- end col -->
+</div>
+
+</div> <!-- end col -->
+</div>
+
+
+</div>
+</div>
+
+</div>
+</div>
+
+
+
+<!-- end row -->
+
+</div>
+
+<!-- End Page-content -->
+
+<footer class="footer">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6">
+                <!-- <script>document.write(new Date().getFullYear())</script> &copy; Qovex. -->
+            </div>
+            <div class="col-sm-6">
+                <div class="text-sm-right d-none d-sm-block">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+<!-- end main content-->
+
+</div>
+<!-- END layout-wrapper -->
+
+</div>
+<!-- end container-fluid -->
+
+<!-- Right Sidebar -->
+<div class="right-bar">
+    <div data-simplebar class="h-100">
+        <div class="rightbar-title px-3 py-4">
+            <a href="javascript:void(0);" class="right-bar-toggle float-right">
+                <i class="mdi mdi-close noti-icon"></i>
+            </a>
+            <h5 class="m-0">Settings</h5>
+        </div>
+
+        <!-- Settings -->
+        <hr class="mt-0" />
+        <h6 class="text-center mb-0">Choose Layouts</h6>
+
+        <div class="p-4">
+            <div class="mb-2">
+                <img src="{% static 'enroll/assets/images/layouts/layout-1.jpg' %}" class="img-fluid img-thumbnail"
+                    alt="">
+            </div>
+            <div class="custom-control custom-switch mb-3">
+                <input type="checkbox" class="custom-control-input theme-choice" id="light-mode-switch" checked />
+                <label class="custom-control-label" for="light-mode-switch">Light Mode</label>
+            </div>
+
+            <div class="mb-2">
+                <img src="{% static 'enroll/assets/images/layouts/layout-2.jpg' %}" class="img-fluid img-thumbnail"
+                    alt="">
+            </div>
+            <div class="custom-control custom-switch mb-3">
+                <input type="checkbox" class="custom-control-input theme-choice" id="dark-mode-switch"
+                    data-bsStyle="assets/css/bootstrap-dark.min.css" data-appStyle="assets/css/app-dark.min.css" />
+                <label class="custom-control-label" for="dark-mode-switch">Dark Mode</label>
+            </div>
+
+            <div class="mb-2">
+                <img src="{% static 'enroll/assets/images/layouts/layout-3.jpg' %}" class="img-fluid img-thumbnail"
+                    alt="">
+            </div>
+            <div class="custom-control custom-switch mb-5">
+                <input type="checkbox" class="custom-control-input theme-choice" id="rtl-mode-switch"
+                    data-appStyle="assets/css/app-rtl.min.css" />
+                <label class="custom-control-label" for="rtl-mode-switch">RTL Mode</label>
+            </div>
+
+        </div>
+
+    </div>
+    <!-- end slimscroll-menu-->
+</div>
+<!-- /Right-bar -->
+
+<!-- Right bar overlay-->
+<div class="rightbar-overlay"></div>
+
+<!-- JAVASCRIPT -->
+ 
+<script>
+    window.jQuery || document.write('<script src="{% static "enroll/assets/libs/jquery/jquery.min.js" %}"><\/script>')
+</script>
+
+</body>
+
+</html>
+
+<script>
+    function previewAndSubmit(input) {
+        const file = input.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('profilePreview').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+            document.getElementById('profilePicForm').submit();
+        }
+    }
+
+    function closeMessage(button) {
+        const alertDiv = button.parentElement;
+        alertDiv.style.display = 'none';
+    }
+
+
+    // Handle form submission with AJAX
+
+</script>
+{% endblock %}

@@ -1,0 +1,173 @@
+{% extends "enroll/base.html" %}
+
+{% load static %}
+
+{% block title %}
+<title>Add Cms | User Management</title>
+{% endblock %}
+
+
+{% block content %}
+
+<!-- ============================================================== -->
+<!-- Start right Content here -->
+<!-- ============================================================== -->
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">ADD CMS PAGE</h4>
+
+
+                </div>
+                
+
+            </div>
+        </div>
+
+
+
+        <form method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            <div class="form-group">
+                <div class="form-group">
+                    <label for="page_name" style="color: #000000; font-weight: 600;">Page Name <span
+                            class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="page_name" name="page_name" required maxlength="200"
+                        placeholder="Enter page name" onkeyup="generateSlug(this.value)" style="color: #444444;">
+                    <div class="invalid-feedback">
+                        Please enter a page name.
+                    </div>
+                </div>
+
+                <div class="form-group mt-3">
+                    <label for="slug" style="color: #000000; font-weight: 600;">Slug</label>
+                    <input type="text" class="form-control" id="slug" name="slug" required
+                        pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$" value="{{ cms_page.slug }}" readonly
+                        style="background-color: #f8f9fa; color: #444444;">
+                    <div class="invalid-feedback">
+                        Please enter a valid slug (lowercase letters, numbers, and hyphens only).
+                    </div>
+                    <small class="form-text text-muted">
+                        Slug will be automatically generated from the page name
+                    </small>
+                </div>
+
+
+                <!-- <div class="form-group mt-3">
+                            <label for="slug" style="color: #000000; font-weight: 600;">Slug</label>
+                            <input type="text" class="form-control" id="slug" name="slug" 
+                                value="{{ cms_page.slug }}"
+                                readonly
+                                style="background-color: #f8f9fa; color: #444444;">
+                            <small class="form-text text-muted">
+                                Slug cannot be changed after creation
+                            </small>
+                        </div> -->
+
+                <div class="form-group mt-3">
+                    <label for="description" style="color: #000000; font-weight: 600;">Description <span
+                            class="text-danger">*</span></label>
+                    <textarea class="form-control" id="description" name="description" rows="5" required
+                        placeholder="Enter page content"></textarea>
+                    <div class="invalid-feedback">
+                        Please enter content.
+                    </div>
+                </div>
+
+                <div class="form-group mt-3">
+                    <label style="color: #000000; font-weight: 600;">Images</label>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="images" name="images" multiple accept="image/*"
+                            onchange="previewImages(event)">
+                        <label class="custom-file-label" for="images">Choose images</label>
+                    </div>
+                    <div id="imagePreviewContainer" class="mt-3 d-flex flex-wrap">
+                        <!-- Image previews will be added here -->
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary" style="padding: 4px 5px;">Create Page</button>
+                    <a href="{% url 'enroll:cms_list' %}" class="btn btn-secondary" style="padding: 4px 5px;">Cancel</a>
+                </div>
+        </form>
+        <script src="https://cdn.ckeditor.com/4.20.0/standard/ckeditor.js"></script>
+
+
+        <script>
+            function generateSlug(title) {
+                // Convert to lowercase
+                let slug = title.toLowerCase();
+
+                // Replace special characters with space
+                slug = slug.replace(/[^a-z0-9\s-]/g, ' ');
+
+                // Replace multiple spaces with single space
+                slug = slug.replace(/\s+/g, ' ').trim();
+
+                // Replace spaces with hyphens
+                slug = slug.replace(/\s/g, '-');
+
+                // Remove consecutive hyphens
+                slug = slug.replace(/-+/g, '-');
+
+                // Update slug field
+                document.getElementById('slug').value = slug;
+            }
+
+            CKEDITOR.replace('description', {
+                height: 300,
+                toolbarGroups: [
+                    { name: 'basicstyles', groups: ['basicstyles', 'cleanup'] },
+                    { name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align'] },
+                    { name: 'links' },
+                    { name: 'insert' },
+                    { name: 'styles' },
+                    { name: 'colors' }
+                ],
+                removeButtons: 'Subscript,Superscript,Anchor,Specialchar'
+            });
+
+            function previewImages(event) {
+                const container = document.getElementById('imagePreviewContainer');
+                container.innerHTML = ''; // Clear existing previews
+
+                const files = event.target.files;
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        const previewDiv = document.createElement('div');
+                        previewDiv.className = 'position-relative mr-3 mb-3';
+
+                        reader.onload = function (e) {
+                            previewDiv.innerHTML = `
+                                            <img src="${e.target.result}" style="max-width: 150px; max-height: 150px; object-fit: cover;">
+                                            <div class="position-absolute" style="top: 0; right: 0;">
+                                                <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.parentElement.remove()">×</button>
+                                            </div>
+                                            <input type="text" class="form-control mt-1" name="captions[]" placeholder="Caption" style="width: 150px;">
+                                        `;
+                        };
+                        reader.readAsDataURL(file);
+                        container.appendChild(previewDiv);
+                    }
+                }
+
+                // Update file input label
+                const label = document.querySelector('.custom-file-label');
+                label.textContent = files.length > 1 ? `${files.length} files selected` : files[0].name;
+            }
+
+            
+        </script>
+    </div>
+</div>
+</div>
+</div>
+</body>
+
+</html>
+{% endblock %}

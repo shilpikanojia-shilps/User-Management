@@ -1,0 +1,192 @@
+{% extends 'enroll/base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Add Child Sub-Category | Category Management</title>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="container-fluid">
+
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+                <h4 class="page-title mb-0 font-size-18">Add Child Sub-Category</h4>
+            </div>
+
+            {% if messages %}
+            <div class="alert alert-dismissible">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="row">
+                <div class="col-12">
+                    <form method="POST" enctype="multipart/form-data" class="p-4 shadow-sm bg-white rounded">
+                        {% csrf_token %}
+                        <div class="row" style="align-items: center;">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="category">Select Category</label>
+                                    <select id="category" name="category" class="form-control form-control-lg" required>
+                                        <option value="">-- Select a Category --</option>
+                                        {% for category in categories %}
+                                        <option value="{{ category.id }}">{{ category.category_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="subcategory">Select Sub Category</label>
+                                    <select id="subcategory" name="subcategory" class="form-control form-control-lg"required>                                     
+                                        <option value="">-- Select a Sub Category --</option>
+                                        {% for subcategory in subcategories %}
+                                        <option value="{{ subcategory.id }}">{{ subcategory.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- ======== -->
+                            
+                            <!-- ============ -->
+                        
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="childsubcategories[]">Child Subcategory Name</label>
+                                    <input type="text" name="childsubcategories[]" class="form-control"
+                                        placeholder="Enter Child Subcategory" required>
+                                </div>
+                            </div>
+
+                               
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="short_descriptions[]">Short Description</label>
+                                    <input type="text" name="short_descriptions[]" class="form-control"
+                                        placeholder="Enter Short Description">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="long_descriptions[]">Long Description</label>
+                                    <input type="text" name="long_descriptions[]" class="form-control"
+                                        placeholder="Enter Long Description">
+                                </div>
+                            </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="meta_titles[]">Meta Title</label>
+                                        <input type="text" name="meta_titles[]" class="form-control"
+                                            placeholder="Enter Meta Title">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="meta_descriptions[]">Meta Description</label>
+                                        <input type="text" name="meta_descriptions[]" class="form-control"
+                                            placeholder="Enter Meta Description">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="statuses[]">Status</label>
+                                        <select name="statuses[]" class="form-control">
+                                            <option value="active">--Select Status--</option>
+                                            <option value="active">Active</option>
+                                            <option value="inactive">Inactive</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="feature_categories[]">Feature Category</label>
+                                        <select id="feature_categories" name="feature_categories" class="form-control"
+                                            placeholder="Select Feature Category">
+                                            <option value="yes">--Select Feature Category--</option>
+                                            <option value="yes">Yes</option>
+                                            <option value="no">No</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="images[]">Image</label>
+                                        <input type="file" name="images[]" accept="image/*" class="form-control">
+                                    </div>
+                                </div>
+                                <button type="submit" style="margin-right: 20px; background-color: #273c92; color: #fff;">Save </button>
+                                    
+                                
+                            </div>
+                        </div>
+
+                    
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.getElementById("category").addEventListener("change", function() {
+        let categoryId = this.value;
+        let subcategoryDropdown = document.getElementById("subcategory");
+
+        subcategoryDropdown.innerHTML = '<option value="">Select Subcategory</option>'; // Reset dropdown
+
+        if (categoryId) {
+            fetch(`/get_subcategories/?category_id=${categoryId}`)
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(subcategory => {
+                    let option = document.createElement("option");
+                    option.value = subcategory.id;
+                    option.textContent = subcategory.name;
+                    subcategoryDropdown.appendChild(option);
+                });
+            });
+        }
+    });
+</script>
+
+
+<script>
+    let subcategoryCount = 1;  // Initialize a counter for new subcategory fields
+
+    function addChildSubcategory() {
+        var section = document.getElementById('child-subcategory-section');
+        var newDiv = section.querySelector('.child-subcategory').cloneNode(true);
+
+        // Update the name attributes for the newly cloned fields
+        var inputs = newDiv.querySelectorAll('input, textarea, select');  // Select all input fields
+        inputs.forEach(input => {
+            var name = input.getAttribute('name');
+            var value = input.value;
+            input.value = '';  // Clear the value of the input field
+        });
+
+        // Append the new div after updating the names
+        section.appendChild(newDiv);
+
+        // Increment the counter for the next set of fields
+        subcategoryCount++;
+    }
+</script>
+{% endblock %}

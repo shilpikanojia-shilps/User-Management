@@ -1,0 +1,69 @@
+{% extends "vendor/base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Dashboard | User Management</title>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18"> Vendor Dashboard</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="home-btn d-none d-sm-block">
+            <a href="#" class="text-dark"><i class="fas fa-home h2"></i></a>
+        </div>
+
+        {% if messages %}
+        <div id="messages-container">
+            {% for message in messages %}
+            <div class="alert alert-success alert-dismissible">
+                {{ message }}
+                <button type="button" class="close" onclick="closeMessage(this)">&times;</button>
+                <script>
+                    function closeMessage(button) {
+                        const alertDiv = button.parentElement;
+                        alertDiv.style.display = 'none';
+                    }
+                </script>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if vendor.status == "rejected" %}
+        <div class="alert alert-danger">
+            Your business profile was rejected: {{ vendor.rejection_reason }}
+        </div>
+        {% endif %}
+      
+
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block extra_js %}
+
+
+<script src="{% static 'vendor/assets/libs/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/assets/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'vendor/assets/libs/metismenu/metisMenu.min.js' %}"></script>
+<script src="{% static 'vendor/assets/libs/simplebar/simplebar.min.js' %}"></script>
+<script src="{% static 'vendor/assets/libs/node-waves/waves.min.js' %}"></script>
+
+<!-- apexcharts -->
+<script src="{% static 'vendor/assets/libs/apexcharts/apexcharts.min.js' %}"></script>
+
+<script src="{% static 'vendor/assets/js/pages/dashboard-2.init.js' %}"></script>
+
+<script src="{% static 'vendor/assets/js/app.js' %}"></script>
+
+{% endblock %}

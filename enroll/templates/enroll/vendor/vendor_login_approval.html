@@ -1,0 +1,122 @@
+{% extends 'enroll/base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Vendor Management | Login Approval</title>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">Vendor Login Approvals</h4>
+                </div>
+            </div>
+        </div>
+
+        {% if messages %}
+        <div id="messages-container">
+            {% for message in messages %}
+            <div class="alert alert-success alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="close" onclick="closeMessage(this)">
+                    &times;
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="row">
+            <div class="col-12">
+                <form method="GET" action="">
+                    {% csrf_token %}
+                    <div class="form-group d-flex justify-content-between align-items-center">
+                        <div class="flex-grow-1">
+                            <label for="search">Search</label>
+                            <input type="text" id="search" name="search" class="form-control"
+                                placeholder="Search by name, SKU, or brand" value="{{ request.GET.search }}">
+                        </div>
+                        <button type="submit" class="btn btn-primary ml-4" style="margin-bottom: -28px;">Search</button>
+                        <a href="{% url 'enroll:vendor_login_approval' %}" class="btn btn-secondary ml-2"
+                            style="margin-bottom: -28px; margin-left: 10px;">
+                            <i class="fas fa-undo"></i> Reset
+                        </a>
+                    </div>
+                </form>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="mb-3"></h4>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered text-center">
+                                <thead>
+                                    <tr>
+                                        <th>Sno.</th>
+                                        <th>Full Name</th>
+                                        <th>Email</th>
+                                        <th>Contact</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for vendor in vendors %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ vendor.full_name }}</td>
+                                        <td>{{ vendor.email }}</td>
+                                        <td>{{ vendor.contact }}</td>
+                                        <td>
+                                            <span class="badge bg-danger">Login Not Approved</span>
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'enroll:approve_vendor_login' vendor.id %}" class="btn btn-success btn-sm">Approve</a>
+                                            <a href="{% url 'enroll:reject_vendor' vendor.id %}" class="btn btn-danger btn-sm">Reject</a>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="6">No pending login approvals.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+    <script src="{% static 'enroll/assets/libs/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'enroll/assets/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'enroll/assets/libs/metismenu/metisMenu.min.js' %}"></script>
+    <script src="{% static 'enroll/assets/libs/simplebar/simplebar.min.js' %}"></script>
+    <script src="{% static 'enroll/assets/libs/node-waves/waves.min.js' %}"></script>
+
+    <!-- apexcharts -->
+    <script src="{% static 'enroll/assets/libs/apexcharts/apexcharts.min.js' %}"></script>
+
+    <script src="{% static 'enroll/assets/js/pages/dashboard-2.init.js' %}"></script>
+
+    <script src="{% static 'enroll/assets/js/app.js' %}"></script>
+
+
+<script>
+    function closeMessage(button) {
+        var alertDiv = button.closest(".alert");
+        alertDiv.style.transition = "opacity 0.5s";
+        alertDiv.style.opacity = "0";
+        setTimeout(() => alertDiv.remove(), 500);
+    }
+</script>
+{% endblock %}

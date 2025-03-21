@@ -1,0 +1,153 @@
+{% extends "enroll/base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Manage Brands | Brand Management</title>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">Brands</h4>
+                </div>
+            </div>
+        </div>
+        <form method="get" action="">
+            <div class="form-group d-flex justify-content-between align-items-center">
+                <div class="flex-grow-1">
+                    <label for="search">Search</label>
+                    <input type="text" id="search" name="search" class="form-control" placeholder="Search by name"
+                        value="{{ search_query }}">
+                </div>
+
+                <button type="submit" class="btn btn-primary ml-4" style="margin-bottom: -28px;">Search</button>
+
+                <a href="{% url 'enroll:brands' %}" class="btn btn-secondary ml-2"
+                    style="margin-bottom: -28px; margin-left: 10px;">
+                    <i class="fas fa-undo"></i> Reset
+                </a>
+            </div>
+        </form>
+
+
+        <div class="row justify-content-center table-container">
+            <div class="col-md-12">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="text-right mb-3">
+                            <a href="{% url 'enroll:add_brand' %}" class="btn"
+                                style="background-color: darkgreen; color: white;">Add Brand</a>
+                        </div>
+
+                        {% if messages %}
+                        <div id="messages-container">
+                            {% for message in messages %}
+                            <div class="alert alert-success alert-dismissible">
+                                {{ message }}
+                                <button type="button" class="close" onclick="closeMessage(this)">&times;</button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Sno.</th>
+                                    <th>Brand Name</th>
+                                    <th>Actions</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for brand in page_obj %}
+                                <tr>
+                                    <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                                    <td>{{ brand.brand_name }}</td>
+
+                                    <td>
+                                        <a href="{% url 'enroll:edit_brand' brand.id %}"
+                                            class="btn btn-primary btn-sm">Edit</a>
+                                        <a href="{% url 'enroll:delete_brand' brand.id %}" class="btn btn-danger btn-sm"
+                                            onclick="return confirmDelete();">Delete</a>
+                                    </td>
+                                    <td><a href="{% url 'enroll:view_brand' brand.id %}">View</a></td>
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+                        </table>
+                        <div class="pagination mt-3">
+                            <span class="step-links">
+                              {% if page_obj.has_previous %}
+                                <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}">&laquo; first</a>
+                                <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">Previous</a>
+                              {% endif %}
+                          
+                              <span class="badge bg-primary text-white">
+                                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                              </span>
+                          
+                              {% if page_obj.has_next %}
+                                <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">Next</a>
+                                <a href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}">last &raquo;</a>
+                              {% endif %}
+                            </span>
+                          </div>
+                          
+                            <style>
+                                .pagination {
+                                    text-align: center;
+                                    margin-top: 20px;
+                                }
+
+                                .pagination .step-links {
+                                    display: inline-block;
+                                }
+
+                                .pagination a {
+                                    padding: 8px 12px;
+                                    margin: 2px;
+                                    text-decoration: none;
+                                    border: 1px solid #ddd;
+                                    background: #f8f8f8;
+                                    color: #502828;
+                                    border-radius: 4px;
+                                }
+
+                                .pagination a:hover {
+                                    background: #ddd;
+                                }
+
+                                .pagination .current {
+                                    font-weight: bold;
+                                    padding: 8px 12px;
+                                    background: #007bff;
+                                    color: rgb(255, 255, 255);
+                                    border-radius: 4px;
+                                }
+
+                                .bg-primary {
+                                    background-color: #3c4699 !important;
+                                }
+                            </style>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            {% endblock %}
+
+            {% block extra_js %}
+            <script>
+                function confirmDelete() {
+                    return confirm("Are you sure you want to delete this brand?");
+                }
+                function closeMessage(button) {
+                    button.parentElement.style.display = 'none';
+                }
+            </script>
+            {% endblock %}

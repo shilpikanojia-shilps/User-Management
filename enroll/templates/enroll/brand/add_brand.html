@@ -1,0 +1,145 @@
+{% extends 'enroll/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18"> ADD BRAND</h4>
+                </div>
+            </div>
+        </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <div class="form-group">
+                        <label for="brand_name" style="color: #000000; font-weight: 600;">Brand Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="brand_name" name="brand_name" required placeholder="Enter brand name">
+                        <div class="invalid-feedback">
+                            Please enter Brand Name.
+                        </div>
+                    </div>
+
+                
+
+                <div class="form-group mt-3">
+                    <label for="short_description" style="color: #000000; font-weight: 600;">Short Description <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="short_description" name="short_description" rows="2" required placeholder="Enter short description"></textarea>
+                    <div class="invalid-feedback">
+                        Please enter short description.
+                    </div>
+                </div>
+
+                <div class="form-group mt-3">
+                    <label for="long_description" style="color: #000000; font-weight: 600;">Long Description</label>
+                    <textarea class="form-control" id="long_description" name="long_description" rows="4" placeholder="Enter long description"></textarea>
+                </div>
+
+                <div class="form-group mt-3">
+                    <label for="meta_title" style="color: #000000; font-weight: 600;">Meta Title</label>
+                    <input type="text" class="form-control" id="meta_title" name="meta_title" placeholder="Enter meta title">
+                </div>
+
+                <div class="form-group mt-3">
+                    <label for="meta_description" style="color: #000000; font-weight: 600;">Meta Description</label>
+                    <textarea class="form-control" id="meta_description" name="meta_description" rows="3" placeholder="Enter meta description"></textarea>
+                </div>
+                               
+                    
+
+                <div class="form-group mt-3">
+                    <label for="image" style="color: #000000; font-weight: 600;">Brand Image</label>
+                    <div class="custom-file">
+                        <input type="file" class="form-control" id="image" name="image" accept="image/*" onchange="previewImage(event)">
+                        <label class="custom-file-label" for="image">Choose image</label>
+                        <div id="imagePreviewContainer" class="mt-3 d-flex flex-wrap"></div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-4">Add Brand</button>
+                <a href="{% url 'enroll:brands' %}" class="btn btn-secondary mt-4">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block extra_js %}
+<script src="https://cdn.ckeditor.com/4.20.0/standard/ckeditor.js"></script>
+<script>
+    function previewImage(event) {
+        const container = document.getElementById('imagePreviewContainer');
+        container.innerHTML = '';
+        const files = event.target.files;
+        for (let file of files) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.classList.add('me-2', 'mb-2');
+                img.style.width = '120px';
+                img.style.borderRadius = '5px';
+                img.style.border = '1px solid #ccc';
+                container.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    CKEDITOR.replace('short_description', {
+        height: 300,
+        toolbarGroups: [
+            { name: 'basicstyles', groups: ['basicstyles', 'cleanup'] },
+            { name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align'] },
+            { name: 'links' },
+            { name: 'insert' },
+            { name: 'styles' },
+            { name: 'colors' }
+        ],
+        removeButtons: 'Subscript,Superscript,Anchor,Specialchar'
+    })
+
+    CKEDITOR.replace('long_description', {
+        height: 300,
+        toolbarGroups: [
+            { name: 'basicstyles', groups: ['basicstyles', 'cleanup'] },
+            { name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align'] },
+            { name: 'links' },
+            { name: 'insert' },
+            { name: 'styles' },
+            { name: 'colors' }
+        ],
+        removeButtons: 'Subscript,Superscript,Anchor,Specialchar'
+    })
+
+    CKEDITOR.replace('meta_description', {
+        height: 300,
+        toolbarGroups: [
+            { name: 'basicstyles', groups: ['basicstyles', 'cleanup'] },
+            { name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align'] },
+            { name: 'links' },
+            { name: 'insert' },
+            { name: 'styles' },
+            { name: 'colors' }
+        ],
+        removeButtons: 'Subscript,Superscript,Anchor,Specialchar'
+    })
+</script>
+{% endblock %}

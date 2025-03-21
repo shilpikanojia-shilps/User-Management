@@ -1,0 +1,1546 @@
+[
+    {
+        "model": "auth.permission",
+        "pk": 1,
+        "fields": {
+            "name": "Can add log entry",
+            "content_type": 1,
+            "codename": "add_logentry"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 2,
+        "fields": {
+            "name": "Can change log entry",
+            "content_type": 1,
+            "codename": "change_logentry"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 3,
+        "fields": {
+            "name": "Can delete log entry",
+            "content_type": 1,
+            "codename": "delete_logentry"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 4,
+        "fields": {
+            "name": "Can view log entry",
+            "content_type": 1,
+            "codename": "view_logentry"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 5,
+        "fields": {
+            "name": "Can add permission",
+            "content_type": 2,
+            "codename": "add_permission"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 6,
+        "fields": {
+            "name": "Can change permission",
+            "content_type": 2,
+            "codename": "change_permission"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 7,
+        "fields": {
+            "name": "Can delete permission",
+            "content_type": 2,
+            "codename": "delete_permission"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 8,
+        "fields": {
+            "name": "Can view permission",
+            "content_type": 2,
+            "codename": "view_permission"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 9,
+        "fields": {
+            "name": "Can add group",
+            "content_type": 3,
+            "codename": "add_group"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 10,
+        "fields": {
+            "name": "Can change group",
+            "content_type": 3,
+            "codename": "change_group"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 11,
+        "fields": {
+            "name": "Can delete group",
+            "content_type": 3,
+            "codename": "delete_group"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 12,
+        "fields": {
+            "name": "Can view group",
+            "content_type": 3,
+            "codename": "view_group"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 13,
+        "fields": {
+            "name": "Can add user",
+            "content_type": 4,
+            "codename": "add_user"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 14,
+        "fields": {
+            "name": "Can change user",
+            "content_type": 4,
+            "codename": "change_user"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 15,
+        "fields": {
+            "name": "Can delete user",
+            "content_type": 4,
+            "codename": "delete_user"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 16,
+        "fields": {
+            "name": "Can view user",
+            "content_type": 4,
+            "codename": "view_user"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 17,
+        "fields": {
+            "name": "Can add content type",
+            "content_type": 5,
+            "codename": "add_contenttype"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 18,
+        "fields": {
+            "name": "Can change content type",
+            "content_type": 5,
+            "codename": "change_contenttype"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 19,
+        "fields": {
+            "name": "Can delete content type",
+            "content_type": 5,
+            "codename": "delete_contenttype"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 20,
+        "fields": {
+            "name": "Can view content type",
+            "content_type": 5,
+            "codename": "view_contenttype"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 21,
+        "fields": {
+            "name": "Can add session",
+            "content_type": 6,
+            "codename": "add_session"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 22,
+        "fields": {
+            "name": "Can change session",
+            "content_type": 6,
+            "codename": "change_session"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 23,
+        "fields": {
+            "name": "Can delete session",
+            "content_type": 6,
+            "codename": "delete_session"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 24,
+        "fields": {
+            "name": "Can view session",
+            "content_type": 6,
+            "codename": "view_session"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 25,
+        "fields": {
+            "name": "Can add permission",
+            "content_type": 7,
+            "codename": "add_permission"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 26,
+        "fields": {
+            "name": "Can change permission",
+            "content_type": 7,
+            "codename": "change_permission"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 27,
+        "fields": {
+            "name": "Can delete permission",
+            "content_type": 7,
+            "codename": "delete_permission"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 28,
+        "fields": {
+            "name": "Can view permission",
+            "content_type": 7,
+            "codename": "view_permission"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 29,
+        "fields": {
+            "name": "Can add role",
+            "content_type": 8,
+            "codename": "add_role"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 30,
+        "fields": {
+            "name": "Can change role",
+            "content_type": 8,
+            "codename": "change_role"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 31,
+        "fields": {
+            "name": "Can delete role",
+            "content_type": 8,
+            "codename": "delete_role"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 32,
+        "fields": {
+            "name": "Can view role",
+            "content_type": 8,
+            "codename": "view_role"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 33,
+        "fields": {
+            "name": "Can add role permission",
+            "content_type": 9,
+            "codename": "add_rolepermission"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 34,
+        "fields": {
+            "name": "Can change role permission",
+            "content_type": 9,
+            "codename": "change_rolepermission"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 35,
+        "fields": {
+            "name": "Can delete role permission",
+            "content_type": 9,
+            "codename": "delete_rolepermission"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 36,
+        "fields": {
+            "name": "Can view role permission",
+            "content_type": 9,
+            "codename": "view_rolepermission"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 37,
+        "fields": {
+            "name": "Can add auth login",
+            "content_type": 10,
+            "codename": "add_authlogin"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 38,
+        "fields": {
+            "name": "Can change auth login",
+            "content_type": 10,
+            "codename": "change_authlogin"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 39,
+        "fields": {
+            "name": "Can delete auth login",
+            "content_type": 10,
+            "codename": "delete_authlogin"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 40,
+        "fields": {
+            "name": "Can view auth login",
+            "content_type": 10,
+            "codename": "view_authlogin"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 41,
+        "fields": {
+            "name": "Can add State",
+            "content_type": 11,
+            "codename": "add_state"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 42,
+        "fields": {
+            "name": "Can change State",
+            "content_type": 11,
+            "codename": "change_state"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 43,
+        "fields": {
+            "name": "Can delete State",
+            "content_type": 11,
+            "codename": "delete_state"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 44,
+        "fields": {
+            "name": "Can view State",
+            "content_type": 11,
+            "codename": "view_state"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 45,
+        "fields": {
+            "name": "Can add city",
+            "content_type": 12,
+            "codename": "add_city"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 46,
+        "fields": {
+            "name": "Can change city",
+            "content_type": 12,
+            "codename": "change_city"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 47,
+        "fields": {
+            "name": "Can delete city",
+            "content_type": 12,
+            "codename": "delete_city"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 48,
+        "fields": {
+            "name": "Can view city",
+            "content_type": 12,
+            "codename": "view_city"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 49,
+        "fields": {
+            "name": "Can add CMS Page",
+            "content_type": 13,
+            "codename": "add_cmspage"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 50,
+        "fields": {
+            "name": "Can change CMS Page",
+            "content_type": 13,
+            "codename": "change_cmspage"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 51,
+        "fields": {
+            "name": "Can delete CMS Page",
+            "content_type": 13,
+            "codename": "delete_cmspage"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 52,
+        "fields": {
+            "name": "Can view CMS Page",
+            "content_type": 13,
+            "codename": "view_cmspage"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 53,
+        "fields": {
+            "name": "Can add CMS Image",
+            "content_type": 14,
+            "codename": "add_cmsimage"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 54,
+        "fields": {
+            "name": "Can change CMS Image",
+            "content_type": 14,
+            "codename": "change_cmsimage"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 55,
+        "fields": {
+            "name": "Can delete CMS Image",
+            "content_type": 14,
+            "codename": "delete_cmsimage"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 56,
+        "fields": {
+            "name": "Can view CMS Image",
+            "content_type": 14,
+            "codename": "view_cmsimage"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 57,
+        "fields": {
+            "name": "Can add skill",
+            "content_type": 15,
+            "codename": "add_skill"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 58,
+        "fields": {
+            "name": "Can change skill",
+            "content_type": 15,
+            "codename": "change_skill"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 59,
+        "fields": {
+            "name": "Can delete skill",
+            "content_type": 15,
+            "codename": "delete_skill"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 60,
+        "fields": {
+            "name": "Can view skill",
+            "content_type": 15,
+            "codename": "view_skill"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 61,
+        "fields": {
+            "name": "Can add user profile",
+            "content_type": 16,
+            "codename": "add_userprofile"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 62,
+        "fields": {
+            "name": "Can change user profile",
+            "content_type": 16,
+            "codename": "change_userprofile"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 63,
+        "fields": {
+            "name": "Can delete user profile",
+            "content_type": 16,
+            "codename": "delete_userprofile"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 64,
+        "fields": {
+            "name": "Can view user profile",
+            "content_type": 16,
+            "codename": "view_userprofile"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 65,
+        "fields": {
+            "name": "Can add User Activity Log",
+            "content_type": 17,
+            "codename": "add_useractivitylog"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 66,
+        "fields": {
+            "name": "Can change User Activity Log",
+            "content_type": 17,
+            "codename": "change_useractivitylog"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 67,
+        "fields": {
+            "name": "Can delete User Activity Log",
+            "content_type": 17,
+            "codename": "delete_useractivitylog"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 68,
+        "fields": {
+            "name": "Can view User Activity Log",
+            "content_type": 17,
+            "codename": "view_useractivitylog"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 69,
+        "fields": {
+            "name": "Can add category",
+            "content_type": 18,
+            "codename": "add_category"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 70,
+        "fields": {
+            "name": "Can change category",
+            "content_type": 18,
+            "codename": "change_category"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 71,
+        "fields": {
+            "name": "Can delete category",
+            "content_type": 18,
+            "codename": "delete_category"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 72,
+        "fields": {
+            "name": "Can view category",
+            "content_type": 18,
+            "codename": "view_category"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 73,
+        "fields": {
+            "name": "Can add sub category",
+            "content_type": 19,
+            "codename": "add_subcategory"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 74,
+        "fields": {
+            "name": "Can change sub category",
+            "content_type": 19,
+            "codename": "change_subcategory"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 75,
+        "fields": {
+            "name": "Can delete sub category",
+            "content_type": 19,
+            "codename": "delete_subcategory"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 76,
+        "fields": {
+            "name": "Can view sub category",
+            "content_type": 19,
+            "codename": "view_subcategory"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 77,
+        "fields": {
+            "name": "Can add child sub category",
+            "content_type": 20,
+            "codename": "add_childsubcategory"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 78,
+        "fields": {
+            "name": "Can change child sub category",
+            "content_type": 20,
+            "codename": "change_childsubcategory"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 79,
+        "fields": {
+            "name": "Can delete child sub category",
+            "content_type": 20,
+            "codename": "delete_childsubcategory"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 80,
+        "fields": {
+            "name": "Can view child sub category",
+            "content_type": 20,
+            "codename": "view_childsubcategory"
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 1,
+        "fields": {
+            "password": "pbkdf2_sha256$870000$omAu7Q4FJjIWICvy1KcMoS$ApKmvD+wRB/uJseopxdrh6AnmcNQg28pIJ0n79dJrUY=",
+            "last_login": "2025-02-11T13:08:31.476Z",
+            "is_superuser": true,
+            "username": "admin",
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2025-02-11T13:08:09.616Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 1,
+        "fields": {
+            "app_label": "admin",
+            "model": "logentry"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 2,
+        "fields": {
+            "app_label": "auth",
+            "model": "permission"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 3,
+        "fields": {
+            "app_label": "auth",
+            "model": "group"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 4,
+        "fields": {
+            "app_label": "auth",
+            "model": "user"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 5,
+        "fields": {
+            "app_label": "contenttypes",
+            "model": "contenttype"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 6,
+        "fields": {
+            "app_label": "sessions",
+            "model": "session"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 7,
+        "fields": {
+            "app_label": "enroll",
+            "model": "permission"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 8,
+        "fields": {
+            "app_label": "enroll",
+            "model": "role"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 9,
+        "fields": {
+            "app_label": "enroll",
+            "model": "rolepermission"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 10,
+        "fields": {
+            "app_label": "enroll",
+            "model": "authlogin"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 11,
+        "fields": {
+            "app_label": "enroll",
+            "model": "state"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 12,
+        "fields": {
+            "app_label": "enroll",
+            "model": "city"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 13,
+        "fields": {
+            "app_label": "enroll",
+            "model": "cmspage"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 14,
+        "fields": {
+            "app_label": "enroll",
+            "model": "cmsimage"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 15,
+        "fields": {
+            "app_label": "enroll",
+            "model": "skill"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 16,
+        "fields": {
+            "app_label": "enroll",
+            "model": "userprofile"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 17,
+        "fields": {
+            "app_label": "enroll",
+            "model": "useractivitylog"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 18,
+        "fields": {
+            "app_label": "enroll",
+            "model": "category"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 19,
+        "fields": {
+            "app_label": "enroll",
+            "model": "subcategory"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 20,
+        "fields": {
+            "app_label": "enroll",
+            "model": "childsubcategory"
+        }
+    },
+    {
+        "model": "sessions.session",
+        "pk": "t8y4kj2omoxpbcpzh8b8uxzagms44lka",
+        "fields": {
+            "session_data": ".eJxVjkEOwiAURO_C2jR-CqW4dO8Zmg98BEXalHZhjHe3jdXobjJvZjIP1uE8hW4uNHbRsQMDtvv1DNor5RW4C-ZzX9k-T2M01RqpNlqqU-8oHbfs30DAEpY2IUjQ3oFB8FK0mntJrXFN7RUq7WsrzN4QSAKLnIxD4aQCjVyJRsr11fcjf-uMN1qWS4hpiB8-3YfFzHNKzxdby0lA:1thqHB:zQCuEN3YmbvlTeCTO8kA8Oc0ffZRSHorjK6ovMQdd5E",
+            "expire_date": "2025-02-18T13:26:09.148Z"
+        }
+    },
+    {
+        "model": "enroll.authlogin",
+        "pk": 1,
+        "fields": {
+            "username": "admin",
+            "fullname": "admin admin",
+            "email": "admin@gmail.com",
+            "password": "pbkdf2_sha256$870000$W8rVxQksW6LCJGZCUFt5In$wUvIrdjwMxFedNrhhZlkEYYc3isGfiq1L/pJggrT9dc=",
+            "first_name": "admin",
+            "last_name": "admin",
+            "last_login": "2025-02-11T13:05:46.133Z",
+            "contact": null,
+            "age": "",
+            "state": "",
+            "city": "",
+            "profile_pic": "",
+            "user_type": null,
+            "role": null,
+            "is_active": true,
+            "is_staff": false
+        }
+    },
+    {
+        "model": "enroll.authlogin",
+        "pk": 2,
+        "fields": {
+            "username": "shilpi",
+            "fullname": "shilpi kanojia",
+            "email": "shilpi@gmail.com",
+            "password": "pbkdf2_sha256$870000$EUiMSp3119YeHIFmB2IlHh$M1kB6I1TBlsNXNemBn5SXLuAl52EyfkuOz7PaWPBWc0=",
+            "first_name": "shilpi",
+            "last_name": "kanojia",
+            "last_login": "2025-02-11T13:22:20.821Z",
+            "contact": null,
+            "age": "",
+            "state": "",
+            "city": "",
+            "profile_pic": "user_images/shilpi_kanojia_1739280137.png",
+            "user_type": null,
+            "role": null,
+            "is_active": true,
+            "is_staff": false
+        }
+    },
+    {
+        "model": "enroll.userprofile",
+        "pk": 1,
+        "fields": {
+            "user": 2,
+            "contact": "None",
+            "profile_pic": "",
+            "about": ""
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 1,
+        "fields": {
+            "user": null,
+            "user_name": "Unknown",
+            "user_type": "Unknown",
+            "action": "signup",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "error": "Passwords do not match",
+                "status": "failed",
+                "timestamp": "2025-02-11T13:05:26.152763+00:00",
+                "email_attempted": "admin@gmail.com",
+                "username_attempted": "admin"
+            },
+            "timestamp": "2025-02-11T13:05:26.219Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 2,
+        "fields": {
+            "user": 1,
+            "user_name": "Unknown",
+            "user_type": "Unknown",
+            "action": "User Created",
+            "ip_address": null,
+            "user_agent": null,
+            "details": null,
+            "timestamp": "2025-02-11T13:05:46.129Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 3,
+        "fields": {
+            "user": 1,
+            "user_name": "Unknown",
+            "user_type": "Unknown",
+            "action": "User Updated",
+            "ip_address": null,
+            "user_agent": null,
+            "details": null,
+            "timestamp": "2025-02-11T13:05:46.138Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 4,
+        "fields": {
+            "user": null,
+            "user_name": "Unknown",
+            "user_type": "Unknown",
+            "action": "signup",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "error": null,
+                "status": "successful",
+                "timestamp": "2025-02-11T13:05:46.141589+00:00",
+                "email_attempted": "admin@gmail.com",
+                "username_attempted": "admin"
+            },
+            "timestamp": "2025-02-11T13:05:46.142Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 5,
+        "fields": {
+            "user": 1,
+            "user_name": "Session Missing",
+            "user_type": "Session Missing",
+            "action": "login",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "status": "failed - incorrect password",
+                "timestamp": "2025-02-11T13:05:52.894328+00:00"
+            },
+            "timestamp": "2025-02-11T13:05:52.895Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 6,
+        "fields": {
+            "user": 1,
+            "user_name": "Session Missing",
+            "user_type": "Session Missing",
+            "action": "login",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "status": "failed - incorrect password",
+                "timestamp": "2025-02-11T13:05:58.457534+00:00"
+            },
+            "timestamp": "2025-02-11T13:05:58.458Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 7,
+        "fields": {
+            "user": 1,
+            "user_name": "Session Missing",
+            "user_type": "Session Missing",
+            "action": "login",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "status": "failed - incorrect password",
+                "timestamp": "2025-02-11T13:06:51.129965+00:00"
+            },
+            "timestamp": "2025-02-11T13:06:51.130Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 8,
+        "fields": {
+            "user": 1,
+            "user_name": "Session Missing",
+            "user_type": "Session Missing",
+            "action": "login",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "status": "failed - incorrect password",
+                "timestamp": "2025-02-11T13:06:55.991546+00:00"
+            },
+            "timestamp": "2025-02-11T13:06:55.992Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 9,
+        "fields": {
+            "user": 1,
+            "user_name": "Session Missing",
+            "user_type": "Session Missing",
+            "action": "login",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "status": "failed - incorrect password",
+                "timestamp": "2025-02-11T13:07:08.852136+00:00"
+            },
+            "timestamp": "2025-02-11T13:07:08.853Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 10,
+        "fields": {
+            "user": 1,
+            "user_name": "Session Missing",
+            "user_type": "Session Missing",
+            "action": "login",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "status": "failed - incorrect password",
+                "timestamp": "2025-02-11T13:09:48.978617+00:00"
+            },
+            "timestamp": "2025-02-11T13:09:48.979Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 11,
+        "fields": {
+            "user": 1,
+            "user_name": "Session Missing",
+            "user_type": "Session Missing",
+            "action": "login",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "status": "failed - incorrect password",
+                "timestamp": "2025-02-11T13:09:58.641117+00:00"
+            },
+            "timestamp": "2025-02-11T13:09:58.643Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 12,
+        "fields": {
+            "user": 1,
+            "user_name": "Session Missing",
+            "user_type": "Session Missing",
+            "action": "login",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "status": "failed - incorrect password",
+                "timestamp": "2025-02-11T13:11:27.745860+00:00"
+            },
+            "timestamp": "2025-02-11T13:11:27.746Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 13,
+        "fields": {
+            "user": 2,
+            "user_name": "Unknown",
+            "user_type": "Unknown",
+            "action": "User Created",
+            "ip_address": null,
+            "user_agent": null,
+            "details": null,
+            "timestamp": "2025-02-11T13:12:51.444Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 14,
+        "fields": {
+            "user": 2,
+            "user_name": "Unknown",
+            "user_type": "Unknown",
+            "action": "User Updated",
+            "ip_address": null,
+            "user_agent": null,
+            "details": null,
+            "timestamp": "2025-02-11T13:12:51.452Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 15,
+        "fields": {
+            "user": null,
+            "user_name": "Unknown",
+            "user_type": "Unknown",
+            "action": "signup",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "error": null,
+                "status": "successful",
+                "timestamp": "2025-02-11T13:12:51.455205+00:00",
+                "email_attempted": "shilpi@gmail.com",
+                "username_attempted": "shilpi"
+            },
+            "timestamp": "2025-02-11T13:12:51.456Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 16,
+        "fields": {
+            "user": 2,
+            "user_name": "shilpi",
+            "user_type": "Session Missing",
+            "action": "login",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "status": "successful",
+                "timestamp": "2025-02-11T13:13:02.628912+00:00"
+            },
+            "timestamp": "2025-02-11T13:13:02.630Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 17,
+        "fields": {
+            "user": 2,
+            "user_name": "shilpi",
+            "user_type": "Session Missing",
+            "action": "dashboard_visit",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "user_type": null,
+                "dashboard_access": "successful"
+            },
+            "timestamp": "2025-02-11T13:13:02.752Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 18,
+        "fields": {
+            "user": 2,
+            "user_name": "shilpi",
+            "user_type": "Session Missing",
+            "action": "dashboard_visit",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "user_type": null,
+                "dashboard_access": "successful"
+            },
+            "timestamp": "2025-02-11T13:13:34.819Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 19,
+        "fields": {
+            "user": 2,
+            "user_name": "shilpi",
+            "user_type": "Session Missing",
+            "action": "dashboard_visit",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "user_type": null,
+                "dashboard_access": "successful"
+            },
+            "timestamp": "2025-02-11T13:13:37.523Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 20,
+        "fields": {
+            "user": 2,
+            "user_name": "shilpi",
+            "user_type": "Session Missing",
+            "action": "dashboard_visit",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "user_type": null,
+                "dashboard_access": "successful"
+            },
+            "timestamp": "2025-02-11T13:14:20.642Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 21,
+        "fields": {
+            "user": 2,
+            "user_name": "shilpi",
+            "user_type": "Session Missing",
+            "action": "dashboard_visit",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "user_type": null,
+                "dashboard_access": "successful"
+            },
+            "timestamp": "2025-02-11T13:15:16.571Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 22,
+        "fields": {
+            "user": 2,
+            "user_name": "shilpi",
+            "user_type": "Session Missing",
+            "action": "dashboard_visit",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "user_type": null,
+                "dashboard_access": "successful"
+            },
+            "timestamp": "2025-02-11T13:15:44.455Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 23,
+        "fields": {
+            "user": 2,
+            "user_name": "shilpi",
+            "user_type": "Session Missing",
+            "action": "dashboard_visit",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "user_type": null,
+                "dashboard_access": "successful"
+            },
+            "timestamp": "2025-02-11T13:16:23.461Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 24,
+        "fields": {
+            "user": 2,
+            "user_name": "shilpi",
+            "user_type": "Session Missing",
+            "action": "dashboard_visit",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "user_type": null,
+                "dashboard_access": "successful"
+            },
+            "timestamp": "2025-02-11T13:17:51.661Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 25,
+        "fields": {
+            "user": 2,
+            "user_name": "shilpi",
+            "user_type": "Session Missing",
+            "action": "dashboard_visit",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "user_type": null,
+                "dashboard_access": "successful"
+            },
+            "timestamp": "2025-02-11T13:19:39.393Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 26,
+        "fields": {
+            "user": 2,
+            "user_name": "shilpi",
+            "user_type": "Session Missing",
+            "action": "dashboard_visit",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "user_type": null,
+                "dashboard_access": "successful"
+            },
+            "timestamp": "2025-02-11T13:21:01.309Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 27,
+        "fields": {
+            "user": 2,
+            "user_name": "shilpi",
+            "user_type": "Session Missing",
+            "action": "Profile Viewed",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "status": "viewed"
+            },
+            "timestamp": "2025-02-11T13:22:08.167Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 28,
+        "fields": {
+            "user": 2,
+            "user_name": "Unknown",
+            "user_type": "Unknown",
+            "action": "User Updated",
+            "ip_address": null,
+            "user_agent": null,
+            "details": null,
+            "timestamp": "2025-02-11T13:22:17.766Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 29,
+        "fields": {
+            "user": 2,
+            "user_name": "shilpi",
+            "user_type": "Session Missing",
+            "action": "Profile Picture Updated",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "profile_pic": null
+            },
+            "timestamp": "2025-02-11T13:22:17.775Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 30,
+        "fields": {
+            "user": 2,
+            "user_name": "shilpi",
+            "user_type": "Session Missing",
+            "action": "Profile Viewed",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "status": "viewed"
+            },
+            "timestamp": "2025-02-11T13:22:17.931Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 31,
+        "fields": {
+            "user": 2,
+            "user_name": "Unknown",
+            "user_type": "Unknown",
+            "action": "User Updated",
+            "ip_address": null,
+            "user_agent": null,
+            "details": null,
+            "timestamp": "2025-02-11T13:22:20.831Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 32,
+        "fields": {
+            "user": 2,
+            "user_name": "shilpi",
+            "user_type": "Session Missing",
+            "action": "profile_update",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "updated_fields": [
+                    "profile_pic",
+                    "about",
+                    "etc"
+                ]
+            },
+            "timestamp": "2025-02-11T13:22:20.837Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 33,
+        "fields": {
+            "user": 2,
+            "user_name": "shilpi",
+            "user_type": "Session Missing",
+            "action": "Profile Viewed",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "status": "viewed"
+            },
+            "timestamp": "2025-02-11T13:22:20.993Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 34,
+        "fields": {
+            "user": 2,
+            "user_name": "shilpi",
+            "user_type": "Session Missing",
+            "action": "dashboard_visit",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "user_type": null,
+                "dashboard_access": "successful"
+            },
+            "timestamp": "2025-02-11T13:22:26.434Z"
+        }
+    },
+    {
+        "model": "enroll.useractivitylog",
+        "pk": 35,
+        "fields": {
+            "user": 2,
+            "user_name": "shilpi",
+            "user_type": "Session Missing",
+            "action": "dashboard_visit",
+            "ip_address": "127.0.0.1",
+            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+            "details": {
+                "user_type": null,
+                "dashboard_access": "successful"
+            },
+            "timestamp": "2025-02-11T13:26:08.553Z"
+        }
+    }

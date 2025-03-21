@@ -1,0 +1,170 @@
+{% extends "vendor/base.html" %}
+
+{% block title %}
+<title>Manage Products | User Management</title>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">Manage Products</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <form method="GET" action="">
+                {% csrf_token %}
+                <div class="form-group d-flex justify-content-between align-items-center">
+                    <div class="flex-grow-1">
+                        <label for="search">Search</label>
+                        <input type="text" id="search" name="search" class="form-control"
+                            placeholder="Search by name, SKU, or brand" value="{{ request.GET.search }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary ml-4" style="margin-bottom: -28px;">Search</button>
+                    <a href="{% url 'vendor:product_list' %}" class="btn btn-secondary ml-2"
+                        style="margin-bottom: -28px; margin-left: 10px;">
+                        <i class="fas fa-undo"></i> Reset
+                    </a>
+                </div>
+            </form>
+
+            <div class="row justify-content-center table-container">
+                <div class="col-md-12">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <div class="text-right mb-3">
+                                <a href="{% url 'vendor:add_product' %}" class="btn"
+                                    style="background-color: darkgreen; color: white;">Add Product</a>
+                            </div>
+
+                            {% if messages %}
+                            <div id="messages-container">
+                                {% for message in messages %}
+                                <div class="alert alert-success alert-dismissible">
+                                    {{ message }}
+                                    <button type="button" class="close" onclick="closeMessage(this)">&times;</button>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Sno.</th>
+                                        <th>Product Name</th>
+                                        <th>Brand</th>
+                                        <th>Category</th>
+                                        <th>Sub-Category</th>
+                                        <th>Price</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for product in products %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        
+                                        <td>{{ product.product_name }}</td>
+                                        
+                                        <td>{{ product.brand }}</td>
+                                        <td>{% if product.category %}
+                                            {{ product.category.category_name }}
+                                            {% else %}
+                                            -
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if product.subcategory %}
+                                            {{ product.subcategory.name }}
+                                            {% else %}
+                                            -
+                                            {% endif %}
+                                        </td>
+                                        <td> {{ product.price }}</td>
+                                        <td>
+                                            {% if product.status == 'approved' %}
+                                                <span class="badge badge-success">Approved</span>
+                                            {% elif product.status == 'pending' %}
+                                                <span class="badge badge-warning">Pending</span>
+                                            {% else %}
+                                                <span class="badge badge-danger">Rejected</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+
+                                            <a href="{% url 'vendor:edit_product' product.id %}"
+                                                class="btn btn-sm btn-primary">Edit</a>
+
+                                            <a href="{% url 'vendor:product_delete' product.id %}"
+                                                class="btn btn-sm btn-danger">Delete</a>
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'vendor:view_product' product.id %}" class="btn btn-sm btn-danger">View</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+
+                            <!-- Pagination -->
+                            {% if products.paginator.num_pages > 1 %}
+                            <nav>
+                                <ul class="pagination justify-content-center">
+                                    {% if products.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=1">First</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link"
+                                            href="?page={{ products.previous_page_number }}">Previous</a>
+                                    </li>
+                                    {% endif %}
+
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ products.number }}</span>
+                                    </li>
+
+                                    {% if products.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ products.next_page_number }}">Next</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ products.paginator.num_pages }}">Last</a>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+    function closeMessage(button) {
+        const alertDiv = button.parentElement;
+        alertDiv.style.display = 'none';
+    }
+
+</script>
+
+{% endblock %}
+
+
+

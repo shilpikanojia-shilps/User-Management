@@ -1,0 +1,192 @@
+{% extends "enroll/base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Add Role | User Management</title>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">Add Role</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid ml-0 pl-0">
+            <div class="row justify-content-start">
+                <div class="col-md-12">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <form id="addRoleForm" method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+
+                                <!-- Image Upload Section -->
+                                <div class="col-12 user-img" style="text-align: center; margin: 20px 0; padding: 0;">
+                                    <label for="id_profile_pic" class="upload-label" style="display: inline-block; position: relative; width: 120px; height: 120px; border-radius: 50%; overflow: hidden; cursor: pointer;">
+                                        <!-- Image Preview -->
+                                        <img id="imagePreview" src="{% static 'enroll/assets/images/users/avatar-3.jpg' %}" alt="Profile Picture" class="upload-icon" style="width: 100%; height: 100%; object-fit: cover;">
+                                        <!-- Edit Icon -->
+                                        <div class="edit-overlay" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.5); padding: 5px; text-align: center;">
+                                            <i class="fas fa-camera" style="color: white;"></i>
+                                        </div>
+                                    </label>
+                                    <input type="file" id="id_profile_pic" name="profile_pic" accept="image/*" style="display: none;" onchange="previewImage(event)">
+                                </div>
+
+                                <!-- Form Fields Section -->
+                                <div class="form-group">
+                                    <label for="name" style="color: #000000;">Name</label>
+                                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter name" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="email" style="color: #000000;">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="contact" style="color: #000000;">Contact</label>
+                                    <input type="text" class="form-control" id="contact" name="contact" placeholder="Enter contact number" maxlength="10" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="password" style="color: #000000;">Password</label>
+                                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" required>
+                                </div>
+
+                                <!-- Role Type Selection -->
+                                <div class="form-group">
+                                    <label for="role_type" style="color: #000000;">Role Type</label>
+                                    <select class="form-control" id="role_type" name="role_type" required>
+                                        <option value="">Select Role Type</option>
+                                        <option value="HR">HR</option>
+                                        <option value="Employee">Employee</option>
+                                        <option value="Accounts">Accounts</option>
+                                    </select>
+                                </div>
+
+                                <!-- Permissions Section -->
+                                <div class="form-group mt-4">
+                                    <label style="color: #000000;">Permissions</label>                                   
+                                    <div id="permissions-container">
+                                        <!-- Permissions will be loaded dynamically based on role type -->
+                                    </div>
+                                </div>
+
+                                <div class="form-group text-center mt-4">
+                                    <button type="submit" class="btn btn-primary">Create Role</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function previewImage(event) {
+    const input = event.target;
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('imagePreview').src = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// Role permissions data from backend
+const rolePermissions = {
+    'HR': JSON.parse('{{ role_permissions.HR|safe }}'),
+    'Employee': JSON.parse('{{ role_permissions.Employee|safe }}'),
+    'Accounts': JSON.parse('{{ role_permissions.Accounts|safe }}')
+};
+
+// Show permissions based on role type
+document.getElementById('role_type').addEventListener('change', function() {
+    const roleType = this.value;
+    const permissionsContainer = document.getElementById('permissions-container');
+    permissionsContainer.innerHTML = '';
+
+    if (roleType && rolePermissions[roleType]) {
+        const permissions = rolePermissions[roleType];
+        const permissionsList = document.createElement('div');
+        permissionsList.className = 'permissions-list mt-3';
+        
+        // Add a select/deselect all checkbox
+        const selectAllDiv = document.createElement('div');
+        selectAllDiv.className = 'form-check mb-3';
+        selectAllDiv.innerHTML = `
+            <input class="form-check-input" type="checkbox" id="selectAll" checked>
+            <label class="form-check-label" for="selectAll">
+                <strong>Select/Deselect All</strong>
+            </label>
+        `;
+        permissionsList.appendChild(selectAllDiv);
+
+        // Add individual permission checkboxes
+        Object.entries(permissions).forEach(([codename, description]) => {
+            const permissionDiv = document.createElement('div');
+            permissionDiv.className = 'form-check mb-2';
+            permissionDiv.innerHTML = `
+                <input class="form-check-input permission-checkbox" type="checkbox" name="permissions[]" 
+                       value="${codename}" id="perm_${codename}" checked>
+                <label class="form-check-label" for="perm_${codename}">
+                    ${description}
+                </label>
+            `;
+            permissionsList.appendChild(permissionDiv);
+        });
+        
+        permissionsContainer.appendChild(permissionsList);
+
+        // Add select all functionality
+        const selectAllCheckbox = document.getElementById('selectAll');
+        const permissionCheckboxes = document.querySelectorAll('.permission-checkbox');
+
+        selectAllCheckbox.addEventListener('change', function() {
+            permissionCheckboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+
+        // Update select all checkbox when individual permissions are changed
+        permissionCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const allChecked = [...permissionCheckboxes].every(cb => cb.checked);
+                selectAllCheckbox.checked = allChecked;
+            });
+        });
+    }
+});
+
+// Form validation
+document.getElementById('addRoleForm').addEventListener('submit', function(e) {
+    const contact = document.getElementById('contact').value;
+    if (!/^\d{10}$/.test(contact)) {
+        e.preventDefault();
+        alert('Please enter a valid 10-digit contact number');
+    }
+
+    // Ensure at least one permission is selected
+    const checkedPermissions = document.querySelectorAll('input[name="permissions[]"]:checked');
+    if (checkedPermissions.length === 0) {
+        e.preventDefault();
+        alert('Please select at least one permission');
+    }
+});
+
+// Allow only numbers in contact field
+document.getElementById('contact').addEventListener('input', function() {
+    this.value = this.value.replace(/[^0-9]/g, '');
+});
+</script>
+{% endblock %}

@@ -1,0 +1,138 @@
+{% extends 'enroll/base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Roles & Permissions | User Management</title>
+
+<style>
+    body[data-sidebar=dark] .mm-active {
+        color: black;
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">Manage Roles</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Role List -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="header-title">Roles</h4>
+                            <a href="{% url 'enroll:add_role' %}" class="btn btn-primary">
+                                Add New Role
+                            </a>
+
+                        </div>
+
+                        {% if messages %}
+                        <div id="messages-container">
+                            {% for message in messages %}
+                            <div class="alert alert-success alert-dismissible">
+                                {{ message }}
+                                <button type="button" class="close" onclick="closeMessage(this)">
+                                    &times;
+                                </button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <div class="table-responsive">
+                            <table class="table table-centered mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Role Name</th>
+                                        <th>Description</th>
+                                        <th>Permissions</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for role in roles %}
+                                    <tr>
+                                        <td>{{ role.name }}</td>
+                                        <td>{{ role.description }}</td>
+                                        <td>
+                                            {% for permission in role.permissions.all %}
+                                            <span class="badge bg-primary">{{ permission.name }}</span>
+                                            {% endfor %}
+                                        </td>
+                                        <td class="d-flex justify-content-around">
+                                            <a href="{% url 'enroll:edit_role' role.id %}" class="btn btn-
+                                                sm btn-info">Edit</a>
+                                            <button class="btn btn-sm btn-danger" onclick="deleteRole({{ role.id }})">
+                                                Delete</button>
+
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+<script> window.jQuery || document.write('<script src="{% static "enroll/assets/libs/jquery/jquery.min.js" %}"><\/script>')</script>
+
+
+
+{% block extra_js%}
+<script src="{% static 'enroll/assets/libs/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'enroll/assets/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'enroll/assets/libs/metismenu/metisMenu.min.js' %}"></script>
+<script src="{% static 'enroll/assets/libs/simplebar/simplebar.min.js' %}"></script>
+<script src="{% static 'enroll/assets/libs/node-waves/waves.min.js' %}"></script>
+
+<!-- apexcharts -->
+<script src="{% static 'enroll/assets/libs/apexcharts/apexcharts.min.js' %}"></script>
+
+<script src="{% static 'enroll/assets/js/pages/dashboard-2.init.js' %}"></script>
+
+<script src="{% static 'enroll/assets/js/app.js' %}"></script>
+<script>
+    function deleteRole(roleId) {
+        if (confirm('Are you sure you want to delete this role?')) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = "{% url 'enroll:manage_roles' %}" + roleId + '/delete/';
+
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = 'csrfmiddlewaretoken';
+            csrfInput.value = '{{ csrf_token }}';
+
+            form.appendChild(csrfInput);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+
+    function closeMessage(button) {
+        var alertDiv = button.parentElement;
+        alertDiv.style.display = "none";
+    }
+
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends 'enroll/base.html' %}
+
+{% load static %}
+
+{% block title %}
+<title>Edit Sub-Category | Category Management</title>
+
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="container-fluid">
+
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+                <h4 class="page-title mb-0 font-size-18">Edit Sub-Category</h4>
+            </div>
+
+            {% if messages %}
+            <div class="alert alert-dismissible">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="row">
+                <div class="col-12">
+                    <form method="POST" enctype="multipart/form-data" class="p-4 shadow-sm bg-white rounded">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label for="name">Subcategory Name</label>
+                            <input type="text" id="name" name="name" value="{{ subcategory.name }}" class="form-control"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="category">Select Category</label>
+                            <select id="category" name="category" class="form-control" required>
+                                {% for category in categories %}
+                                <option value="{{ category.id }}" {% if category == subcategory.category %}selected{%  endif %}> {{ category.category_name }}</option>
+                             
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Short Description:</label>
+                                <textarea name="short_description" class="form-control form-control-lg"
+                                    placeholder="Enter short description">{{ subcategory.short_description }}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Short Description:</label>
+                                <textarea name="long_description" class="form-control form-control-lg"
+                                    placeholder="Enter long description">{{ subcategory.long_description }}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Meta Description:</label>
+                                <textarea name="meta_descriptions" class="form-control form-control-lg"
+                                    placeholder="Enter meta description">{{ subcategory.meta_descriptions }}</textarea>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Meta Title:</label>
+                                <textarea name="meta_titles" class="form-control form-control-lg"
+                                    placeholder="Enter meta title">{{ subcategory.meta_titles }}</textarea>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Feature Category:</label>
+                                <select name="feature_category" class="form-control form-control-lg">
+                                    <option value="Yes" {% if subcategory.feature_category == 'Yes' %}selected{% endif %}>
+                                        Yes</option>
+                                    <option value="No" {% if subcategory.feature_category == 'No' %}selected{% endif %}>
+                                        No</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Status:</label>
+                                <select name="status" class="form-control form-control-lg">
+                                    <option value="Active" {% if subcategory.status == 'Active' %}selected{% endif %}>
+                                        Active</option>
+                                    <option value="Inactive" {% if subcategory.status == 'Inactive' %}selected{% endif %}>
+                                        Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Current Image:</label><br>
+                                {% if subcategory.image %}
+                                <img src="{{ subcategory.image.url }}" alt="SubCategory Image" width="100"><br>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Upload New Image:</label>
+                                <input type="file" name="images">
+                            </div>
+                        </div>
+
+
+                        <button type="submit" class="btn btn-primary" style="margin-right: 10px;">Update </button>
+                        <a href="{% url 'enroll:manage_subcategories' %}" style ="background-color: #595c69; border-color: #4e5057;" class="btn btn-secondary">Cancel</a>
+                    </form>
+                </div>
+
+                {% endblock %}

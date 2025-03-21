@@ -1,0 +1,245 @@
+{% extends "vendor/base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Create Vendor Profile | User Management</title>
+
+<style>
+    .profile-pic-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .profile-pic {
+        width: 128px;
+        /* Adjust if needed */
+        height: 128px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    .edit-icon {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        background: white;
+        border-radius: 50%;
+        padding: 5px;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .edit-icon i {
+        font-size: 16px;
+        color: #333;
+    }
+
+    .profile-pic-container {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+    }
+
+    .profile-pic {
+        width: 128px;
+        height: 128px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 2px dashed #3b82f6;
+    }
+
+    .edit-icon {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        background: white;
+        border-radius: 50%;
+        padding: 5px;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .edit-icon i {
+        font-size: 16px;
+        color: #333;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">Personal Details</h4>
+                </div>
+            </div>
+        </div>
+
+        {% if messages %}
+        <div id="messages-container">
+            {% for message in messages %}
+            <div class="alert alert-success alert-dismissible">
+                {{ message }}
+                <button type="button" class="close" onclick="closeMessage(this)">
+                    &times;
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+
+        <!-- Personal Profile Section -->
+        <div class="card">
+            <div class="card-header">
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 col-xl-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="text-center mb-4">
+                                <form id="profilePicForm" enctype="multipart/form-data" method="POST" action="#">
+                                    {% csrf_token %}
+                                    <div class="profile-pic-container position-relative d-inline-block">
+                                        <img id="profilePreview"
+                                            src="{% if vendor.profile_pic %}{{ vendor.profile_pic.url }}{% else %}{% static 'vendor/assets/images/users/avatar-2.jpg' %}{% endif %}"
+                                            alt="Profile Picture" class="avatar-lg rounded-circle border">
+                                        <label for="profilePic" class="edit-icon position-absolute"
+                                            style="bottom: 10px; right: 10px; cursor: pointer;">
+                                            <i class="fas fa-camera"></i>
+                                        </label>
+                                        <input type="file" id="profilePic" name="profile_pic" accept="image/*"
+                                            class="d-none" onchange="previewAndSubmit(this)">
+                                    </div>
+                                </form>
+                            </div>
+
+
+                            <form id="personalInfoForm" method="POST" action="{% url 'vendor:vendor_profile' %}">
+                                {% csrf_token %}
+
+                                <div class="form-group">
+                                    <label for="full_name">Full Name</label>
+                                    <input type="text" class="form-control" id="full_name" name="full_name"
+                                        value="{{ vendor.full_name }}" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email"
+                                        value="{{ vendor.email }}" required>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label for="contact">Contact</label>
+                                    <input type="text" class="form-control" id="contact" name="contact"
+                                        value="{{ vendor.contact }}" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="about">About</label>
+                                    <input type="text" class="form-control" id="about" name="about"
+                                        value="{{ vendor.about }}">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="State">State <span class="text-danger">*</span></label>
+                                    <select class="form-control" id="State" name="state">
+                                        
+                                        <option value="">Select State</option>
+                                        {% for state in states %}
+                                        <option {% if selected_state == state.name %} selected
+                                            {% endif %} value="{{ state.name }}">{{ state.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="City">City <span class="text-danger">*</span></label>
+                                    <select class="form-control" id="City" name="city" required>
+                                        <option value="">Select City</option>
+                                        {% if selected_city %}
+                                        <option value="{{ city.name }}" {% if selected_city == city.name %} selected {% endif %}>
+                                            {{ city.name }}
+                                        </option>
+                                        {% endif %}
+
+                                    </select>
+                                </div>
+
+
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">Save </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    {% endblock %}
+
+                    {% block extra_js %}
+
+                    <script src="{% static 'vendor/assets/libs/jquery/jquery.min.js' %}"></script>
+                    <script src="{% static 'vendor/assets/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+                    <script src="{% static 'vendor/assets/libs/metismenu/metisMenu.min.js' %}"></script>
+                    <script src="{% static 'vendor/assets/libs/simplebar/simplebar.min.js' %}"></script>
+                    <script src="{% static 'vendor/assets/libs/node-waves/waves.min.js' %}"></script>
+
+                    <!-- apexcharts -->
+                    <script src="{% static 'vendor/assets/libs/apexcharts/apexcharts.min.js' %}"></script>
+
+                    <script src="{% static 'vendor/assets/js/pages/dashboard-2.init.js' %}"></script>
+
+                    <script src="{% static 'vendor/assets/js/app.js' %}"></script>
+
+                    <script>
+
+                        function closeMessage(button) {
+                            const alertDiv = button.parentElement;
+                            alertDiv.style.display = 'none';
+                        }
+
+
+                        function previewAndSubmit(input) {
+                            const file = input.files[0];
+                            if (file) {
+                                const reader = new FileReader();
+                                reader.onload = function (e) {
+                                    document.getElementById('profilePreview').src = e.target.result;
+                                };
+                                reader.readAsDataURL(file);
+                                document.getElementById('profilePicForm').submit();
+                            }
+                        }
+
+
+                        document.getElementById("State").addEventListener("change", function () {
+                            let stateId = this.value;  // Get Selected State ID
+                            let cityDropdown = document.getElementById("City");
+                            
+                            if (stateId) {
+                                fetch(`/vendor/get-cities/?state_id=${stateId}`)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        cityDropdown.innerHTML = '<option value="">Select City</option>';
+                                        data.cities.forEach(city => {
+                                            let option = document.createElement("option");
+                                            option.value = city.name;
+                                            option.textContent = city.name;
+                                            cityDropdown.appendChild(option);
+                                        });
+                                    })
+                                    .catch(error => console.error("Error fetching cities:", error));
+                            } else {
+                                cityDropdown.innerHTML = '<option value="">Select City</option>';
+                            }
+                        });
+
+                    </script>
+
+
+                    {% endblock %}
