@@ -1,0 +1,87 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Welcome, {{ request.user.username }}!</h2>
+            <a href="{% url 'store:logout' %}" class="btn btn-outline-danger btn-sm mt-2">Logout</a>
+        </div>
+
+        <div class="row justify-content-center g-4">
+            <div class="col-md-4">
+                <div class="card text-center shadow-sm card-hover">
+                    <div class="card-body">
+                        <h4 class="card-title">Dashboard</h4>
+                        <p class="card-text">View your dashboard insights.</p>
+                        <a href="{% url 'store:dashboard' %}" class="btn btn-primary">Go</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card text-center shadow-sm card-hover">
+                    <div class="card-body">
+                        <h4 class="card-title">Profile</h4>
+                        <p class="card-text">Edit or view your profile information.</p>
+                        <a href="#" class="btn btn-primary">Go</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card text-center shadow-sm card-hover">
+                    <div class="card-body">
+                        <h4 class="card-title">Products</h4>
+                        <p class="card-text">Manage or browse products.</p>
+                        <a href="{% url 'store:product_listing' %}" class="btn btn-primary">Go</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Set timeout to 1 min (60,000 ms)
+        const SESSION_TIMEOUT = 600000;
+      
+        let sessionTimer = setTimeout(handleSessionTimeout, SESSION_TIMEOUT);
+      
+        function resetTimer() {
+          clearTimeout(sessionTimer);
+          sessionTimer = setTimeout(handleSessionTimeout, SESSION_TIMEOUT);
+        }
+      
+        function handleSessionTimeout() {
+          alert("Your session has expired due to inactivity. You will be logged out.");
+          window.location.href = "{% url 'store:logout' %}";
+        }
+      
+        // Track user activity to reset timer
+        window.onload = resetTimer;
+        document.onmousemove = resetTimer;
+        document.onkeypress = resetTimer;
+        document.onclick = resetTimer;
+        document.onscroll = resetTimer;
+    </script>
+      
+      
+
+</body>
+
+</html>

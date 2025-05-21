@@ -1,8 +1,12 @@
 {% extends "vendor/base.html" %}
+{% load static %}
+
 
 {% block title %}
+
 <title>Manage Products | User Management</title>
 {% endblock %}
+
 
 {% block content %}
 <div class="main-content">
@@ -60,7 +64,6 @@
                                         <th>Brand</th>
                                         <th>Category</th>
                                         <th>Sub-Category</th>
-                                        <th>Price</th>
                                         <th>Status</th>
                                         <th>Actions</th>
                                         <th></th>
@@ -75,19 +78,23 @@
                                         
                                         <td>{{ product.brand }}</td>
                                         <td>{% if product.category %}
-                                            {{ product.category.category_name }}
+                                                {{ product.category.category_name }}
                                             {% else %}
-                                            -
+                                                -
                                             {% endif %}
                                         </td>
                                         <td>
                                             {% if product.subcategory %}
-                                            {{ product.subcategory.name }}
+                                                {{ product.subcategory.name }}
                                             {% else %}
-                                            -
+                                                -
                                             {% endif %}
                                         </td>
-                                        <td> {{ product.price }}</td>
+
+                                        
+                                       
+
+                                       
                                         <td>
                                             {% if product.status == 'approved' %}
                                                 <span class="badge badge-success">Approved</span>
@@ -155,6 +162,17 @@
 {% endblock %}
 
 {% block extra_js %}
+
+<script src="{% static 'vendor/assets/libs/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/assets/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'vendor/assets/libs/metismenu/metisMenu.min.js' %}"></script>
+<script src="{% static 'vendor/assets/libs/simplebar/simplebar.min.js' %}"></script>
+<script src="{% static 'vendor/assets/libs/node-waves/waves.min.js' %}"></script>
+<script src="{% static 'vendor/assets/libs/apexcharts/apexcharts.min.js' %}"></script>
+<script src="{% static 'vendor/assets/js/pages/dashboard-2.init.js' %}"></script>
+<script src="{% static 'vendor/assets/js/app.js' %}"></script>
+
+
 
 <script>
     function closeMessage(button) {

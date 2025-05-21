@@ -1,0 +1,612 @@
+{% load static %}
+{% load custom_filters %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Product Listing | Colorful E-Commerce</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+  <link rel="icon" href="{% static 'favicon.ico' %}" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+        :root {
+      --primary-blue: #2874f0;
+      --secondary-blue: #1a5fba;
+      --yellow: #ffe11b;
+      --orange: #fb641b;
+      --green: #388e3c;
+      --red: #ff6161;
+      --white: #ffffff;
+      --light-gray: #f1f3f6;
+      --medium-gray: #e0e0e0;
+      --dark-gray: #878787;
+      --text-dark: #212121;
+      --text-medium: #424242;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--light-gray);
+      color: var(--text-dark);
+      line-height: 1.5;
+    }
+
+    .container-fluid {
+      max-width: 1600px;
+      padding: 0 15px;
+    }
+
+    /* Header Styles */
+    .logout-btn {
+      background-color: var(--primary-blue);
+      color: white !important;
+      border: none;
+      border-radius: 2px;
+      padding: 8px 15px;
+      font-weight: 500;
+      box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
+      transition: all 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      background-color: var(--secondary-blue);
+      color: white;
+      box-shadow: 0 4px 8px 0 rgba(0,0,0,.2);
+    }
+
+    /* Filter Section */
+    .filter-section {
+      background: var(--white);
+      border-radius: 2px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+      border: none;
+    }
+
+    .filter-title {
+      font-weight: 700;
+      margin-bottom: 15px;
+      color: var(--text-dark);
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--medium-gray);
+    }
+
+    .form-check {
+      margin-bottom: 10px;
+    }
+
+    .form-check-input {
+      width: 16px;
+      height: 16px;
+      margin-top: 0.18em;
+      border: 1px solid var(--dark-gray);
+    }
+
+    .form-check-input:checked {
+      background-color: var(--primary-blue);
+      border-color: var(--primary-blue);
+    }
+
+    .form-check-label {
+      margin-left: 8px;
+      font-size: 14px;
+      color: var(--text-medium);
+      cursor: pointer;
+    }
+
+    /* Product Cards */
+    .product-card {
+      background: var(--white);
+      border-radius: 0;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 1px 2px 0 rgba(0,0,0,.1);
+      border: none;
+      transition: all 0.3s ease;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .product-card:hover {
+      box-shadow: 0 4px 8px 0 rgba(0,0,0,.2);
+      transform: translateY(-3px);
+    }
+
+    .product-card img {
+      width: 100%;
+      height: 160px;
+      object-fit: contain;
+      margin-bottom: 10px;
+      background: var(--light-gray);
+      padding: 10px;
+    }
+
+    .product-card h5 {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: var(--text-dark);
+      height: 40px;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .product-card .price {
+      font-weight: 700;
+      color: var(--text-dark);
+      font-size: 16px;
+      margin: 8px 0;
+    }
+
+    .product-card .price::before {
+      content: "₹";
+    }
+
+    .product-meta {
+      font-size: 12px;
+      color: var(--dark-gray);
+      margin-bottom: 10px;
+    }
+
+    .view-details {
+      font-size: 13px;
+      color: var(--primary-blue);
+      text-decoration: none;
+      font-weight: 500;
+      display: inline-block;
+      text-transform: uppercase;
+    }
+
+    .view-details:hover {
+      color: var(--secondary-blue);
+      text-decoration: underline;
+    }
+
+    /* Rating System */
+    .product-rating {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .star-rating {
+      color: var(--white);
+      background-color: var(--green);
+      padding: 2px 4px 2px 4px;
+      border-radius: 3px;
+      display: inline-flex;
+      align-items: center;
+      font-size: 12px;
+      line-height: 1;
+      margin-right: 8px;
+    }
+
+    .star-rating i {
+      font-size: 10px;
+      margin-right: 2px;
+    }
+
+    .rating-value {
+      margin-left: 3px;
+      font-weight: 600;
+    }
+
+    .rating-count {
+      color: var(--white);
+      font-size: 11px;
+      margin-left: 3px;
+    }
+
+    /* Reset Button */
+    #reset-filters {
+      width: 100%;
+      padding: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 2px;
+      background-color: var(--orange);
+      color: white;
+      border: none;
+      text-transform: uppercase;
+      box-shadow: 0 1px 2px 0 rgba(0,0,0,.2);
+    }
+
+    #reset-filters:hover {
+      background-color: #e55b17;
+    }
+
+    /* Pagination */
+    .pagination {
+      margin-top: 25px;
+    }
+
+    .page-item.active .page-link {
+      background-color: var(--primary-blue);
+      border-color: var(--primary-blue);
+    }
+
+    .page-link {
+      color: var(--primary-blue);
+      padding: 6px 12px;
+      border-radius: 2px !important;
+      margin: 0 3px;
+      border: 1px solid var(--medium-gray);
+    }
+
+    .page-link:hover {
+      color: var(--secondary-blue);
+      background-color: #f0f5ff;
+    }
+
+    /* Loading Animation */
+    #loading {
+      display: none;
+      text-align: center;
+      margin: 30px 0;
+    }
+
+    .spinner-border {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-width: 0.2em;
+      color: var(--primary-blue);
+    }
+
+    /* Empty State */
+    .alert-warning {
+      background-color: #fff8e1;
+      border-color: #ffecb3;
+      color: #ff6f00;
+      width: 100%;
+      border-radius: 2px;
+      padding: 15px;
+      text-align: center;
+    }
+
+    /* Header Section */
+    .page-header {
+      background-color: var(--primary-blue);
+      color: white;
+      padding: 15px 0;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
+    }
+
+    .page-header h4 {
+      margin: 0;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+    }
+
+    .page-header h4:before {
+      content: "";
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      background-color: var(--yellow);
+      margin-right: 10px;
+      border-radius: 2px;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .product-card {
+        padding: 12px;
+      }
+      
+      .product-card img {
+        height: 120px;
+      }
+      
+      .filter-section {
+        padding: 12px;
+      }
+      
+      .page-header {
+        padding: 12px 0;
+      }
+    }
+  
+  </style>
+</head>
+
+<body>
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="d-flex justify-content-between align-items-center">
+        <h4>Product Marketplace</h4>
+        <a href="{% url 'store:logout' %}" class="btn logout-btn">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Filters -->
+      <div class="col-lg-3 col-md-4">
+        <div class="filter-section" id="category-options">
+          <div class="filter-title">Categories</div>
+          {% for cat,count in categories %}
+          <div class="form-check">
+            <input
+              class="form-check-input filter-checkbox"
+              type="checkbox"
+              name="category"
+              value="{{ cat.id }}"
+              data-name="category"
+              {% if cat.id|stringformat:"s" in selected_categories %}checked{% endif %}
+            />
+            <label class="form-check-label">{{ cat.category_name }} ({{ count }})</label>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="filter-section" id="brand-options">
+          <div class="filter-title">Brands</div>
+          {% for brand, count in brands %}
+          <div class="form-check">
+            <input
+              class="form-check-input filter-checkbox"
+              type="checkbox"
+              name="brand"
+              value="{{ brand.id }}"
+              data-name="brand"
+              {% if brand.id|stringformat:"s" in selected_brands %}checked{% endif %}
+            />
+            <label class="form-check-label">{{ brand.brand_name }} ({{ count }})</label>
+          </div>
+          {% endfor %}
+        </div>
+
+        {% for attr_name, options in attribute_filters.items %}
+        <div class="filter-section" id="{{ attr_name|slugify }}-options">
+          <div class="filter-title">{{ attr_name }}</div>
+          {% for option, count in options %}
+          <div class="form-check">
+            <input
+              class="form-check-input filter-checkbox"
+              type="checkbox"
+              name="{{ attr_name|slugify }}[]"
+              value="{{ option.name }}"
+              data-name="{{ attr_name|slugify }}"
+              {% if option.name in selected_attribute_values|get_item:attr_name %}checked{% endif %}
+            />
+            <label class="form-check-label">{{ option.name }} ({{ count }})</label>
+          </div>
+          {% endfor %}
+        </div>
+        {% endfor %}
+
+        <div class="filter-section text-center">
+          <button id="reset-filters" class="btn">Reset All Filters</button>
+        </div>
+      </div>
+
+      <!-- Products -->
+      <div class="col-lg-9 col-md-8">
+        <div id="loading" style="display:none;">
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+
+        <div id="product-list">
+          <div class="row">
+            {% for product in products %}
+            
+            <div class="col-xl-3 col-lg-4 col-md-6">
+              <div class="product-card" data-id="{{ product.id }}">
+                
+                {% if product.images.exists %}
+                <img
+                  src="{{ product.images.first.image.url }}"
+                  alt="{{ product.product_name }}"
+                  class="img-fluid"
+                />
+                {% else %}
+                <img src="{% static 'img/placeholder.png' %}" alt="No image" class="img-fluid" />
+                {% endif %}
+                <h5>{{ product.product_name }}</h5>
+                <div class="product-rating">
+                  {% with full_stars=product.rating|floatformat:"0" %}
+                  {% with remainder=product.rating|floatformat:"1"|cut:"0." %}
+                  <div class="star-rating">
+                    {% for i in "12345" %}
+                    {% if forloop.counter <= full_stars|add:"0" %}
+                    <i class="fas fa-star"></i>
+                    {% elif forloop.counter == full_stars|add:"1" and remainder|add:"0" >= 5 %}
+                    <i class="fas fa-star-half-alt"></i>
+                    {% else %}
+                    <i class="far fa-star"></i>
+                    {% endif %}
+                    {% endfor %}
+                    <span class="rating-value">{{ product.rating|floatformat:1 }}</span>
+                    <span class="rating-count">({{ product.review_count }})</span>
+                  </div>
+                  {% endwith %}
+                  {% endwith %}
+                </div>
+                <p class="price">{{ product.price }}</p>
+                <p class="product-meta">{{ product.brand.brand_name }} • {{ product.category.category_name }}</p>
+                <a href="{% url 'store:product_detail' product.id %}" class="view-details">View Details</a>
+              </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+              <div class="alert alert-warning">No products found with selected filters.</div>
+            </div>
+            {% endfor %}
+          </div>
+
+          <!-- Pagination -->
+          {% if products.paginator.num_pages > 1 %}
+          <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+              {% if products.has_previous %}
+              <li class="page-item">
+                <a
+                  class="page-link"
+                  href="?{% if request.GET %}{{ request.GET.urlencode|safe }}&{% endif %}page={{ products.previous_page_number }}"
+                  >&laquo; Previous</a
+                >
+              </li>
+              {% endif %}
+
+              {% for num in products.paginator.page_range %}
+              <li class="page-item {% if products.number == num %}active{% endif %}">
+                <a
+                  class="page-link"
+                  href="?{% if request.GET %}{{ request.GET.urlencode|safe }}&{% endif %}page={{ num }}"
+                  >{{ num }}</a
+                >
+              </li>
+              {% endfor %}
+
+              {% if products.has_next %}
+              <li class="page-item">
+                <a
+                  class="page-link"
+                  href="?{% if request.GET %}{{ request.GET.urlencode|safe }}&{% endif %}page={{ products.next_page_number }}"
+                  >Next &raquo;</a
+                >
+              </li>
+              {% endif %}
+            </ul>
+          </nav>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function gatherFilters() {
+      const data = {};
+
+      // For each checkbox with class filter-checkbox that is checked
+      $('.filter-checkbox:checked').each(function () {
+        const filterName = $(this).data('name'); // e.g. category, brand, occasion
+
+        if (!data[filterName]) {
+          data[filterName] = [];
+        }
+        data[filterName].push($(this).val());
+      });
+
+      return data;
+    }
+
+    function updateProductsAndFilters() {
+      const filters = gatherFilters();
+
+      $('#loading').show();
+
+      $.ajax({
+        url: "{% url 'store:get_filtered_options' %}",
+        data: filters,
+        dataType: 'json',
+        success: function (response) {
+          console.log('Filter options response:', response);
+          $('#loading').hide();
+
+          // Update Categories
+          let categoryHtml = '';
+          response.categories.forEach(cat => {
+            categoryHtml += `
+              <div class="form-check">
+                <input class="form-check-input filter-checkbox" type="checkbox" data-name="category" value="${cat.id}" ${
+              filters['category'] && filters['category'].includes(cat.id.toString()) ? 'checked' : ''
+            }/>
+                <label class="form-check-label">${cat.category_name} (${cat.products_count})</label>
+              </div>`;
+          });
+          $('#category-options').html(`
+            <div class="filter-title">Categories</div>
+            ${categoryHtml}
+          `);
+
+          // Update Brands
+          let brandHtml = '';
+          response.brands.forEach(brand => {
+            brandHtml += `
+              <div class="form-check">
+                <input class="form-check-input filter-checkbox" type="checkbox" data-name="brand" value="${brand.id}" ${
+              filters['brand'] && filters['brand'].includes(brand.id.toString()) ? 'checked' : ''
+            }/>
+                <label class="form-check-label">${brand.brand_name} (${brand.products_count})</label>
+              </div>`;
+          });
+          $('#brand-options').html(`
+            <div class="filter-title">Brands</div>
+            ${brandHtml}
+          `);
+
+          // Update Attributes
+          for (const attr_name in response.attributes) {
+            const attr = response.attributes[attr_name];
+            let attrHtml = `<div class="filter-section" id="${attr_name}-options"><div class="filter-title">${attr_name}</div>`;
+
+            attr.options.forEach(opt => {
+              attrHtml += `
+                <div class="form-check">
+                  <input class="form-check-input filter-checkbox" type="checkbox" data-name="${attr_name}" value="${opt.name}" ${
+                filters[attr_name] && filters[attr_name].includes(opt.name) ? 'checked' : ''
+              } />
+                  <label class="form-check-label">${opt.name} (${opt.product_count})</label>
+                </div>`;
+            });
+
+            attrHtml += '</div>';
+
+            $(`#${attr_name}-options`).replaceWith(attrHtml);
+          }
+
+          // TODO: Update product list dynamically here if API supports returning filtered products
+
+          // For now just reload page or redirect if needed, or update product list via AJAX
+        },
+        error: function (xhr) {
+          $('#loading').hide();
+          console.error('Error fetching filters:', xhr.responseText);
+        },
+      });
+    }
+
+    $(document).ready(function () {
+      // On page load bind change event
+      $(document).on('change', '.filter-checkbox', function () {
+        updateProductsAndFilters();
+      });
+
+      $('#reset-filters').on('click', function () {
+        $('.filter-checkbox').prop('checked', false);
+        updateProductsAndFilters();
+      });
+    });
+  </script>
+</body>
+
+</html>

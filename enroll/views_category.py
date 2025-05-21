@@ -2,17 +2,19 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.db.models import Q
-from .models import AuthLogin, UserActivityLog, UserProfile, Category, SubCategory, ChildSubCategory, Brand,Tag
+from .models import AuthLogin, UserActivityLog, UserProfile, Category, SubCategory, ChildSubCategory, Brand,Tag, Attribute,Attributeswithcatgory, DropdownOption
 from django.utils.timezone import now
 from .views import check_auth
 from django.utils.text import slugify
 from django.db.models import Count
 from django.http import JsonResponse
 from django.db import models
+from django.core.exceptions import ObjectDoesNotExist
 
 
 
 def get_subcategories(request):
+    print("jjjjjjjjjjjjjjjjj")
     category_id = request.GET.get('category_id')
     subcategories = SubCategory.objects.filter(category_id=category_id).values('id', 'name')
     return JsonResponse(list(subcategories), safe=False)
@@ -31,7 +33,6 @@ def get_subcategories(request):
     return JsonResponse([], safe=False)
 
 def get_child_subcategories(request, subcategory_id):
-    # SubCategory ke andar jitne ChildSubCategory hain unko fetch karna
     child_subcategories = ChildSubCategory.objects.filter(subcategory_id=subcategory_id).values("id", "name")
     return JsonResponse(list(child_subcategories), safe=False)
 
@@ -66,9 +67,8 @@ def manage_categories(request):
 
     categories = Category.objects.all().annotate(subcategory_count=Count('all_subcategories')).values(
         'id', 'category_name', 'subcategory_count', 'feature_category', 'status'
-    )  # Subcategory count
-
-    category_id = request.GET.get('category_id')  # URL se category_id fetch karna
+    ) 
+    category_id = request.GET.get('category_id')  
     if category_id:
         subcategories = subcategories.order_by(
             models.Case(
@@ -78,20 +78,14 @@ def manage_categories(request):
             ),
             "category__category_name"
         )
-    
-    # User profile fetch karna
    
-    # Search functionality
     search_query = request.GET.get('search', '')
     if search_query:
         categories = categories.filter(category_name__icontains=search_query)
 
-    # Pagination
-    paginator = Paginator(categories, 10)  # 10 items per page
+    paginator = Paginator(categories, 10)  
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    
-    # Context pass karna
 
     context = {
         'full_name': full_name,
@@ -120,12 +114,10 @@ def add_category(request):
         long_description = request.POST.get('long_description', '').strip()
         meta_title = request.POST.get('meta_title', '').strip()
         meta_description = request.POST.get('meta_description', '').strip()
-        status = request.POST.get('status', 'Inactive')  # Default 'Inactive'
+        status = request.POST.get('status', 'Inactive')  
         feature_category = request.POST.get('feature_category', 'No')
-        image = request.FILES.get('image', None)  # Image Handling
+        image = request.FILES.get('image', None)  
         
-
-        # Check if category already exists
         if Category.objects.filter(category_name__iexact=category_name).exists():
             messages.warning(request, "Category already exists.")
             return redirect('enroll:add_category')
@@ -159,7 +151,7 @@ def add_category(request):
 
 @check_auth
 def edit_category(request, category_id):
-    category = get_object_or_404(Category, id=category_id)  # Get the category by ID
+    category = get_object_or_404(Category, id=category_id)  
     auth_user = get_object_or_404(AuthLogin, id=request.session.get('user_id'))  
     user_type = auth_user.user_type
     username = auth_user.username
@@ -176,13 +168,12 @@ def edit_category(request, category_id):
         category.feature_category = request.POST.get("feature_category", "").strip()
         category.status = request.POST.get("status", "Inactive").strip()
 
-        # Handle image upload (if any)
         if "image" in request.FILES:
             category.image = request.FILES["image"]
 
-        category.save()  # Save changes
+        category.save() 
         messages.success(request, "Category updated successfully!")
-        return redirect("enroll:manage_categories")  # Redirect to category listing page
+        return redirect("enroll:manage_categories")  
 
     context = {
         "category": category,
@@ -213,16 +204,13 @@ def view_subcategory(request, subcategory_id):
     user_profile, created = UserProfile.objects.get_or_create(user=auth_user)
     full_name = auth_user.fullname if auth_user.fullname.strip() else f"{auth_user.first_name} {auth_user.last_name}"
     subcategory = get_object_or_404(SubCategory, id=subcategory_id)
-    # child_subcategories = SubCategory.objects.filter(category=subcategory)
 
     context = {
-        # "category": category,
         'user_type': user_type,
         'username': username,
         'fullname': full_name,
         'email': auth_user.email,
         'subcategory': subcategory,
-        # 'child_subcategories': child_subcategories
     }
     return render(request, "enroll/category/view_subcategory.html", context)
 
@@ -252,12 +240,9 @@ def manage_subcategories(request):
     if search_query:
         subcategories = subcategories.filter(name__icontains=search_query)
 
-    # Pagination
-    paginator = Paginator(subcategories, 10)  # 10 items per page
+    paginator = Paginator(subcategories, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    
-    # Context pass karna
     
     context = {
         'full_name': full_name,
@@ -281,7 +266,7 @@ def add_subcategory(request):
     user_profile, created = UserProfile.objects.get_or_create(user=auth_user)
     full_name = auth_user.fullname if auth_user.fullname.strip() else f"{auth_user.first_name} {auth_user.last_name}"
     
-    categories = Category.objects.all()  # Category list la rahe hain dropdown ke liye
+    categories = Category.objects.all()  
     parent_subcategories = SubCategory.objects.all()
 
     if request.method == 'POST':
@@ -303,24 +288,21 @@ def add_subcategory(request):
 
         category = get_object_or_404(Category, id=category_id)
         for index, subcategory_name in enumerate(subcategories):
-            if subcategory_name.strip():  # Empty input ignore karna
-                base_slug = slugify(subcategory_name.strip())  # ✅ Slugify applied
-                
-                # ✅ Ensure unique slug
+            if subcategory_name.strip():  
+                base_slug = slugify(subcategory_name.strip()) 
                 unique_slug = base_slug
                 counter = 1
                 while SubCategory.objects.filter(sub_slug=unique_slug).exists():
                     unique_slug = f"{base_slug}-{counter}"
                     counter += 1
 
-                # ✅ Boolean Status Conversion
                 status_value = statuses[index].lower() == "active" if index < len(statuses) else True
                 feature_category_value = feature_categories[index] == "Yes" if index < len(feature_categories) else False
 
                 subcategory = SubCategory.objects.create(
                     category=category,
                     name=subcategory_name.strip(),
-                    sub_slug=unique_slug,  # ✅ Slug properly assigned
+                    sub_slug=unique_slug,  
                     short_description=short_descriptions[index] if index < len(short_descriptions) else "",
                     long_description=long_descriptions[index] if index < len(long_descriptions) else "",
                     meta_title=meta_titles[index] if index < len(meta_titles) else "",
@@ -358,7 +340,7 @@ def edit_subcategory(request, subcategory_id):
     user_profile, created = UserProfile.objects.get_or_create(user=auth_user)
     full_name = auth_user.fullname if auth_user.fullname.strip() else f"{auth_user.first_name} {auth_user.last_name}"
     subcategory = get_object_or_404(SubCategory, id=subcategory_id)
-    categories = Category.objects.all()  # Dropdown ke liye categories fetch karna
+    categories = Category.objects.all() 
 
     if request.method == "POST":
         name = request.POST.get("name")
@@ -388,7 +370,7 @@ def edit_subcategory(request, subcategory_id):
             
             subcategory.save()
             messages.success(request, "Subcategory updated successfully!")
-            return redirect("enroll:manage_subcategories")  # Redirect to the subcategory list page
+            return redirect("enroll:manage_subcategories") 
     context = {
         'full_name': full_name,
         'user': auth_user,
@@ -415,7 +397,7 @@ def delete_subcategory(request, subcategory_id):
 
 @check_auth
 def view_child_subcategory(request, id):
-    childsubcategory = get_object_or_404(ChildSubCategory, id=id)  # Fetch the childsubcategory by ID
+    childsubcategory = get_object_or_404(ChildSubCategory, id=id)  
     auth_user = get_object_or_404(AuthLogin, id=request.session.get('user_id'))  
     user_type = auth_user.user_type
     user_profile, created = UserProfile.objects.get_or_create(user=auth_user)
@@ -443,15 +425,13 @@ def manage_child_subcategories(request):
     full_name = auth_user.fullname if auth_user.fullname.strip() else f"{auth_user.first_name} {auth_user.last_name}"
     subcategories = SubCategory.objects.all().annotate(child_subcategory_count=Count('all_child_subcategories'))
     subcategory_id = request.GET.get('subcategory_id')
-    
-    # child_subcategories = ChildSubCategory.objects.all().order_by('category__name') # Fetch all child subcategories
     child_subcategories = ChildSubCategory.objects.all().order_by('subcategory__category__category_name')
 
     if subcategory_id:
         try:
-            subcategory_id = int(subcategory_id)  # Convert to integer
+            subcategory_id = int(subcategory_id)  
         except ValueError:
-            subcategory_id = None  # Invalid ID case
+            subcategory_id = None  
 
         if subcategory_id:
             child_subcategories = child_subcategories.order_by(
@@ -463,12 +443,10 @@ def manage_child_subcategories(request):
                 'subcategory__category__category_name'
             )
 
-
     search_query = request.GET.get('search', '')
     if search_query:
         child_subcategories = child_subcategories.filter(name__icontains=search_query)
 
-    # Pagination
     paginator = Paginator(child_subcategories, 10)  
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -519,21 +497,15 @@ def add_child_subcategory(request):
 
         for index, childsubcategory_name in enumerate(childsubcategories):
             print(index, childsubcategory_name)
-            if childsubcategory_name.strip():  # Ignore empty input
-                # Create the slug from the childsubcategory_name
+            if childsubcategory_name.strip():  
                 base_slug = slugify(childsubcategory_name.strip())
 
-                # Ensure the slug is unique
                 unique_slug = base_slug
                 counter = 1
-                # while ChildSubCategory.objects.filter(child_slug=unique_slug).exists():
-                #     unique_slug = f"{base_slug}-{counter}"
-                #     counter += 1
                 status_value = statuses[index].lower() == "active" if index < len(statuses) else True
                 feature_category_value = feature_categories[index] == "yes" if index < len(feature_categories) else False
                 image_value = images[index] if index < len(images) else None
 
-                # Create the child subcategory entry
                 childsubcategory = ChildSubCategory.objects.create(
                     category=category,
                     subcategory=subcategory,
@@ -885,3 +857,334 @@ def delete_tag(request, id):
     tag.delete()
     return redirect('enroll:tags')  # Redirect to your list page
 
+
+
+# <================================================>
+
+# <======================Attrubute=================>
+
+
+
+
+@check_auth
+def manage_attribute(request):
+    auth_user = get_object_or_404(AuthLogin, id=request.session.get('user_id'))  
+    user_type = auth_user.user_type
+    user_profile, created = UserProfile.objects.get_or_create(user=auth_user)
+    full_name = auth_user.fullname if auth_user.fullname.strip() else f"{auth_user.first_name} {auth_user.last_name}"
+    attribute = Attribute.objects.all()
+
+    search_query = request.GET.get('search', '')
+    if search_query:
+        name = Attribute.objects.filter(name__icontains=search_query)
+    else:
+        name = Attribute.objects.all()
+
+    paginator = Paginator(name, 10)  
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+
+    context = {       
+        'full_name': full_name,
+        'user': auth_user,
+        'profile_pic': user_profile.profile_pic_url() if hasattr(user_profile, 'profile_pic_url') else None,
+        'fullname': full_name,
+        'email': auth_user.email,
+        'user_type' : user_type, 
+        'attribute': attribute,
+        'search_query': search_query,
+        'page_obj':page_obj,
+    }   
+    return render(request,'enroll/category/attribute.html', context)
+
+
+
+@check_auth
+def add_attribute(request):
+    auth_user = get_object_or_404(AuthLogin, id=request.session.get('user_id'))  
+    user_type = auth_user.user_type
+    user_profile, created = UserProfile.objects.get_or_create(user=auth_user)
+    full_name = auth_user.fullname if auth_user.fullname.strip() else f"{auth_user.first_name} {auth_user.last_name}"
+
+    if request.method =='POST':
+        name = request.POST.get('name')
+        display = request.POST.get('display')
+        default_value = request.POST.get('default_value')
+        type = request.POST.get('type') 
+        status = request.POST.get('status')
+        dropdown_option_names = request.POST.getlist('dropdown_option_name[]')
+        dropdown_option_values = request.POST.getlist('dropdown_option_value[]')
+
+        print(f"Name: {name}, Display: {display}, Default Value: {default_value}, Type: {type}, Status: {status}, dropdown_option_names: {dropdown_option_names}, dropdown_option_values:{dropdown_option_values}")
+
+        atr = Attribute.objects.create(
+            name=name,
+            display_name=display, 
+            default_value=default_value, 
+            type=type,
+            status=status,
+        )
+
+        if type == 'Dropdown':
+            for name, value in zip(dropdown_option_names, dropdown_option_values):
+                DropdownOption.objects.create(
+                    attribute=atr,
+                    name=name,
+                    value=value
+                )
+        atr.save()
+
+        messages.success(request, 'Attribute added Successfully')
+        return redirect('enroll:manage_attribute')
+        
+    dropdown_options = DropdownOption.objects.filter(attribute__isnull=True) 
+    context = {       
+        'full_name': full_name,
+        'user': auth_user,
+        'profile_pic': user_profile.profile_pic_url() if hasattr(user_profile, 'profile_pic_url') else None,
+        'fullname': full_name,
+        'email': auth_user.email,
+        'user_type' : user_type, 
+        'dropdown_options': dropdown_options, 
+        
+    }   
+    return render(request, 'enroll/category/add_attribut.html', context)
+
+
+
+
+@check_auth
+def edit_attribute(request, id):
+    auth_user = get_object_or_404(AuthLogin, id=request.session.get('user_id'))  
+    user_type = auth_user.user_type
+    user_profile, _ = UserProfile.objects.get_or_create(user=auth_user)
+    full_name = auth_user.fullname if auth_user.fullname.strip() else f"{auth_user.first_name} {auth_user.last_name}"
+    attribute = get_object_or_404(Attribute, id=id)
+    selected_options = DropdownOption.objects.filter(attribute=attribute)
+    dropdown_options = DropdownOption.objects.filter(Q(attribute__isnull=True) | Q(attribute=attribute))
+
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        display = request.POST.get('display', '').strip()
+        default_value = request.POST.get('default_value')
+        type_value = request.POST.get('type')
+        status = request.POST.get('status')
+
+        submitted_ids = request.POST.getlist('dropdown_options[]')
+        names = request.POST.getlist('option_names[]')
+        values = request.POST.getlist('option_values[]')
+
+        if name and display:
+            attribute.name = name
+            attribute.display_name = display
+            attribute.default_value = default_value
+            attribute.type = type_value
+            attribute.status = status
+            attribute.save()
+
+            if type_value == "Dropdown":
+                print(submitted_ids,names, values)
+                valid_ids = [int(i) for i in submitted_ids if i.isdigit()]
+                DropdownOption.objects.filter(attribute=attribute).exclude(id__in=valid_ids).delete()
+
+                for i in range(len(names)):
+                    name_val = names[i]
+                    value_val = values[i]
+
+                    DropdownOption.objects.create(attribute=attribute, name=name_val, value=value_val)
+
+            messages.success(request, 'Attribute updated successfully!')
+            return redirect('enroll:manage_attribute')
+
+        else:
+            messages.error(request, 'Required fields cannot be empty!')
+
+    context = {
+        'attribute': attribute,
+        'full_name': full_name,
+        'user': auth_user,
+        'profile_pic': user_profile.profile_pic_url() if hasattr(user_profile, 'profile_pic_url') else None,
+        'fullname': full_name,
+        'email': auth_user.email,
+        'user_type': user_type,
+        'dropdown_options': dropdown_options,
+        'selected_option_ids': selected_options.values_list('id', flat=True),
+    }
+    return render(request, 'enroll/category/edit_attribute.html', context)
+
+
+
+
+@check_auth
+def delete_attribute(request, id):
+    attribute = get_object_or_404(Attribute, id=id)
+    print(f"Deleting attribute: {attribute}") 
+    attribute.delete()
+    print("Attribute deleted successfully!") 
+    return redirect('enroll:manage_attribute')
+
+
+
+import json
+@check_auth
+def manage_attribute_category(request):
+    auth_user = get_object_or_404(AuthLogin, id=request.session.get('user_id'))  
+    user_type = auth_user.user_type
+    user_profile, created = UserProfile.objects.get_or_create(user=auth_user)
+    full_name = auth_user.fullname if auth_user.fullname.strip() else f"{auth_user.first_name} {auth_user.last_name}"
+    categories = Category.objects.all()
+    attributes = Attribute.objects.all()
+    selected_category = None
+    selected_childsubcategory = None
+    assigned_attributes = []
+
+    if request.method == "POST":
+        print(request.method, "++++++++++++++++++")
+        try:
+            if not request.body:
+                print(request.body, "shilpi")
+                return JsonResponse({"status": "error", "message": "Empty request body"}, status=400)
+            
+            category_id = request.POST.get("category_hidden")
+            childsubcategory_id = request.POST.get("childcategory_hidden")
+            subcategory_id = request.POST.get("subcategory_hidden")
+            selected_attributes = request.POST.getlist("attributes")
+            if category_id:  
+                category_instance = Category.objects.get(id=int(category_id)) 
+                print(category_instance, "++++++++++")
+            else:
+                category_instance = None 
+            if subcategory_id:  
+                subcategory_instance = SubCategory.objects.get(id=int(subcategory_id))  
+                print(subcategory_instance, "----------------")
+            else:
+                subcategory_instance = None  
+
+            if childsubcategory_id:  
+                childsubcategory_instance = ChildSubCategory.objects.get(id=int(childsubcategory_id))  
+                print(childsubcategory_instance, "jjjjjjjjjjjjjjjjjjjjj")
+            else:
+                childsubcategory_instance = None  
+
+            attribute_objects = Attribute.objects.filter(id__in=selected_attributes)
+            print(attribute_objects, "0000000000000000000000000000")
+            print(request.POST, "7777777777777777777777")
+            if childsubcategory_id:
+
+                Attributeswithcatgory.objects.filter(child_subcategory=childsubcategory_instance).delete()
+            elif subcategory_id:
+
+                Attributeswithcatgory.objects.filter(subcategory=subcategory_instance).delete()
+            else:
+                Attributeswithcatgory.objects.filter(category=category_instance).delete()
+
+            for attr_id in selected_attributes:  
+                attribute_instance = Attribute.objects.get(id=int(attr_id)) 
+                if childsubcategory_id:
+                    
+                    Attributeswithcatgory.objects.create(
+                        child_subcategory=childsubcategory_instance,  
+                    
+                        attribute=attribute_instance  
+                )
+                elif subcategory_id:
+                    Attributeswithcatgory.objects.create(
+                        subcategory=subcategory_instance, 
+                    
+                        attribute=attribute_instance  
+                )
+                else:
+                    Attributeswithcatgory.objects.create(
+                        category=category_instance,
+                        attribute=attribute_instance  
+                    )
+            if childsubcategory_id: 
+                selected_childsubcategory = get_object_or_404(ChildSubCategory, id=childsubcategory_id)
+                print(selected_childsubcategory,childsubcategory_id)
+                selected_childsubcategory.attributes.set(attribute_objects) 
+
+            if category_id: 
+                selected_category = get_object_or_404(Category, id=category_id)
+                selected_category.attributes.set(attribute_objects)  
+
+            if subcategory_id:  
+                selected_category = get_object_or_404(SubCategory, id=subcategory_id)
+                selected_category.attributes.set(attribute_objects)  
+                
+            messages.success(request, "Attributes mapped successfully")
+            return redirect('enroll:manage_attribute_category' )          
+
+        except Exception as e:
+            print(f"Error: {str(e)}")
+            messages.success(request, "Attributes mapped successfully")
+            return redirect('enroll:manage_attribute_category' )
+
+    context = {
+        'full_name': full_name,
+        'user': auth_user,
+        'profile_pic': user_profile.profile_pic_url() if hasattr(user_profile, 'profile_pic_url') else None,
+        'fullname': full_name,
+        'email': auth_user.email,
+        'user_type': user_type, 
+        'categories': categories, 
+        'attributes': attributes,
+        "selected_category": selected_category,
+        "selected_childsubcategory": selected_childsubcategory,
+        "assigned_attributes": assigned_attributes,       
+    }
+
+    return render(request, 'enroll/category/manage_attribute_category.html', context)
+
+
+
+def get_attributes(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    assigned_attributes = category.attributes.values_list('id', flat=True) 
+
+    return JsonResponse({"assigned_attributes": list(assigned_attributes)})
+
+
+def get_category_attributes(request, category_id):
+    assigned_attributes = Attributeswithcatgory.objects.filter(category_id=category_id).values_list("attribute_id", flat=True)
+    print(assigned_attributes)
+    return JsonResponse({"assigned_attributes": list(assigned_attributes)})
+
+
+def get_subcategories(request, category_id):
+    subcategories = SubCategory.objects.filter(category_id=category_id).values("id", "name")
+    print(subcategories)
+    return JsonResponse({"subcategories": list(subcategories)})
+
+
+def get_subcategory_attributes(request, subcategory_id):
+    assigned_attributes = Attributeswithcatgory.objects.filter(subcategory_id=subcategory_id).values_list("attribute_id", flat=True)
+    print(assigned_attributes)
+    return JsonResponse({"assigned_attributes": list(assigned_attributes)})
+
+
+
+
+def get_child_subcategories(request, subcategory_id):
+    """ Given a subcategory, fetch its child subcategories. """
+    child_subcategories = ChildSubCategory.objects.filter(subcategory_id=subcategory_id).values("id", "name")
+    print(child_subcategories, "jjjjjjjjj")
+    
+    return JsonResponse({"child_subcategories": list(child_subcategories)})
+    
+
+
+def get_child_attributes(request, childsubcategory_id):
+    assigned_attributes = Attributeswithcatgory.objects.filter(
+        child_subcategory_id=childsubcategory_id).values_list("attribute_id", flat=True)    
+    
+    return JsonResponse({"assigned_attributes": list(assigned_attributes)})
+
+
+
+def get_dropdown_options(request):
+    options = DropdownOption.objects.all()
+    data = {
+        "options": [{"id": opt.id, "value": opt.value} for opt in options]
+    }
+    return JsonResponse(data)

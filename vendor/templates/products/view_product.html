@@ -13,12 +13,18 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="page-title-box d-flex align-items-center justify-content-between">
+                    
                     <h4 class="page-title mb-0 font-size-18 fw-bold">Product Details</h4>
+                    
                 </div>
             </div>
+    <!-- 
+                <a href="{% url 'vendor:edit_product' product.id %}"
+                class="btn btn-sm btn-primary" >Edit</a> -->
         </div>
 
         <!-- 📦 Product Basic Details -->
+         
         <div class="card shadow mt-4">
             <div class="card-body">
                 <h4 class="mb-3 text-primary">📦 Product Details</h4>
@@ -33,12 +39,29 @@
                     </tr>
                     <tr>
                         <th>Category</th>
-                        <td>{{ product.category.name }}</td>
+                        <td>{{ product.category.category_name }}</td>
                     </tr>
                     <tr>
                         <th>Subcategory</th>
-                        <td>{{ product.subcategory.name }}</td>
+                        <td>
+                            {% if product.subcategory %}
+                                {{ product.subcategory.name }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
                     </tr>
+                    <!-- <tr>
+                        <th>Child Subcategory</th>
+                        <td>
+                            {% if product.childsubcategory %}
+                                {{ product.childsubcategory.name }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    </tr> -->
+                    
                     <tr>
                         <th>Brand</th>
                         <td>{{ product.brand }}</td>
@@ -87,16 +110,28 @@
         <!-- ⚖️ Dimensions & Weight -->
         <div class="card shadow mt-4">
             <div class="card-body">
-                <h4 class="mb-3 text-primary">⚖️ Dimensions & Weight</h4>
+                <h4 class="mb-3 text-primary">⚖️ Specifications</h4>
                 <table class="table table-bordered">
-                    <tr>
-                        <th>Weight</th>
-                        <td>{{ product.weight }}</td>
-                    </tr>
-                    <tr>
-                        <th>Dimensions</th>
-                        <td>{{ product.dimensions }}</td>
-                    </tr>
+                    <thead>
+                        <tr>
+                            <th>Specification</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if specifications %}
+                            {% for key, value in specifications.items %}
+                                <tr>
+                                    <td>{{ key }}</td>
+                                    <td>{{ value }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="2" class="text-center">❌ No specifications available.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -164,7 +199,7 @@
                     </tr>
                     <tr>
                         <th>Meta Description</th>
-                        <td>{{ product.meta_description }}</td>
+                        <td>{{ product.meta_description|striptags|truncatewords:15 }}</td>
                     </tr>
                     <tr>
                         <th>Meta Keywords</th>
@@ -178,7 +213,7 @@
         <div class="card shadow mt-4">
             <div class="card-body">
                 <h4 class="mb-3 text-primary">📝 Description</h4>
-                <p>{{ product.description }}</p>
+                <p>{{ product.description|striptags|truncatewords:15 }}</p>
             </div>
         </div>
 

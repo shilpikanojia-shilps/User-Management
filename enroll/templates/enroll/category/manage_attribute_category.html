@@ -1,0 +1,199 @@
+{% extends 'enroll/base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Manage Attribute Category | Attribute Management</title>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">Manage Attribute Category</h4>
+                </div>
+            </div>
+        </div>
+
+        {% if messages %}
+        <div id="messages-container">
+            {% for message in messages %}
+            <div class="alert alert-success alert-dismissible">
+                {{ message }}
+                <button type="button" class="close" onclick="closeMessage(this)">&times;</button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="row">
+            <!-- Category List -->
+            <div class="col-md-4">
+                <div class="card shadow-sm p-3 mb-4 bg-white rounded">
+                    <h5 class="card-title text-center text-dark">Categories</h5>
+                    <div class="list-group" id="category-list">
+                        {% for category in categories %}
+                        <a href="#" class="list-group-item list-group-item-action category-item"
+                            data-category-id="{{ category.id }}">{{ category.category_name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="card shadow-sm p-3 mb-4 bg-white rounded" id="subcategory-box" style="display: none;">
+                    <h5 class="card-title text-center text-dark">Subcategories</h5>
+                    <div class="list-group" id="subcategory-list"></div>
+                </div>
+
+                <div class="card shadow-sm p-3 mb-4 bg-white rounded" id="childsubcategory-box" style="display: none;">
+                    <h5 class="card-title text-center text-dark">Child Subcategories</h5>
+                    <div class="list-group" id="childsubcategory-list"></div>
+                </div>
+            </div>
+
+            <!-- Attribute List with Checkbox -->
+            <div class="col-md-8">
+                <div class="card shadow-sm p-3 mb-4 bg-white rounded">
+
+                    <h5 class="card-title text-center text-dark">Select Attributes</h5>
+                    <form id="attribute-form" method="post" action="{% url 'enroll:manage_attribute_category' %}" style="align-items: end;">
+                        {% csrf_token %}
+                        <input type="hidden" name="category_hidden" id="category_hidden">
+                        <input type="hidden" name="subcategory_hidden" id="subcategory_hidden">
+                        <input type="hidden" name="childcategory_hidden" id="childcategory_hidden">
+                        <div id="attribute-container">
+                            {% for attribute in attributes %}
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input attr-checkbox"
+                                    id="attr_{{ attribute.id }}" name="attributes" value="{{ attribute.id }}">
+                                <label class="form-check-label text-dark" for="attr_{{ attribute.id }}">{{ attribute.name }}</label>
+
+                                    
+                            </div>
+                            {% endfor %}
+                        </div>
+
+
+                        <!-- Form Fields -->
+                        <button type="submit" class="btn btn-success" style="margin-right: 10px;">Save</button>
+                        <a href="{% url 'enroll:manage_attribute_category' %}" class="btn btn-secondary">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Category Click Event
+        $(".category-item").click(function (e) {
+            e.preventDefault();
+            var categoryId = $(this).data("category-id");
+            $(".category-item").removeClass("active");
+            $(this).addClass("active");
+            $('#category_hidden').val(categoryId);
+
+            // Fetch and Show Subcategories
+            $.ajax({
+                url: "/get-subcategories/" + categoryId + "/",
+                type: "GET",
+                success: function (data) {
+                    $("#subcategory-list").empty();
+                    $("#subcategory-box").show();
+                    $.each(data.subcategories, function (index, subcategory) {
+                        $("#subcategory-list").append(`<a href="#" class="list-group-item list-group-item-action subcategory-item" data-subcategory-id="${subcategory.id}">${subcategory.name}</a>`);
+                    });
+                }
+            });
+
+            // Fetch and Show Assigned Attributes for Category
+            fetchAttributes("/get_category_attributes/" + categoryId + "/");
+        });
+
+        // SubCategory Click Event
+        $(document).on("click", ".subcategory-item", function (e) {
+            e.preventDefault();
+            var subcategoryId = $(this).data("subcategory-id");
+            $(".subcategory-item").removeClass("active");
+            $(this).addClass("active");
+            $('#subcategory_hidden').val(subcategoryId);
+
+            // Fetch and Show ChildSubcategories
+            $.ajax({
+                url: "/get-childsubcategories/" + subcategoryId + "/",
+                type: "GET",
+                success: function (data) {
+                    $("#childsubcategory-list").empty();
+                    $("#childsubcategory-box").show();
+                    $.each(data.child_subcategories, function (index, childsubcategory) {
+                        $("#childsubcategory-list").append(`<a href="#" class="list-group-item list-group-item-action childsubcategory-item" data-childsubcategory-id="${childsubcategory.id}">${childsubcategory.name}</a>`);
+                    });
+                }
+            });
+
+            // Fetch and Show Assigned Attributes for SubCategory
+            fetchAttributes("/get_subcategory_attributes/" + subcategoryId + "/");
+        });
+
+        // ChildSubCategory Click Event
+        $(document).on("click", ".childsubcategory-item", function (e) {
+            e.preventDefault();
+            var childsubcategoryId = $(this).data("childsubcategory-id");
+            $(".childsubcategory-item").removeClass("active");
+            $(this).addClass("active");
+            $('#childcategory_hidden').val(childsubcategoryId);
+
+            // Fetch and Show Assigned Attributes for ChildSubCategory
+            fetchAttributes("/get_child_attributes/" + childsubcategoryId + "/");
+        });
+
+        // Function to Fetch and Show Attributes
+        function fetchAttributes(url) {
+            $.ajax({
+                url: url,
+                type: "GET",
+                success: function (data) {
+                    console.log("Attributes Data:", data);  // Debugging ke liye
+
+                    $(".attr-checkbox").prop("checked", false); // Reset all checkboxes
+
+                    // Ensure data.assigned_attributes exists
+                    let assignedAttributes = data.assigned_attributes || data.attributes || [];
+
+                    if (assignedAttributes.length > 0) {
+                        $.each(assignedAttributes, function (index, attr_id) {
+                            let checkbox = $("#attr_" + attr_id);
+                            if (checkbox.length > 0) {
+                                checkbox.prop("checked", true);
+                            } else {
+                                console.warn("Checkbox not found for attr_id:", attr_id);
+                            }
+                        });
+                    } else {
+                        console.warn("No attributes assigned for this category/subcategory.");
+                    }
+                },
+                error: function () {
+                    console.error("Failed to fetch attributes.");
+                }
+            });
+        }
+    });
+
+
+
+
+    function closeMessage(button) {
+        const alertDiv = button.parentElement;
+        alertDiv.style.display = 'none';
+    }
+
+// ====================================================
+
+
+</script>
+{% endblock %}

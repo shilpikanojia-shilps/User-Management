@@ -1,0 +1,609 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.product_name }} - Product Details</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- FontAwesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+
+
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --flipkart-blue: #2874f0;
+            --flipkart-yellow: #ffe11b;
+            --flipkart-orange: #fb641b;
+            --flipkart-green: #388e3c;
+            --flipkart-light-blue: #e0e8ff;
+            --flipkart-gray: #f1f3f6;
+            --flipkart-dark-gray: #878787;
+            --flipkart-price: #212121;
+            --flipkart-discount: #388e3c;
+            --flipkart-offer: #26a541;
+        }
+
+        body {
+            background-color: var(--flipkart-gray);
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin-top: 20px;
+        }
+
+        .product-details {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 2px;
+            box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+        }
+
+        .product-image-gallery {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 2px;
+            box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+        }
+
+        /* Maintain original image dimensions */
+        .product-image-gallery img {
+            width: 100%;
+            height: auto;
+            max-height: 400px;
+            object-fit: contain;
+        }
+
+        .product-title {
+            font-size: 24px;
+            font-weight: 500;
+            color: #212121;
+            margin-bottom: 10px;
+        }
+
+        .price-container {
+            margin: 15px 0;
+        }
+
+        .current-price {
+            font-size: 28px;
+            font-weight: 500;
+            color: var(--flipkart-price);
+        }
+
+        .original-price {
+            font-size: 16px;
+            color: var(--flipkart-dark-gray);
+            text-decoration: line-through;
+            margin-left: 10px;
+        }
+
+        .discount-percent {
+            font-size: 16px;
+            color: var(--flipkart-discount);
+            margin-left: 10px;
+            font-weight: 500;
+        }
+
+        .rating-container {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 6px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .star-rating {
+            background-color: var(--flipkart-green);
+            color: white;
+            padding: 3px 6px;
+            border-radius: 3px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .star-rating i {
+            font-size: 12px;
+            margin-right: 3px;
+        }
+
+        .rating-count {
+            color: var(--flipkart-blue);
+            font-size: 14px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .product-specs {
+            margin: 20px 0;
+        }
+
+        .product-specs h5 {
+            font-size: 18px;
+            font-weight: 500;
+            color: #212121;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .product-specs ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .product-specs li {
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .product-specs li strong {
+            color: #878787;
+            min-width: 120px;
+            display: inline-block;
+        }
+
+        .available-offers {
+            background-color: #f5faff;
+            border: 1px solid var(--flipkart-light-blue);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 2px;
+        }
+
+        .available-offers h5 {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--flipkart-blue);
+            margin-bottom: 10px;
+        }
+
+        .available-offers ul {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 0;
+        }
+
+        .available-offers li {
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #212121;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .available-offers li:before {
+            content: "•";
+            color: var(--flipkart-green);
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .available-offers a {
+            color: var(--flipkart-blue);
+            text-decoration: none;
+            margin-left: 5px;
+        }
+
+        .btn-primary {
+            background-color: var(--flipkart-orange);
+            border-color: var(--flipkart-orange);
+            color: white;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 2px;
+        }
+
+        .btn-success {
+            background-color: var(--flipkart-green);
+            border-color: var(--flipkart-green);
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 2px;
+        }
+
+        .btn-secondary {
+            background-color: white;
+            border-color: #c2c2c2;
+            color: #212121;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 2px;
+        }
+
+        .reviews-container {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .reviews-container h3 {
+            font-size: 18px;
+            font-weight: 500;
+            color: #212121;
+            margin-bottom: 20px;
+        }
+
+        .review-card {
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .review-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .review-user {
+            font-weight: 500;
+            color: #212121;
+            margin-right: 10px;
+        }
+
+        .review-date {
+            color: var(--flipkart-dark-gray);
+            font-size: 12px;
+        }
+
+        .review-rating {
+            background-color: var(--flipkart-green);
+            color: white;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-right: 10px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .review-rating i {
+            font-size: 10px;
+            margin-right: 3px;
+        }
+
+        .review-content {
+            font-size: 14px;
+            color: #212121;
+            line-height: 1.5;
+        }
+
+        .review-form-container {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 2px;
+            margin-top: 20px;
+        }
+
+        .review-form-container h4 {
+            font-size: 16px;
+            font-weight: 500;
+            color: #212121;
+            margin-bottom: 15px;
+        }
+
+        .star-rating-input .star {
+            font-size: 24px;
+            color: #ccc;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .star-rating-input .star.selected,
+        .star-rating-input .star:hover {
+            color: var(--flipkart-orange);
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--flipkart-blue);
+            margin-left: 10px;
+        }
+
+        .header {
+            background-color: var(--flipkart-blue);
+            color: white;
+            padding: 10px 0;
+        }
+
+
+        .edit-review-btn {
+            color: #2874f0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 0;
+        }
+        
+        .edit-review-btn:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Flipkart-style Header -->
+    <div class="header">
+        <div class="container d-flex align-items-center justify-content-between">
+            <a href="#" class="d-flex align-items-center text-decoration-none">
+                <img src="{% static 'vendor/assets/images/shopping-online.jpg' %}" alt="Site Logo" class="img-fluid"
+                    style="max-height: 40px;">
+                <span class="logo-text">{{ product.brand }}</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Product Details -->
+    <div class="container">
+        {% if messages %}
+        <div id="messages-container">
+            {% for message in messages %}
+            <div class="alert alert-success alert-dismissible">
+                {{ message }}
+                <button type="button" class="close" onclick="closeMessage(this)">&times;</button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="product-details">
+            <div class="row">
+                <div class="col-md-6">
+                    <!-- Product Image Gallery - Maintaining original dimensions -->
+                    <div class="product-image-gallery">
+                     
+                        <img src="{{ product.images.first.image.url }}" alt="{{ product.product_name }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <!-- Product Title & Price -->
+                    <h1 class="product-title">{{ product.product_name }}</h1>
+                    <div class="price-container">
+                        <span class="current-price">₹{{ product.price }}</span>
+                        <span class="original-price">₹3999.89</span>
+                        <span class="discount-percent">89% off</span>
+                    </div>
+                    <p class="product-category"><strong>Category:</strong> {{ product.category.category_name }}</p>
+                    <p class="product-category"><strong>Category:</strong> {{ product.category.category_name }}</p>
+                    <p></p>
+
+                    <div class="rating-container">
+                        <div class="star-rating">
+                            {% for i in star_range %}
+                                {% if i <= full_stars %} 
+                                    <i class="fas fa-star"></i> 
+                                {% elif i == next_full_star and half_star %}
+                                    <i class="fas fa-star-half-alt"></i> 
+                                {% else %}
+                                    <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                            <span>{{ product.rating|floatformat:1 }}</span>
+                        </div>
+                        <span class="rating-count">{{ product.review_count }} Ratings & Reviews</span>
+                        
+                    </div>
+
+                    <p class="product-description">{{ product.description }}</p>
+
+                    <div class="product-specs">
+                        <h5>Specifications:</h5>
+                        <ul>
+                            {% for key, value in product.specifications.items %}
+                            <li><strong>{{ key|capfirst }}:</strong> {{ value }}</li>
+                            {% endfor %}
+                            <li><strong>Ratings:</strong> {{ product.rating }}</li>
+                            <li><strong>Shipping Time:</strong> {{ product.shipping_time }}</li>
+                            <li><strong>Shipping Cost:</strong> {{ product.shipping_cost }}</li>
+                            <li><strong>Return Policy:</strong> {{ product.return_policy }}</li>
+                        </ul>
+                    </div>
+
+                    <div class="available-offers">
+                        <h5>Available offers</h5>
+                        <ul>
+                            <li><strong>Bank Offer:</strong> 5% Unlimited Cashback on Flipkart Axis Bank Credit Card <a
+                                    href="#">T&C</a></li>
+                            <li><strong>Bank Offer:</strong> 10% instant discount on SBI Credit Card Transactions, up to
+                                ₹100 on orders of ₹1,000 and above <a href="#">T&C</a></li>
+                            <li><strong>Special Price:</strong> Get extra 36% off (price inclusive of cashback/coupon)
+                                <a href="#">T&C</a>
+                            </li>
+                            <li><strong>EMI:</strong> Starting from ₹91/month <a href="#">View Plans</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="d-flex mt-4">
+                        <button class="btn btn-primary me-3">Add to Cart</button>
+                        <button class="btn btn-success me-3">Buy Now</button>
+                        <a href="{% url 'store:product_listing' %}" class="btn btn-secondary">Back</a>
+                    </div>
+                    <h4>Recommended Products</h4>
+                    <div class="row">
+                        {% for product in recommendations %}
+                            <div class="col-md-3">
+                                <a href="{% url 'store:product_detail' product.id %}">
+                                    <img src="{{ product.images.first.image.url }}" style="width: 100%;" />
+                                    <p>{{ product.product_name }}</p>
+                                    <p>₹{{ product.price }}</p>
+                                </a>
+                            </div>
+                        {% empty %}
+                            <div class="col-12">
+                                <p>No similar products found in this price range.</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+
+                </div>
+            </div>
+
+            <!-- Ratings & Reviews Section -->
+            <div class="reviews-container">
+                <h3>Ratings & Reviews</h3>
+                
+                {% if user_review %}
+                <!-- Current user's review (with edit button) -->
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-rating">
+                            <i class="fas fa-star"></i>
+                            {{ user_review.rating }}
+                        </div>
+                        <div class="review-user">You</div>
+                        <div class="review-date">{{ user_review.created_at|date:"d M, Y" }}</div>
+                    </div>
+                    <div class="review-content">
+                        {{ user_review.comment|default:"No comment provided" }}
+                    </div>
+                    <div class="review-actions">
+                        <button class="edit-review-btn" onclick="showEditForm()">
+                            <i class="fas fa-edit"></i> Edit Review
+                        </button>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Other users' reviews -->
+                {% for review in reviews %}
+                    {% if review.user != user or not user_review %}
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="review-rating">
+                                <i class="fas fa-star"></i>
+                                {{ review.rating }}
+                            </div>
+                            <div class="review-user">{{ review.user.username }}</div>
+                            <div class="review-date">{{ review.created_at|date:"d M, Y" }}</div>
+                        </div>
+                        <div class="review-content">
+                            {{ review.comment|default:"No comment provided" }}
+                        </div>
+                    </div>
+                    {% endif %}
+                {% empty %}
+                    <p>No reviews yet. Be the first to review!</p>
+                {% endfor %}
+                
+                <!-- Review Form (hidden if user has already reviewed) -->
+                <div id="reviewFormContainer" class="review-form-container" {% if user_review %}style="display:none;"{% endif %}>
+                    <h4>{% if user_review %}Edit Your Review{% else %}Write a Review{% endif %}</h4>
+                    <form method="POST" id="reviewForm">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Rating</label>
+                            <div class="star-rating-input">
+                                <span onclick="rateProduct(1)" class="star {% if user_review and user_review.rating >= 1 %}selected{% endif %}">★</span>
+                                <span onclick="rateProduct(2)" class="star {% if user_review and user_review.rating >= 2 %}selected{% endif %}">★</span>
+                                <span onclick="rateProduct(3)" class="star {% if user_review and user_review.rating >= 3 %}selected{% endif %}">★</span>
+                                <span onclick="rateProduct(4)" class="star {% if user_review and user_review.rating >= 4 %}selected{% endif %}">★</span>
+                                <span onclick="rateProduct(5)" class="star {% if user_review and user_review.rating >= 5 %}selected{% endif %}">★</span>
+                                <span id="ratingText" class="ms-2">
+                                    {% if user_review %}Rated {{ user_review.rating }}/5{% else %}Rate this product{% endif %}
+                                </span>
+                            </div>
+                            <input type="hidden" name="rating" id="ratingInput" value="{% if user_review %}{{ user_review.rating }}{% else %}0{% endif %}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Review</label>
+                            <textarea name="review" class="form-control" rows="4" placeholder="Share your experience with this product">{% if user_review %}{{ user_review.comment }}{% endif %}</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">{% if user_review %}Update Review{% else %}Submit Review{% endif %}</button>
+                        {% if user_review %}
+                        <button type="button" class="btn btn-secondary ms-2" onclick="hideEditForm()">Cancel</button>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+    
+
+    <script>
+        // Rating stars functionality
+        function rateProduct(rating) {
+            const stars = document.querySelectorAll('.star-rating-input .star');
+            const ratingInput = document.getElementById('ratingInput');
+            const ratingText = document.getElementById('ratingText');
+            
+            // Update stars appearance
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.add('selected');
+                    star.style.color = 'var(--flipkart-orange)';
+                } else {
+                    star.classList.remove('selected');
+                    star.style.color = '#ccc';
+                }
+            });
+            
+            // Update hidden input and text
+            ratingInput.value = rating;
+            ratingText.textContent = `Rated ${rating}/5`;
+        }
+        
+        // Edit review functionality
+        function showEditForm() {
+            const formContainer = document.getElementById('reviewFormContainer');
+            
+            // Show the form
+            formContainer.style.display = 'block';
+            
+            // Scroll to the form
+            formContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function hideEditForm() {
+            document.getElementById('reviewFormContainer').style.display = 'none';
+        }
+        
+        // Close flash message
+        function closeMessage(button) {
+            const alertDiv = button.parentElement;
+            alertDiv.style.display = 'none';
+        }
+        
+        // Initialize stars if returning to edit
+        document.addEventListener('DOMContentLoaded', function() {
+            {% if user_review and user_review.rating %}
+                rateProduct({{ user_review.rating }});
+            {% endif %}
+        });
+
+        $(document).ready(function(){
+            $('.recommended-slider').slick({
+            slidesToShow: 4,
+            slidesToScroll: 1,
+            autoplay: true,
+            autoplaySpeed: 2000,
+            arrows: true,
+            });
+        });
+    </script>
+</body>
+</html>

@@ -10,8 +10,10 @@ from django.conf import settings
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.db.models import Count
-from enroll.models import  Category, SubCategory, ChildSubCategory, Brand, Tag
 from decimal import Decimal, InvalidOperation
+
+
+from enroll.models import  Category, SubCategory, ChildSubCategory, Brand, Tag, Attribute, Attributeswithcatgory, Specification,SpecificationChoice, DropdownOption
 
 # #  ========================
 
@@ -177,8 +179,8 @@ def vendor_dashboard(request):
         messages.error(request, f"Your business profile was rejected: {business_profile.rejection_reason}")
         return redirect("vendor:business_profile")
     
-    if not vendor.is_profile_submitted:
-        messages.info(request, "Please complete your Business Profile.")   
+    # if not vendor.is_profile_submitted:
+    #     messages.info(request, "Please complete your Business Profile.")   
 
     elif vendor.is_profile_submitted:
         messages.warning(request, "Profile submitted, please wait for admin approval.")
@@ -419,7 +421,7 @@ def vendor_logout(request):
 @check_auth
 def product_list(request):
     vendor = VendorProfile.objects.get(id=request.session.get('vendor_id'))  
-    products = Product.objects.select_related('category', 'subcategory').filter(vendor=vendor)
+    products = Product.objects.select_related('category', 'subcategory').filter(vendor=vendor).order_by('-created_at')
     search_query = request.GET.get('search', '')
     
     if search_query:
@@ -453,8 +455,10 @@ def add_product(request):
     vendor_id = request.session.get('vendor_id')
     vendor = get_object_or_404(VendorProfile, id=vendor_id)
     categories = Category.objects.all()
+    selected_category = request.GET.get('category', '')
     subcategories = SubCategory.objects.all()
     childsubcategories = ChildSubCategory.objects.all()
+    tags_list = Tag.objects.all()  
 
     if request.method == "POST":
         product_name = request.POST.get("product_name")
@@ -462,83 +466,82 @@ def add_product(request):
         subcategory_id = request.POST.get("subcategory")
         child_subcategory_id = request.POST.get("child_subcategory")
         sku = request.POST.get("sku")
-        price = safe_decimal(request.POST.get("price"))
-        discount_price = safe_decimal(request.POST.get("discount_price"))
-        weight = safe_decimal(request.POST.get("weight"))
-        stock_quantity = safe_int(request.POST.get("stock_quantity"))
+        price = request.POST.get("price")
+        discount_price = request.POST.get("Discount")
         description = request.POST.get("description")
         brand_id = request.POST.get("brand")
-        category = request.POST.get("category")
-        model_number = request.POST.get("model_number")
-        shipping_details = request.POST.get("shipping_details")
-        dimensions= request.POST.get("dimensions")
-        warranty=   request.POST.get("warranty")
-        return_policy= request.POST.get("return_policy")
-        tags = request.POST.get("tags")
-        print("product_name:",product_name)
-        print("sku:", sku) 
-        print("price:",price)
-        print("stock_quantity:", stock_quantity)
-        print("description:", description)
-        print("brand:", brand_id)
-        print("category:", category)
-        print("model_number:", model_number)
-        print("discount_rate:", discount_price)
-        print("weight:", weight)
-        print("shipping_details:", shipping_details)
-        print("warranty:",warranty)
-        print("return_policy:",return_policy)
-        print("dimensions:", dimensions)
-        print("category_id:", category_id)
-        print("subcategory_id:", subcategory_id)
-        print("child_subcategory_id:", child_subcategory_id)
-        print("tags:",tags)
+        warranty = request.POST.get("warranty")
+        return_policy = request.POST.get("return_policy")
+        tag_ids = request.POST.getlist("tags")
+        specifications = {key: value for key, value in request.POST.items() if key.startswith("specifications")}
+
+        brand = Brand.objects.get(id=brand_id)
+        # brand_name = brand_instance.brand_name
+
         category = Category.objects.get(id=category_id)
-        subcategory = SubCategory.objects.get(id=subcategory_id)
-        child_subcategory = ChildSubCategory.objects.get(id=child_subcategory_id)
         
-        brand_instance = Brand.objects.get(id=brand_id)
-        brand_name = brand_instance.brand_name
+        subcategory_id = request.POST.get('subcategory')
+        subcategory = None
+        if subcategory_id and subcategory_id.isdigit():
+            try:
+                subcategory = SubCategory.objects.get(id=int(subcategory_id))
+            except SubCategory.DoesNotExist:
+                pass
 
-        tag_id = request.POST.get("tags")
-        tag_instance = Tag.objects.get(id=tag_id)
-        tag_name = tag_instance.tag_name
-        tags_list = product.tags.split(",") if product.tags else []
+        child_subcategory_id = request.POST.get('child_subcategory')
+        child_subcategory = None
+        if child_subcategory_id and child_subcategory_id.isdigit():
+            try:
+                child_subcategory = ChildSubCategory.objects.get(id=int(child_subcategory_id))
+            except ChildSubCategory.DoesNotExist:
+                pass
 
-       
+
+        specifications = {}
+        for key, value in request.POST.items():
+            if key.startswith('specifications'):
+                attr_id = key.split('[')[1].split(']')[0]
+                specifications[attr_id] = value 
+
+        for key, value in request.FILES.items():
+            if key.startswith('specifications'):
+                attr_id = key.split('[')[1].split(']')[0]
+                file = request.FILES.get(key)
+                if file:
+                    specifications[attr_id] = file 
+
+        print("Specifications:", specifications)
+        price_speification = specifications.get('62')  
+        descountprice_speification = specifications.get('63') 
+        print(f"Price Specification: {price_speification}")
+        print(f"Discount Price Specification: {descountprice_speification}")
+            
         product = Product.objects.create(
-            vendor=vendor, 
-            product_name=product_name, 
-            sku=sku, 
-            price=price,
-            stock_quantity=stock_quantity, 
-            description=description, 
-            brand = brand_name,
-            model_number=model_number,
-            discount_price=discount_price,
-            weight=weight,
-            dimensions=dimensions,
-            shipping_details=shipping_details,
+            vendor=vendor,
+            product_name=product_name,
+            sku=sku,
+            price=price_speification,
+            description=description,
+            brand=brand,
+            discount_price=descountprice_speification,
             warranty=warranty,
             return_policy=return_policy,
             category=category,
             subcategory=subcategory,
             child_subcategory=child_subcategory,
-            tags=tag_name,
             status="pending",
             is_approved=False,
+            specifications=specifications,
         )
-        if request.method == "POST":
-            images = request.FILES.getlist("images")
-            print("Uploaded Images:", images)
 
-            for img in images:
-                ProductImage.objects.create(product=product, image=img)
-
+        images = request.FILES.getlist("images")
+        for img in images:
+            ProductImage.objects.create(product=product, image=img)
+        product.set_specifications(specifications)
         product.save()
         messages.success(request, "Product submitted for approval.")
-        return redirect("vendor:product_list") 
-    
+        return redirect("vendor:product_list")   
+
     context = {
         'vendor': vendor,
         'full_name': vendor.full_name,
@@ -547,11 +550,56 @@ def add_product(request):
         'profile_pic': vendor.profile_pic.url if vendor.profile_pic else None,
         'categories': categories,
         'subcategories': subcategories,
-        'childsubcategories':childsubcategories,
-        'tags_list': tags_list,
+        'childsubcategories': childsubcategories,
+        'selected_category': selected_category,
     }
 
     return render(request, 'products/add_product.html', context)
+
+
+
+from django.db.models import Q
+
+def get_dynamic_attributes(request):
+    category_id = request.GET.get("category_id")
+    subcategory_id = request.GET.get('subcategory_id')
+    childsubcategory_id = request.GET.get('childsubcategory_id')
+
+    print(f"Category ID: {category_id}, SubCategory ID: {subcategory_id}, ChildSubCategory ID: {childsubcategory_id}")
+
+    filters = Q()
+    
+    if category_id:
+        filters |= Q(attributeswithcatgory__category_id=category_id)
+    if subcategory_id:
+        filters |= Q(attributeswithcatgory__subcategory_id=subcategory_id)
+    if childsubcategory_id:
+        filters |= Q(attributeswithcatgory__child_subcategory_id=childsubcategory_id)
+
+    attributes = Attribute.objects.filter(filters).distinct()
+
+    attribute_data = []
+
+    for attr in attributes:
+        attr_data = {
+            "id": attr.id,
+            "name": attr.display_name,
+            "type": attr.type.lower() if attr.type else "textbox"
+        }
+        if attr.type == "Dropdown":
+            options = DropdownOption.objects.filter(attribute=attr).distinct('name')
+            color_cde = []
+            for opt in options:
+                color_cde.append({
+                    'name':opt.name,
+                    'value':opt.value}
+
+                )
+            attr_data["options"] = color_cde
+        attribute_data.append(attr_data)
+
+    return JsonResponse({"attributes": attribute_data})
+
 
 
 
@@ -560,50 +608,54 @@ def edit_product(request, product_id):
     vendor_id = request.session.get('vendor_id')
     vendor = get_object_or_404(VendorProfile, id=vendor_id)
     product = get_object_or_404(Product, id=product_id, vendor=vendor)
+
     categories = Category.objects.all()
     subcategories = SubCategory.objects.all()
+    tags_list = Tag.objects.all()  
+    brands = Brand.objects.all()
 
     if request.method == "POST":
         product.product_name = request.POST.get("product_name")
         product.sku = request.POST.get("sku")
         product.category_id = request.POST.get("category")
         product.subcategory_id = request.POST.get("subcategory")
-        product.brand = request.POST.get("brand")
+        product.child_subcategory_id = request.POST.get("child_subcategory")
+        print(product.category_id, product.subcategory_id, product.child_subcategory_id )
         product.model_number = request.POST.get("model_number")
         product.description = request.POST.get("description")
-        product.price = request.POST.get("price")
-        product.discount_price = request.POST.get("discount_price")
-        product.stock_quantity = request.POST.get("stock_quantity")
-        product.weight = request.POST.get("weight")
+        product.price = safe_decimal(request.POST.get("price"))
+        product.discount_price = safe_decimal(request.POST.get("discount_price"))
+        product.weight = safe_decimal(request.POST.get("weight"))
+        product.stock_quantity = safe_int(request.POST.get("stock_quantity"))
         product.dimensions = request.POST.get("dimensions")
         product.shipping_details = request.POST.get("shipping_details")
         product.warranty = request.POST.get("warranty")
         product.return_policy = request.POST.get("return_policy")
-        product.tags = request.POST.get("tags")
-        # product.meta_title = request.POST.get('meta_title')
-        # product.meta_keywords = request.POST.get('meta_keywords')
-        # product.meta_description = request.POST.get('meta_description')
-                
+        product.tags = request.POST.get("tags", "")  
+        brand_id = request.POST.get("brand")
 
-        # Image Handling
+        try:
+            brand_instance = Brand.objects.get(id=brand_id)
+            product.brand = brand_instance.brand_name
+        except Brand.DoesNotExist:
+            product.brand = None 
+
+
         image_files = request.FILES.getlist("images") 
-
-        if image_files:
-           
+        if image_files:           
             product.images.all().delete()
             for img in image_files:
                 ProductImage.objects.create(product=product, image=img)
-                print(image_files)
 
-        if product.status in ['approved', 'rejected']:
+        if product.status in ['approved', 'rejected']:                                                                                                                                                                                                                                           
             product.status = 'pending'
             product.is_approved = False
+
+
         product.save()
         messages.success(request, "Product updated successfully.")
         return redirect("vendor:product_list")
         
-
-
     context = {
     'vendor': vendor,
     'full_name': vendor.full_name,
@@ -613,9 +665,12 @@ def edit_product(request, product_id):
     "product": product,
     "categories": categories,
     "subcategories": subcategories,
+    "brands": brands, 
+    "tags_list": tags_list,
+  
+   
       
     }
-
     return render(request, "products/edit_product.html", context)
 
 
@@ -631,9 +686,14 @@ def product_delete(request, product_id):
 
 
 def get_subcategories(request):
-    category_id = request.GET.get('category_id')
-    subcategories = SubCategory.objects.filter(category_id=category_id).values('id', 'name')
-    return JsonResponse(list(subcategories), safe=False)
+    category_id = request.GET.get('category_id')  
+    try:
+        if category_id:
+            subcategories = SubCategory.objects.filter(category_id=category_id).values('id', 'name')
+            return JsonResponse(list(subcategories), safe=False)
+    except Exception as e:
+        print(e, "error")
+    return JsonResponse({'error': 'No category_id provided'}, status=400)
 
 
 def get_child_subcategories(request):
@@ -653,12 +713,13 @@ def view_product(request, pk):
     vendor_id = request.session.get('vendor_id')
     vendor = get_object_or_404(VendorProfile, id=vendor_id)
     product = get_object_or_404(Product, pk=pk)
-   
-    
+    specifications = product.get_specifications() 
+
+    print(specifications, "++++++++")
 
     context = {
         'product': product,
-        
+        'specifications': specifications,
         'vendor': vendor,
         'full_name': vendor.full_name,
         'email': vendor.email,
@@ -686,3 +747,15 @@ def get_brands_tags(request):
     except Exception as e:
         print("ERROR in get_brands_tags:", e)
         return JsonResponse({'error': str(e)}, status=500)
+    
+
+
+
+#===================API==============#
+
+#====================================#
+
+
+
+
+    

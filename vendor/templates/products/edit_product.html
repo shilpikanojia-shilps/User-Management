@@ -26,7 +26,8 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Product Name</label>
-                                <input type="text" name="product_name" class="form-control" value="{{ product.product_name }}" required>
+                                <input type="text" name="product_name" class="form-control"
+                                    value="{{ product.product_name }}" required>
                             </div>
 
                             <div class="form-group">
@@ -34,83 +35,77 @@
                                 <select name="category" id="category-select" class="form-control" required>
                                     <option value="">Select Category</option>
                                     {% for cat in categories %}
-                                    <option value="{{ cat.id }}" {% if cat.id == product.category.id %}selected{% endif %}>{{ cat.category_name }}</option>
+                                    <option value="{{ cat.id }}" {% if cat.id == product.category.id %}selected{% endif%}>
+                                        {{ cat.category_name }}</option>
+
                                     {% endfor %}
                                 </select>
                             </div>
 
+
                             <div class="form-group">
-                                <label>Tags (comma separated)</label>
-                                <input type="text" name="tags" class="form-control" value="{{ product.tags }}">
+                                <label for="child-subcategory-select">Child Subcategory</label>
+                                <select name="child_subcategory" id="child-subcategory-select" class="form-control">
+                                    <!-- Populate from backend -->
+                                </select>
                             </div>
+
+
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Brand</label>
-                                <input type="text" name="brand" class="form-control" value="{{ product.brand }}">
-                            </div>
-
-                            <div class="form-group">
-                                <label>Subcategory</label>
-                                <select name="subcategory" id="subcategory-select" class="form-control" required>
-                                    <option value="">-- Select Subcategory --</option>
-                                    {% for subcat in subcategories %}
-                                    <option value="{{ subcat.id }}" {% if subcat.id == product.subcategory.id %}selected{% endif %}>{{ subcat.name }}</option>
+                                <select name="brand" id="brand-select" class="form-control" required>
+                                    {% for brand in brands %}
+                                        <option value="{{ brand.id }}" {% if b.id in selected_brands %}selected{% endif %}>
+                                            {{ brand.brand_name }}
+                                        </option>
                                     {% endfor %}
                                 </select>
                             </div>
+
+
+                            <div class="form-group">
+                                <label>Subcategory</label>
+                                <select name="subcategory" id="subcategory-select" class="form-control">
+                                    
+                                    {% for subcat in subcategories %}
+                                        <option value="{{ subcat.id }}" {% if subcat.id == product.subcategory.id %}selected{% endif %}>
+                                            {{ subcat.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label>Tags</label>
+                                <select name="tags" id="tag-select" class="form-control">
+                                    {% for tag in tags_list %}
+                                    <option value="{{ tag.id }}" {% if tag.id in selected_tags %}selected{% endif %}>
+                                        {{ tag.tag_name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+
+
                         </div>
                     </div>
 
                     <!-- Specifications -->
                     <h4 class="mt-4 mb-3">🛠 Specifications</h4>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Price (₹)</label>
-                                <input type="number" name="price" class="form-control" value="{{ product.price }}">
-                            </div>
-
-                            <div class="form-group">
-                                <label>Model number</label>
-                                <input type="text" name="model_number" class="form-control" value="{{ product.model_number }}">
-                            </div>
-
-                            <div class="form-group">
-                                <label>SKU</label>
-                                <input type="text" name="sku" class="form-control" value="{{ product.sku }}">
-                            </div>
-
-                            <div class="form-group">
-                                <label>Dimensions (L x W x H cm)</label>
-                                <input type="text" name="dimensions" class="form-control" value="{{ product.dimensions }}">
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Stock Quantity</label>
-                                <input type="number" name="stock_quantity" class="form-control" value="{{ product.stock_quantity }}">
-                            </div>
-
-                            <div class="form-group">
-                                <label>Weight (kg)</label>
-                                <input type="text" name="weight" class="form-control" value="{{ product.weight }}">
-                            </div>
-
-                            <div class="form-group">
-                                <label>Shipping Details</label>
-                                <input type="text" name="shipping_details" class="form-control" value="{{ product.shipping_details }}">
-                            </div>
-                        </div>
+                    <div class="row category-form" id="electronics-form" style="display: none;">
                     </div>
 
                     <!-- Description -->
                     <h4 class="mt-4 mb-3">📝 Description</h4>
                     <div class="form-group">
                         <label>Description</label>
-                        <textarea id="description" name="description" class="form-control">{{ product.description|safe }}</textarea>
+                        <textarea id="description" name="description"
+                            class="form-control">{{ product.description|safe }}</textarea>
                     </div>
 
                     <!-- Warranty & Return -->
@@ -122,16 +117,19 @@
 
                     <div class="form-group">
                         <label>Return Policy</label>
-                        <textarea id="return_policy" name="return_policy" class="form-control">{{ product.return_policy }}</textarea>
+                        <textarea id="return_policy" name="return_policy"
+                            class="form-control">{{ product.return_policy }}</textarea>
                     </div>
 
                     <!-- Product Status -->
                     <div class="form-group">
                         <label>Product Status</label>
                         <select name="status" class="form-control">
-                            <option value="Select_Status" {% if product.status == "Select_Status" %}selected{% endif %}>Select_Status</option>
+                            <option value="Select_Status" {% if product.status == "Select_Status" %}selected{% endif %}>
+                                Select_Status</option>
                             <option value="Active" {% if product.status == "Active" %}selected{% endif %}>Active</option>
-                            <option value="Inactive" {% if product.status == "Inactive" %}selected{% endif %}>Inactive</option>
+                            <option value="Inactive" {% if product.status == "Inactive" %}selected{% endif %}>Inactive
+                            </option>
                         </select>
                     </div>
 
@@ -148,21 +146,24 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Meta Title</label>
-                                <input type="text" name="meta_title" class="form-control" value="{{ product.meta_title }}">
+                                <input type="text" name="meta_title" class="form-control"
+                                    value="{{ product.meta_title }}">
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Meta Keywords (comma separated)</label>
-                                <input type="text" name="meta_keywords" class="form-control" value="{{ product.meta_keywords }}">
+                                <input type="text" name="meta_keywords" class="form-control"
+                                    value="{{ product.meta_keywords }}">
                             </div>
                         </div>
 
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Meta Description</label>
-                                <textarea id="meta_description" name="meta_description" class="form-control" rows="4">{{ product.meta_description }}</textarea>
+                                <textarea id="meta_description" name="meta_description" class="form-control"
+                                    rows="4">{{ product.meta_description }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -180,28 +181,233 @@
 {% endblock %}
 
 {% block extra_js %}
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.ckeditor.com/4.20.0/standard/ckeditor.js"></script>
-<script>
-    $('#category-select').on('change', function () {
-        var categoryId = $(this).val();
-        if (categoryId) {
-            $.ajax({
-                url: '/get_subcategories/',
-                data: { 'category_id': categoryId },
-                success: function (data) {
-                    $('#subcategory-select').empty().append('<option value="">-- Select Subcategory --</option>');
-                    data.forEach(function (subcat) {
-                        $('#subcategory-select').append('<option value="' + subcat.id + '">' + subcat.name + '</option>');
-                    });
-                }
-            });
-        }
-    });
 
+<script>
+    // CKEditor initialization
     CKEDITOR.replace('description');
     CKEDITOR.replace('warranty');
     CKEDITOR.replace('return_policy');
     CKEDITOR.replace('meta_description');
+
+    // Populate brands & tags
+    $(document).ready(function () {
+        let selectedTags = JSON.parse('{{ selected_tags|safe }}');
+        fetchBrandsAndTags(selectedTags);
+    });
+
+    function fetchBrandsAndTags(selectedTags) {
+        $.ajax({
+            url: '/vendor/get_brands_tags/',
+            method: 'GET',
+            success: function (data) {
+                let selectedBrandId = '{{ selected_brand_id|default:"" }}';
+
+                if (data.brands.length > 0) {
+                    $('#brand-select').empty().append('<option value="">-- Select Brand --</option>');
+                    data.brands.forEach(function (brand) {
+                        let isSelected = brand.id == selectedBrandId ? 'selected' : '';
+                        $('#brand-select').append('<option value="' + brand.id + '" ' + isSelected + '>' + brand.brand_name + '</option>');
+                    });
+                }
+
+                $('#tag-select').empty();
+                data.tags.forEach(function (tag) {
+                    let isSelected = selectedTags.includes(tag.id) ? 'selected' : '';
+                    $('#tag-select').append('<option value="' + tag.id + '" ' + isSelected + '>' + tag.tag_name + '</option>');
+                });
+            },
+            error: function (xhr, status, error) {
+                console.log("Error fetching brands and tags:", error);
+            }
+        });
+    }
+
+
+    // Cascading dropdowns
+    $('#category-select').on('change', function () {
+        var categoryId = $(this).val();
+
+
+        if (categoryId) {
+            populateSubcategories(categoryId);
+        }
+    });
+    
+
+    $('#subcategory-select').on('change', function () {
+        var subcategoryId = $(this).val();
+        if (subcategoryId) {
+            populateChildSubcategories(subcategoryId);
+        }
+    });
+
+    function populateSubcategories(categoryId, selectedSubcategoryId = null, selectedChildSubcategoryId = null, callback = null) {
+        $.ajax({
+            url: '/vendor/get_subcategories/',
+            data: { 'category_id': categoryId },
+            success: function (data) {
+                $('#subcategory-select').empty().append('<option value="">-- Select Subcategory --</option>');
+                data.forEach(function (subcat) {
+                    const selected = subcat.id == selectedSubcategoryId ? 'selected' : '';
+                    $('#subcategory-select').append(`<option value="${subcat.id}" ${selected}>${subcat.name}</option>`);
+                });
+
+                if (selectedSubcategoryId) {
+                    populateChildSubcategories(selectedSubcategoryId, selectedChildSubcategoryId, callback);
+                } else if (callback) {
+                    callback();
+                }
+            }
+        });
+    }
+
+    // Populate ChildSubcategories when Subcategory is selected
+    function populateChildSubcategories(subcategoryId, selectedChildSubcategoryId = null, callback = null) {
+        const categoryId = $('#category-select').val();
+
+        $.ajax({
+            url: '/vendor/get_child_subcategories/',
+            data: {
+                'subcategory_id': subcategoryId,
+                'category_id': categoryId
+            },
+            success: function (data) {
+                $('#child-subcategory-select').empty().append('<option value="">-- Select Child Subcategory --</option>');
+                data.child_subcategories.forEach(function (child) {
+                    const selected = child.id == selectedChildSubcategoryId ? 'selected' : '';
+                    $('#child-subcategory-select').append(`<option value="${child.id}" ${selected}>${child.name}</option>`);
+                });
+
+                if (callback) callback();
+            },
+            error: function (xhr) {
+                console.error("ChildSubcategory AJAX Error:", xhr.responseText);
+            }
+        });
+    }
+
+    // Fetch attributes based on current selection
+    function fetchAttributes(categoryId = "", subcategoryId = "", childSubcategoryId = "") {
+        let url = `/vendor/get-dynamic-attributes/?`;
+        let params = new URLSearchParams();
+
+        if (categoryId) params.append("category_id", categoryId);
+        if (subcategoryId) params.append("subcategory_id", subcategoryId);
+        if (childSubcategoryId) params.append("childsubcategory_id", childSubcategoryId);
+
+        url += params.toString();
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const specContainer = document.getElementById("electronics-form");
+                specContainer.innerHTML = "";
+
+                if (data.attributes.length === 0) {
+                    specContainer.innerHTML = "<p>No attributes for this selection.</p>";
+                    specContainer.style.display = "none";
+                    return;
+                }
+
+                specContainer.style.display = "block";
+
+                data.attributes.forEach(attr => {
+                    let fieldDiv = document.createElement("div");
+                    fieldDiv.className = "form-group";
+
+                    let label = document.createElement("label");
+                    label.textContent = attr.name + ": ";
+                    fieldDiv.appendChild(label);
+
+                    let input;
+
+                    if (attr.type === "text") {
+                        input = document.createElement("input");
+                        input.type = "text";
+                        input.name = `specifications[${attr.id}]`;
+                        input.className = "form-control";
+                        input.placeholder = `Enter ${attr.name}`;
+                        input.value = attr.value || "";
+                    } else if (attr.type === "dropdown") {
+                        input = document.createElement("select");
+                        input.name = `specifications[${attr.id}]`;
+                        input.className = "form-control";
+
+                        attr.options.forEach(option => {
+                            let opt = document.createElement("option");
+                            const isColorCode = /^#([0-9A-F]{3}){1,2}$/i.test(option.value);
+                            opt.value = option.name;
+                            opt.textContent = option.name;
+                            if (isColorCode) opt.style.color = option.value;
+                            if (option.name === attr.value) opt.selected = true;
+
+                            input.appendChild(opt);
+                        });
+                    } else if (attr.type === "file") {
+                        input = document.createElement("input");
+                        input.type = "file";
+                        input.name = `specifications[${attr.id}]`;
+                        input.className = "form-control";
+                        input.accept = attr.accept || ".pdf,image/*";
+                    } else {
+                        input = document.createElement("input");
+                        input.type = "text";
+                        input.name = `specifications[${attr.id}]`;
+                        input.className = "form-control";
+                        input.placeholder = `Enter ${attr.name}`;
+                        input.value = attr.value || "";
+                    }
+
+                    fieldDiv.appendChild(input);
+                    specContainer.appendChild(fieldDiv);
+                });
+            })
+            .catch(error => console.error("Error fetching specifications:", error));
+    }
+
+    // On page load
+    $(document).ready(function () {
+        const initialCat = "{{ product.category.id }}";
+        const initialSub = "{{ product.subcategory.id }}";
+        const initialChild = "{{ product.child_subcategory.id }}";
+
+        if (initialCat) {
+            populateSubcategories(initialCat, initialSub, initialChild, () => {
+                fetchAttributes(initialCat, initialSub, initialChild);
+            });
+        }
+
+        $('#category-select').on('change', function () {
+            const categoryId = $(this).val();
+            if (categoryId) {
+                populateSubcategories(categoryId, null, null, () => {
+                    fetchAttributes(categoryId);
+                });
+            }
+        });
+
+        $('#subcategory-select').on('change', function () {
+            const subcategoryId = $(this).val();
+            if (subcategoryId) {
+                populateChildSubcategories(subcategoryId, null, () => {
+                    const catId = $('#category-select').val();
+                    fetchAttributes(catId, subcategoryId);
+                });
+            }
+        });
+
+        $('#child-subcategory-select').on('change', function () {
+            const catId = $('#category-select').val();
+            const subId = $('#subcategory-select').val();
+            const childId = $(this).val();
+            fetchAttributes(catId, subId, childId);
+        });
+    });
+
 </script>
+
+
 {% endblock %}
