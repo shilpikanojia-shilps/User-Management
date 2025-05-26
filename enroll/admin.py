@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import AuthLogin,Role,Permission, UserActivityLog, Category, SubCategory, ChildSubCategory
+from .models import AuthLogin,Role,Permission, UserActivityLog, Category, SubCategory, ChildSubCategory, Specification, SpecificationChoice, Attribute
 # Register your models here.
 
 
@@ -52,5 +52,24 @@ class VendorProfileAdmin(admin.ModelAdmin):
     def reject_profile(self, request, queryset):
         queryset.update(is_profile_approved=False)
     reject_profile.short_description = "Reject Vendor Profile"
+
+
+class SpecificationChoiceInline(admin.TabularInline):
+    model = SpecificationChoice
+    extra = 1
+
+class SpecificationAdmin(admin.ModelAdmin):
+    list_display = ['name', 'category', 'input_type']
+    list_filter = ['category']
+    inlines = [SpecificationChoiceInline]
+
+admin.site.register(Specification, SpecificationAdmin)
+admin.site.register(SpecificationChoice)
+
+
+# @admin.register(Attribute)
+# class AttributeAdmin(admin.ModelAdmin):
+#     list_display = ['name']
+#     filter_horizontal = ['categories']
 
 

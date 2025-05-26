@@ -2,6 +2,16 @@
 
 {% block title %}
 <title>Add Product | User Management</title>
+<style>
+    .color-box {
+        width: 15px;
+        height: 15px;
+        display: inline-block;
+        border-radius: 3px;
+        border: 1px solid #ccc;
+        margin-right: 6px;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -36,11 +46,116 @@
                                 <label>Category</label>
                                 <select id="category-select" name="category" class="form-control" required>
                                     <option value="">Select Category</option>
-                                    {% for cat in categories %}
-                                    <option value="{{ cat.id }}">{{ cat.category_name }}</option>
-                                    {% endfor %}
+                                        {% for cat in categories %}
+                                            <option value="{{ cat.id }}">{{ cat.category_name }}</option>
+                                        {% endfor %}
                                 </select>
+
                             </div>
+
+                            <div id="specification_fields"></div>
+                            <script>
+
+                                document.addEventListener("DOMContentLoaded", function () {
+                                    let categorySelect = document.getElementById("category-select");
+                                    let subcategorySelect = document.getElementById("subcategory-select");
+                                    let childSubcategorySelect = document.getElementById("child-subcategory-select");
+                                    let specContainer = document.getElementById("electronics-form");
+
+                                    function fetchAttributes(categoryId = "", subcategoryId = "", childSubcategoryId = "") {
+                                        let url = `/vendor/get-dynamic-attributes/?`;
+                                        let params = new URLSearchParams();
+
+                                        if (categoryId) params.append("category_id", categoryId);
+                                        if (subcategoryId) params.append("subcategory_id", subcategoryId);
+                                        if (childSubcategoryId) params.append("childsubcategory_id", childSubcategoryId);
+
+                                        url += params.toString();
+
+                                        fetch(url)
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                specContainer.innerHTML = "";
+
+                                                if (data.attributes.length === 0) {
+                                                    specContainer.innerHTML = "<p>No attributes for this selection.</p>";
+                                                    specContainer.style.display = "none";
+                                                    return;
+                                                }
+
+                                                specContainer.style.display = "block"; 
+                                                console.log('qqqq', data)
+
+                                                data.attributes.forEach(attr => {
+                                                    let fieldDiv = document.createElement("div");
+                                                    fieldDiv.className = "form-group";
+
+                                                    let label = document.createElement("label");
+                                                    label.textContent = attr.name + ": ";
+                                                    fieldDiv.appendChild(label);
+
+                                                    let input;
+
+                                                    if (attr.type === "text") {
+                                                        input = document.createElement("input");
+                                                        input.type = "text";
+                                                        input.name = `specifications[${attr.id}]`;
+                                                        input.className = "form-control";
+                                                        input.placeholder = `Enter ${attr.name}`;
+                                                    } else if (attr.type === "dropdown") {
+                                                        input = document.createElement("select");
+                                                        input.name = `specifications[${attr.id}]`;
+                                                        input.className = "form-control";
+
+                                                        attr.options.forEach(option => {
+                                                            let opt = document.createElement("option");
+                                                            const isColorCode = /^#([0-9A-F]{3}){1,2}$/i.test(option.value);
+                                                            console.log(option.name,isColorCode)
+                                                            opt.value = option.name;
+                                                            if (isColorCode) {
+                                                                opt.textContent = `${option.name} `;
+                                                                opt.style.color = option.value;
+                                                            } else {
+                                                                opt.textContent = option.name;
+                                                            }
+
+                                                            input.appendChild(opt);
+                                                        });
+                                                    } else if (attr.type === "file") {
+                                                        input = document.createElement("input");
+                                                        input.type = "file";
+                                                        input.name = `specifications[${attr.id}]`;
+                                                        input.className = "form-control";
+                                                        input.accept = attr.accept || ".pdf,image/*"; 
+                                                    } else {
+                                                        input = document.createElement("input");
+                                                        input.type = "text";
+                                                        input.name = `specifications[${attr.id}]`;
+                                                        input.className = "form-control";
+                                                        input.placeholder = `Enter ${attr.name}`;
+                                                    }
+
+                                                    fieldDiv.appendChild(input);
+                                                    specContainer.appendChild(fieldDiv);
+                                                });
+                                            })
+                                            .catch(error => console.error("Error fetching specifications:", error));
+                                    }
+
+                                    // Trigger fetch when category/subcategory/childsubcategory changes
+                                    categorySelect.addEventListener("change", function () {
+                                        fetchAttributes(this.value, subcategorySelect.value, childSubcategorySelect.value);
+                                    });
+
+                                    subcategorySelect.addEventListener("change", function () {
+                                        fetchAttributes(categorySelect.value, this.value, childSubcategorySelect.value);
+                                    });
+
+                                    childSubcategorySelect.addEventListener("change", function () {
+                                        fetchAttributes(categorySelect.value, subcategorySelect.value, this.value);
+                                    });
+                                });
+                            </script>
 
                             <div class="form-group">
                                 <label for="child-subcategory-select">Child Subcategory</label>
@@ -49,14 +164,9 @@
                                 </select>
                             </div>
 
-
-
-                            <!-- Tags -->
-
                         </div>
 
                         <div class="col-md-6">
-                            <!-- Brand -->
                             <div class="form-group">
                                 <label>Brand</label>
                                 <select name="brand" id="brand-select" class="form-control" required>
@@ -64,10 +174,10 @@
                                 </select>
                             </div>
 
-                            <!-- Subcategory -->
+                           
                             <div class="form-group">
                                 <label>Subcategory</label>
-                                <select name="subcategory" id="subcategory-select" class="form-control" required>
+                                <select name="subcategory" id="subcategory-select" class="form-control">
                                     <option value="">-- Select Subcategory --</option>
                                 </select>
                             </div>
@@ -78,65 +188,12 @@
                                     <option value="">-- Select Tags --</option>
                                 </select>
                             </div>
-
-
-
                         </div>
                     </div>
 
                     <!-- Specifications -->
                     <h4 class="mt-4 mb-3">🛠 Specifications</h4>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <!-- Price -->
-                            <div class="form-group">
-                                <label>Price (₹)</label>
-                                <input type="number" name="price" class="form-control" placeholder="Enter price">
-                            </div>
-
-                            <!-- Model Number -->
-                            <div class="form-group">
-                                <label>Model number</label>
-                                <input type="text" name="model_number" class="form-control"
-                                    placeholder="Enter model number">
-                            </div>
-
-                            <!-- SKU -->
-                            <div class="form-group">
-                                <label>SKU</label>
-                                <input type="text" name="sku" class="form-control" placeholder="Enter product SKU">
-                            </div>
-
-                            <!-- Dimensions -->
-                            <div class="form-group">
-                                <label>Dimensions (L x W x H cm)</label>
-                                <input type="text" name="dimensions" class="form-control"
-                                    placeholder="Enter dimensions">
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <!-- Stock -->
-                            <div class="form-group">
-                                <label>Stock Quantity</label>
-                                <input type="number" name="stock_quantity" class="form-control"
-                                    placeholder="Enter stock quantity">
-                            </div>
-
-                            <!-- Weight -->
-                            <div class="form-group">
-                                <label>Weight (kg)</label>
-                                <input type="text" name="weight" class="form-control"
-                                    placeholder="Enter product weight">
-                            </div>
-
-                            <!-- Shipping -->
-                            <div class="form-group">
-                                <label>Shipping Details</label>
-                                <input type="text" name="shipping_details" class="form-control"
-                                    placeholder="Enter shipping details">
-                            </div>
-                        </div>
+                    <div class="row category-form" id="electronics-form" style="display: none;">
                     </div>
 
                     <!-- Description -->
@@ -146,7 +203,7 @@
                             <div class="form-group">
                                 <label>Description</label>
                                 <textarea id="description" name="description" class="form-control"
-                                    placeholder="Enter short description">{{description|striptags }}</textarea>
+                                    placeholder="Enter short description">{{ description }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -158,12 +215,9 @@
                             <!-- Warranty -->
                             <div class="form-group">
                                 <label>Warranty</label>
-                                <input type="text" id="warranty" name="warranty" class="form-control"
-                                    placeholder="Enter warranty details">
+                                <textarea id="warranty" name="warranty" class="form-control"
+                                    placeholder="Enter warranty details">{{ warranty }}</textarea>
                             </div>
-
-                            <!-- Return Policy -->
-
                         </div>
 
 
@@ -171,7 +225,7 @@
                             <div class="form-group">
                                 <label>Return Policy</label>
                                 <textarea id="return_policy" name="return_policy" class="form-control"
-                                    placeholder="Enter return policy"></textarea>
+                                    placeholder="Enter return policy">{{ return_policy }}</textarea>
                             </div>
                         </div>
 
@@ -230,9 +284,6 @@
                         <button type="submit" class="btn btn-success">Add Product</button>
                         <a href="{% url 'vendor:product_list' %}" class="btn btn-secondary">Cancel</a>
                     </div>
-
-
-
                 </form>
 
                 {% endblock %}
@@ -246,13 +297,25 @@
                     $('#category-select').on('change', function () {
                         var categoryId = $(this).val();
 
+                        $('.category-form').hide();
+
+                        if (categoryId == "18") {
+                            $('#electronics-form').show();
+                        } else if (categoryId == "17") {
+                            $('#makeup-form').show();
+                        } else if (categoryId == "20") {
+                            $('#fashion-form').show();
+                        }
+
+
                         if (categoryId) {
                             $.ajax({
-                                url: '/get_subcategories/',  // ✅ Check this URL in urls.py
+                                url: '/vendor/get_subcategories/',
                                 data: {
                                     'category_id': categoryId
                                 },
                                 success: function (data) {
+                                    console.log(data)
                                     $('#subcategory-select').empty();
                                     $('#subcategory-select').append('<option value="">-- Select Subcategory --</option>');
 
@@ -266,7 +329,6 @@
                             $('#subcategory-select').append('<option value="">-- Select Subcategory --</option>');
                         }
                     });
-
 
                     CKEDITOR.replace('description', {
                         height: 300,
@@ -328,21 +390,25 @@
                         const categorySelect = document.getElementById('category-select');
                         console.log(categorySelect)
                         const subcategorySelect = document.getElementById('subcategory-select');
+                        console.log(subcategorySelect)
                         const childSubcategorySelect = document.getElementById('child-subcategory-select');
+                        console.log(childSubcategorySelect)
                         const categoryId = categorySelect.value;
                         const subcategoryId = subcategorySelect.value;
-                        console.log(categoryId)
+                        console.log(categoryId, subcategoryId)
                         if (categoryId && subcategoryId) {
                             fetch(`/vendor/get_child_subcategories/?category_id=${categoryId}&subcategory_id=${subcategoryId}`)
                                 .then(response => response.json())
                                 .then(data => {
                                     childSubcategorySelect.innerHTML = '<option value="">Select Child Subcategory</option>';
+                                    console.log(data)
                                     data.child_subcategories.forEach(function (childSub) {
                                         const option = document.createElement('option');
                                         option.value = childSub.id;
                                         option.textContent = childSub.name;
                                         childSubcategorySelect.appendChild(option);
                                     });
+                                    console.log(data.child_subcategories)
                                     categorySelect.addEventListener('change', fetchChildSubcategories);
                                     subcategorySelect.addEventListener('change', fetchChildSubcategories);
                                 })
@@ -353,13 +419,13 @@
                             childSubcategorySelect.innerHTML = '<option value="">Select Child Subcategory</option>';
                         }
                     }
-                    // Fetch brands and tags based on selected category and subcategory
+        
                     function fetchBrandsAndTags() {
                         $.ajax({
-                            url: '/vendor/get_brands_tags/',  // Make sure this URL matches your Django URL pattern
+                            url: '/vendor/get_brands_tags/',  
                             method: 'GET',
                             success: function (data) {
-                                console.log("Fetched data:", data); // Debug log
+                                console.log("Fetched data:", data);
 
                                 // Populate brands
                                 $('#brand-select').empty().append('<option value="">-- Select Brand --</option>');
@@ -379,30 +445,48 @@
                         });
                     }
 
+
                     // Call this on page load
                     $(document).ready(function () {
                         fetchBrandsAndTags();
                     });
 
-
-
-
-                    // Trigger brand/tag update on category and subcategory change
                     $('#subcategory-select').on('change', function () {
                         fetchChildSubcategories();
                     });
 
+                    document.getElementById("category-select").addEventListener("change", () => {
+                        fetchSubcategories();  // <-- ye line add karo
+                        fetchChildSubcategories();
+                        fetchAttributes();
+                    });
 
+                    function fetchSubcategories() {
+                        const categoryId = document.getElementById('category-select').value;
+                        const subcategorySelect = document.getElementById('subcategory-select');
 
-                    // Fetch child subcategories based on selected category and subcategory
+                        if (categoryId) {
+                            fetch(`/vendor/get_subcategories/?category_id=${categoryId}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    subcategorySelect.innerHTML = '<option value="">Select Subcategory</option>';
+                                    data.forEach(sub => {
+                                        const option = document.createElement('option');
+                                        option.value = sub.id;
+                                        option.textContent = sub.name;
+                                        subcategorySelect.appendChild(option);
+                                    });
 
-
-
-
+                                    // Optionally reset child-subcategory on sub change
+                                    document.getElementById('child-subcategory-select').innerHTML = '<option value="">Select Child Subcategory</option>';
+                                })
+                                .catch(error => {
+                                    console.error('Error fetching subcategories:', error);
+                                });
+                        } else {
+                            subcategorySelect.innerHTML = '<option value="">Select Subcategory</option>';
+                        }
+                    }
 
                 </script>
-
-
-
-
                 {% endblock %}

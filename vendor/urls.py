@@ -4,6 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from .views import delete_banner
 
+
 app_name = 'vendor' 
 
 urlpatterns = [
@@ -30,13 +31,14 @@ urlpatterns = [
     path('get_subcategories/', views.get_subcategories, name='get_subcategories'),
     path('get_brands_tags/', views.get_brands_tags, name='get_brands_tags'),
     path('get_child_subcategories/', views.get_child_subcategories, name='get_child_subcategories'),
-
-
-
+    path("get-dynamic-attributes/", views.get_dynamic_attributes, name="get_dynamic_attributes"),
 
 #=============================#
-#Categories
+#API
 #=============================#
+
+
+
 ]
 
 

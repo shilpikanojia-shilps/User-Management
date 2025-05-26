@@ -1,0 +1,224 @@
+{% extends "enroll/base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Add Attribute | Attribute Management</title>
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">Add Attribute</h4>
+                </div>
+            </div>
+        </div>
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="name" style="color: #000000; font-weight: 600;">Attribute Name <span
+                                class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="name" name="name" required
+                            placeholder="Enter Attribute Name">
+                        <div class="invalid-feedback">
+                            Please enter Attribute Name.
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="display" style="color: #000000; font-weight: 600;">Display Name <span
+                                class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="display" name="display" required
+                            placeholder="Enter Display Name">
+                        <div class="invalid-feedback">
+                            Please enter Display Name.
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="default_value" style="color: #000000; font-weight: 600;"> Default Value <span
+                                class="text-danger"></span></label>
+                        <input type="text" class="form-control" id="default_value" name="default_value" required
+                            placeholder="Enter Default Value">
+                        <div class="invalid-feedback">
+                            Please enter Default Value.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="type" style="color: #000000; font-weight: 600;">Type <span
+                                    class="text-danger">*</span></label>
+                            <select id="type" name="type"  onchange="toggleDropdownBox(this.value)" class="form-control form-control-lg" style="width: 100%;
+                            height: auto;
+                            position: static;
+                            left: 50%;
+                            top: 50%;
+                            margin: 0;
+                        ">
+                                <option value="" selected>--Select Type--</option>
+                                <option value="Textbox">Textbox</option>>
+                                <option value="Upload">Upload img/pdf</option>
+                                <option value="Dropdown">Dropdown</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="status" style="color: #000000; font-weight: 600;">Status</label>
+                            <select id="status" name="status" class="form-control form-control-lg" style="width: 100%;
+                                    height: auto;
+                                    position: static;
+                                    left: 50%;
+                                    top: 50%;
+                                    margin: 0;
+                                ">
+                                <option value="" selected>--Select Status--</option>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="dropdown-options-box" style="display: none; margin-top: 15px;">
+                        <h4>Add Dropdown Options:</h4>
+                        <div id="dropdown-options-container">
+                            
+                            <!-- JS will append input pairs here -->
+                        </div>
+                        <button type="button" onclick="addDropdownOption()">+ Add More</button>
+                    </div>
+
+
+            </div>
+
+            <div class="text-center mt-3">
+                <button type="submit" class="btn btn-success">Save</button>
+                <a href="{% url 'enroll:manage_attribute' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const name = document.getElementById('name');
+    const display = document.getElementById('display');
+
+    name.oninput = (e) => {
+        let nameValue = e.target.value;
+        display.value = nameValue
+    }
+
+
+
+    function createFormElement(type, name, options = []) {
+        let element;
+
+        switch (type) {
+            case 'textbox':
+                element = document.createElement('input');
+                element.type = 'text';
+                element.name = name;
+                element.placeholder = `Enter ${name}`;
+                break;
+
+            case 'upload':
+                element = document.createElement('input');
+                element.type = 'file';
+                element.name = name;
+                break;
+
+            case 'dropdown':
+                element = document.createElement('select');
+                element.name = name;
+
+                options.forEach(optionValue => {
+                    let option = document.createElement('option');
+                    option.value = optionValue;
+                    option.textContent = optionValue;
+                    element.appendChild(option);
+                });
+                break;
+
+            default:
+                console.error('Invalid input type');
+                return null;
+        }
+
+        return element;
+    }
+
+    // Example usage:
+    let textbox = createFormElement('textbox', 'username');
+    let upload = createFormElement('upload', 'profilePicture');
+    let dropdown = createFormElement('dropdown', 'gender', ['Male', 'Female', 'Other']);
+
+    // Append to the form or body for testing
+    document.body.appendChild(textbox);
+    document.body.appendChild(upload);
+    document.body.appendChild(dropdown);
+
+
+    function toggleDropdownBox(value) {
+        const box = document.getElementById('dropdown-options-box');
+        if (value === 'Dropdown') {
+            box.style.display = 'block';
+        } else {
+            box.style.display = 'none';
+        }
+    }
+
+    function toggleDropdownBox(value) {
+        const box = document.getElementById('dropdown-options-box');
+        box.style.display = (value === 'Dropdown') ? 'block' : 'none';
+    }
+
+    function addDropdownOption() {
+        const container = document.getElementById('dropdown-options-container');
+        const html = `
+            <div style="margin-bottom: 10px;">
+                <input type="text" name="dropdown_option_name[]" placeholder="Option Name" required />
+                <input type="text" name="dropdown_option_value[]" placeholder="Option Value" required />
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', html);
+    }
+
+</script>
+
+{% endblock %}

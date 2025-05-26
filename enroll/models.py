@@ -11,10 +11,6 @@ from django.utils.timezone import now
 from django.utils.text import slugify
 import uuid
 
-# from django.contrib.auth.models import AbstractUser
-
-
-# Create your models here.
 
 
 def user_image_path(instance, filename):
@@ -211,7 +207,52 @@ def user_deleted(sender, instance, **kwargs):
     log_user_activity(user=instance, action="User Deleted")
 
 
+
+class Attribute(models.Model):
+    ATTRIBUTE_TYPES = [
+        ('Textbox', 'Textbox'),
+        ('Upload', 'Upload img/pdf'),
+        ('Dropdown', 'Dropdown'),
+    ]
+
+    STATUS_CHOICES = [
+        ('Active', 'Active'),
+        ('Inactive', 'Inactive'),
+    ]
+    name = models.CharField(max_length=255, unique=True)
+    display_name = models.CharField(max_length=255)
+    default_value = models.CharField(max_length=255, blank=True, null=True)
+    type = models.CharField(max_length=50, choices=ATTRIBUTE_TYPES, blank=True, null=True)
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    category_id = models.IntegerField(blank=True, null=True) 
+    subcategory_id = models.IntegerField(blank=True, null=True)
+    childsubcategory_id = models.IntegerField(blank=True, null=True)
+    # dropdown_options = models.ManyToManyField('DropdownOption', blank=True)
+
+
+
+    def __str__(self):
+        return self.name
+
+
+
+class DropdownOption(models.Model):
+    attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE, related_name='options')
+    value = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
+    color_code = models.CharField(max_length=7, blank=True, null=True)  
+   
+
+    def __str__(self):
+        return f"{self.attribute.name} - {self.value}"
     
+    class Meta:
+        db_table = 'enroll_dropdown_option'
+
+
+
 
 class Category(models.Model):
     CATEGORY_STATUS = [
@@ -237,8 +278,9 @@ class Category(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(AuthLogin, on_delete=models.CASCADE, null=True, blank=True)
 
-    # Parent category ke liye related_name change kiya
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='subcategories')
+
+
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -247,6 +289,26 @@ class Category(models.Model):
     
     def __str__(self):
         return self.category_name
+
+ 
+
+
+
+
+class Specification(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="specifications")
+    name = models.CharField(max_length=255)  # e.g., RAM, Size, Color
+    input_type = models.CharField(max_length=50, choices=[('text', 'Text'), ('number', 'Number'), ('select', 'Dropdown')])
+
+    def __str__(self):
+        return f"{self.category.name} - {self.name}"
+
+class SpecificationChoice(models.Model):
+    specification = models.ForeignKey(Specification, on_delete=models.CASCADE, related_name="choices")
+    value = models.CharField(max_length=255)  # e.g., 8GB, 16GB, Red, Blue
+
+    def __str__(self):
+        return self.value
     
 
 
@@ -310,6 +372,8 @@ class ChildSubCategory(models.Model):
     meta_description = models.TextField(blank=True, null=True)
     status = models.BooleanField(default=True)
     feature_category = models.BooleanField(default=True)
+    
+
 
     def save(self, *args, **kwargs):
         if isinstance(self.feature_category, str):  
@@ -338,7 +402,7 @@ class BannerImage(models.Model):
 
 
 class Brand(models.Model):
-    brand_name = models.CharField(max_length=255)
+    brand_name = models.CharField(max_length=255    )
     short_description= models.CharField(max_length=255, null=True, blank=True)
     long_description = models.TextField(null=True, blank=True)
     meta_title= models.CharField(max_length=255, null=True, blank=True)
@@ -368,4 +432,11 @@ class Tag(models.Model):
     def __str__(self):
         return self.tag_name
 
-    
+
+
+
+class Attributeswithcatgory(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True)
+    subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE, blank=True, null=True)
+    child_subcategory = models.ForeignKey(ChildSubCategory, on_delete=models.CASCADE, blank=True, null=True)
+    attribute = models.ForeignKey(Attribute,on_delete=models.CASCADE, blank=True, null=True)

@@ -1,0 +1,160 @@
+{% extends "enroll/base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Manage Attribute | Attribute Management</title>
+<style>
+    .table-container {
+        margin-top: 20px;
+    }
+
+    .add-button {
+        float: right;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="page-title mb-0 font-size-18">Manage Attributes</h4>
+
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <form method="GET" action="{% url 'enroll:manage_attribute' %}">
+                <div class="form-group d-flex justify-content-between align-items-center">
+                    <div class="flex-grow-1">
+                        <label for="search">Search</label>
+                        <input type="text" id="search" name="search" class="form-control" placeholder="Search by name"
+                            value="{{ request.GET.search }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary ml-4" style="margin-bottom: -28px;">Search</button>
+                    <a href="{% url 'enroll:manage_attribute' %}" class="btn btn-secondary ml-2"
+                        style="margin-bottom: -28px; margin-left: 10px;">
+                        <i class="fas fa-undo"></i> Reset
+                    </a>
+                </div>
+            </form>
+
+            <div class="row justify-content-center table-container">
+                <div class="col-md-12">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <div class="text-right mb-3">
+                                <a href="{% url 'enroll:add_attribute' %}" class="btn"
+                                    style="background-color: darkgreen; color: white;">Add Attribute</a>
+                            </div>
+
+                            {% if messages %}
+                            <div id="messages-container">
+                                {% for message in messages %}
+                                <div class="alert alert-success alert-dismissible">
+                                    {{ message }}
+                                    <button type="button" class="close" onclick="closeMessage(this)">&times;</button>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+
+
+                            <div class="table-container">
+                                <table class="table table-bordered">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Sno.</th>
+                                            <th>Attribute Name</th>
+
+                                            <th>Type</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for atr in page_obj %}
+                                        <tr>
+                                            <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                                            <td>{{ atr.name }}</td>
+                                            <td>{{ atr.type }}</td>
+                                            <td>
+                                                {% if atr.status == "Active" %}
+                                                <span class="badge badge-success">Active</span>
+                                                {% else %}
+                                                <span class="badge badge-danger">Inactive</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                               
+
+                                                {% if atr.id %}
+                                                <a href="{% url 'enroll:edit_attribute' atr.id %}"
+                                                    class="btn btn-warning btn-sm">Edit</a>
+                                                <a href="{% url 'enroll:delete_attribute' atr.id %}"
+                                                    class="btn btn-danger btn-sm">Delete</a>
+                                                {% else %}
+                                                <span class="text-muted">No ID</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="4" class="text-center">No attributes found</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                <div class="pagination">
+                                    <span class="step-links">
+                                        {% if page_obj.has_previous %}
+                                        <a href="?page=1">&laquo; first</a>
+                                        <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                                        {% endif %}
+
+                                        <span class="badge bg-primary text-white">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                                            
+
+
+
+                                        {% if page_obj.has_next %}
+                                        <a href="?page={{ page_obj.next_page_number }}">next</a>
+                                        <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                                        {% endif %}
+                                    </span>
+
+
+
+                                </div>
+                                <style>
+                                    .bg-primary {
+                                        background-color: #3c4699 !important;
+                                    }
+                                </style>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endblock %}
+
+            {% block extra_js %}
+
+            <script>
+                function confirmDelete(deleteUrl) {
+                    if (confirm("Are you sure you want to delete this Attribute?")) {
+                        window.location.href = deleteUrl;
+                    }
+                    return false; // Prevent default anchor behavior
+                }
+                function closeMessage(button) {
+                    button.parentElement.style.display = 'none';
+                }
+
+            </script>
+
+
+
+            {% endblock %}

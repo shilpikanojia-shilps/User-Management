@@ -1949,6 +1949,7 @@ def vendor_login_approval(request):
     auth_user = get_object_or_404(AuthLogin, username=request.user.username)
     full_name = auth_user.fullname if auth_user.fullname.strip() else f"{auth_user.first_name} {auth_user.last_name}"
 
+
     context = {
         'vendors': vendors,  # Show all vendors
         'user': auth_user,
@@ -1958,6 +1959,8 @@ def vendor_login_approval(request):
         'user_type': auth_user.user_type,
     }
     return render(request, "enroll/vendor/vendor_login_approval.html", context)
+
+    
 
 @check_auth
 def vendor_profile_approval(request):
@@ -1991,7 +1994,7 @@ def vendor_product_approval(request):
     user_profile, created = UserProfile.objects.get_or_create(user=request.user) 
     auth_user = get_object_or_404(AuthLogin, username=request.user.username)
     full_name = auth_user.fullname if auth_user.fullname.strip() else f"{auth_user.first_name} {auth_user.last_name}"
-    products = Product.objects.select_related('vendor').all()
+    products = Product.objects.select_related('vendor').all().order_by("-id")
 
     if request.method == 'POST':
         product_id = request.POST.get('product_id')
@@ -2016,13 +2019,10 @@ def vendor_product_approval(request):
             Q(subcategory__name__icontains=search_query)
         )
 
-    # Pagination Logic
-    paginator = Paginator(products, 10)  # 10 products per page
+    paginator = Paginator(products, 10)  
     page_number = request.GET.get("page")
-    products = paginator.get_page(page_number)
+    page_obj = paginator.get_page(page_number)
 
-
-    # products = Product.objects.select_related('vendor').all()
     context = {
        
         'user': auth_user,
@@ -2030,8 +2030,11 @@ def vendor_product_approval(request):
         'fullname': full_name, 
         'email': auth_user.email,
         'user_type': auth_user.user_type,
-        'products': products,
+        # 'products': products,
         'search_query': search_query,
+        'page_obj': page_obj, 
+        'products': page_obj.object_list,
+        
     }
 
     return render(request, 'enroll/vendor/vendor_product_approval.html', context)
@@ -2062,14 +2065,18 @@ def reject_product(request, product_id):
 
 @check_auth
 def view_product_detail(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
+    
     user_type = request.session.get('user_type')
     user_profile, created = UserProfile.objects.get_or_create(user=request.user) 
     auth_user = get_object_or_404(AuthLogin, username=request.user.username)
     full_name = auth_user.fullname if auth_user.fullname.strip() else f"{auth_user.first_name} {auth_user.last_name}"
+    vendor_id = request.session.get('vendor_id')
+    product = get_object_or_404(Product, id=product_id)
+    vendor = get_object_or_404(VendorProfile, id=vendor_id)
+    specifications = product.get_specifications() 
+
+    print(specifications, "++++++++")
     
-
-
     context = {
         'user': auth_user,
         'profile_pic': user_profile.profile_pic.url if user_profile.profile_pic else None,
@@ -2077,6 +2084,8 @@ def view_product_detail(request, product_id):
         'email': auth_user.email,
         'user_type': auth_user.user_type,
         'product': product,
+        'specifications': specifications,
+        'vendor': vendor,
        
     }
     return render(request, 'enroll/vendor/view_product_detail.html', context)

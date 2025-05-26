@@ -90,12 +90,16 @@ urlpatterns = [
     path("edit-child-subcategory/<int:child_id>/", views_category.edit_child_subcategory, name="edit_child_subcategory"),
     path("delete-child-subcategory/<int:child_id>/", views_category.delete_child_subcategory, name="delete_child_subcategory"),
     path('get-subcategories/<int:category_id>/', views_category.get_subcategories, name='get_subcategories'),
-    path("get_subcategories/", views_category.get_subcategories, name="get_subcategories"),
-    path('get_subcategories/', views_category.get_subcategories, name='get_subcategories'),
     path('category/<int:category_id>/', views_category.view_category, name='view_category'),
     path('view-subcategory/<int:subcategory_id>/', views_category.view_subcategory, name='view_subcategory'),
     path('child-subcategory/<int:id>/', views_category.view_child_subcategory, name='view_child_subcategory'),
-    path("get-child-subcategories/<int:subcategory_id>/", views_category.get_child_subcategories, name="get_child_subcategories"),
+    path("get_subcategories/", views_category.get_subcategories, name="get_subcategories"),
+    path('get_subcategories/', views_category.get_subcategories, name='get_subcategories'),
+    path('get_child_attributes/<int:childsubcategory_id>/', views_category.get_child_attributes, name='get_child_attributes'),
+    path('get_subcategory_attributes/<int:subcategory_id>/', views_category.get_subcategory_attributes, name='get_subcategory_attributes'),
+    path('get_category_attributes/<int:category_id>/', views_category.get_category_attributes, name='get_category_attributes'),
+
+
 
 #=============================#
 #Product
@@ -118,8 +122,26 @@ urlpatterns = [
     path('delete-tag/<int:id>/', views_category.delete_tag, name='delete_tags'),
 
     path('tags/', views_category.tags, name='tags'),
-    # path('delete_tags/<int:tag_id>/', views_category.delete_tags, name='delete_tags'),
-    # path('get-brands-tags/', views_category.get_brands_tags, name='get_brands_tags'),
+
+
+#========================Attribute===============
+
+    path('manage_attribute/', views_category.manage_attribute, name= 'manage_attribute'),
+    path('add_attribute/', views_category.add_attribute, name ='add_attribute'),
+    path('edit-attribute/<int:id>/', views_category.edit_attribute, name='edit_attribute'),
+    path('delete-attribute/<int:id>/', views_category.delete_attribute, name='delete_attribute'),
+    path('manage-attribute-category/', views_category.manage_attribute_category, name='manage_attribute_category'),
+    path("get-attributes/<int:category_id>/", views_category.get_attributes, name="get_attributes"),
+    path("get-subcategories/<int:category_id>/", views_category.get_subcategories, name="get_subcategories"),
+    path('get-childsubcategories/<int:subcategory_id>/', views_category.get_child_subcategories, name='get_child_subcategories'),
+    path("get-attributes/<int:category_id>/", views_category.get_attributes, name="get_attributes"),
+    path('get-dropdown-options/', views_category.get_dropdown_options, name='get_dropdown_options'),
+
+    
+
+
+    
+
 
 
 

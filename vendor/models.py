@@ -2,7 +2,10 @@ from django.db import models
 from django.core.validators import URLValidator
 from django.utils.html import strip_tags
 import os
-from enroll.models import Category, SubCategory, ChildSubCategory
+from enroll.models import Category, SubCategory, ChildSubCategory, Attribute, DropdownOption, Brand
+import json
+from django.core.exceptions import ObjectDoesNotExist
+
 
 
 class State(models.Model):
@@ -119,11 +122,10 @@ class Product(models.Model):
     # Basic Details
     product_name = models.CharField(max_length=255)
     sku = models.CharField(max_length=100,  null=True, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
     subcategory = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True, blank=True, related_name="subcategories")
     child_subcategory = models.ForeignKey(ChildSubCategory, on_delete=models.CASCADE, blank=True, null=True)
-
-    brand = models.CharField(max_length=255, null=True, blank=True)
+    brand = models.ForeignKey(Brand,  on_delete=models.CASCADE, blank=True, null=True, related_name='products')
     model_number = models.CharField(max_length=100, null=True, blank=True)
 
     # Pricing & Discount
@@ -133,14 +135,14 @@ class Product(models.Model):
     final_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
     # Stock & Order
-    stock_quantity = models.PositiveIntegerField()
+    # stock_quantity = models.PositiveIntegerField()
     min_order_quantity = models.PositiveIntegerField(default=1)
     max_order_quantity = models.PositiveIntegerField(default=10)
     is_available = models.BooleanField(default=True)
 
     # Specifications & Description
     description = models.TextField()
-    specifications = models.JSONField(default=dict)
+    # specifications = models.JSONField(default=dict)
     weight = models.CharField(max_length=50, null=True, blank=True)
     dimensions = models.CharField(max_length=50, null=True, blank=True)
     warranty= models.CharField(max_length=50, null=True, blank=True)
@@ -156,6 +158,8 @@ class Product(models.Model):
     image_urls = models.JSONField(default=list, blank=True)
     video_url = models.URLField(null=True, blank=True)
     tags = models.TextField(blank=True, null=True)
+    rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.00)
+    review = models.PositiveIntegerField(default=0)
 
 
 
@@ -163,23 +167,56 @@ class Product(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     is_approved = models.BooleanField(default=False)
     admin_comments = models.TextField(null=True, blank=True)
-    rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.00)
-    reviews_count = models.PositiveIntegerField(default=0)
 
     # Timestamps
     approved_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     admin_message = models.TextField(blank=True, null=True)  
+    jjjjj = models.TextField()
 
     # #meta
     # meta_title = models.CharField(max_length=255, blank=True, null=True)
     # meta_keywords = models.TextField(blank=True, null=True)
     # meta_description = models.TextField(blank=True, null=True)
 
+    specifications = models.JSONField(default=dict) 
+
+
+
+    def set_specifications(self, specs):
+        """Specifications ko Attribute name ke saath store karo bina warning ke"""
+        updated_specs = {}
+        for key, value in specs.items():
+            attr_id = key.replace("specifications[", "").replace("]", "")
+            try:
+                attribute = Attribute.objects.get(id=attr_id)
+                updated_specs[attribute.name.strip()] = value.strip()
+            except ObjectDoesNotExist:
+                updated_specs[attr_id] = value.strip()  
+
+        self.specifications = updated_specs  
+        self.save()
+
+
+    def get_specifications(self):
+        """JSONField se specifications fetch karna aur clean karna"""
+        if not self.specifications:
+            return {}
+
+        if isinstance(self.specifications, str): 
+            try:
+                return json.loads(self.specifications)
+            except json.JSONDecodeError:
+                return {}
+
+        return self.specifications  
+
+
     def __str__(self):
-        return self.name
+        return str(self.id)
     
+
     @property
     def final_price(self):
         if self.discount_price:
@@ -196,7 +233,20 @@ class ProductImage(models.Model):
 
 
 
-    
 
 
+from django.contrib.auth.models import User
 
+class Review(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
+    comment = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('product', 'user')  # 1 user can give 1 review per product
+
+    def __str__(self):
+        return f'{self.user.username} - {self.product.name} - {self.rating} stars'

@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'enroll',
     'vendor',
     'ckeditor',
+    'vendor_api',
+    'store',
     
 ]
 
@@ -52,6 +54,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'user_management.middleware.ajax_login_required_middleware.AjaxLoginRequiredMiddleware',
+    
+
 ]
 
 
@@ -142,7 +147,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEBUG = True
 
 # Session settings
-SESSION_COOKIE_AGE = 86400 * 7  # 7 days in seconds
+SESSION_COOKIE_AGE = 600 # 10 min
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_SAVE_EVERY_REQUEST = True
 
@@ -160,3 +165,5 @@ EMAIL_HOST_PASSWORD = "BPS/3TKyw88MVCw7ASfgvYAeoReuzs8NHXvSkmk7QEco"# Your SMTP 
 DEFAULT_FROM_EMAIL = 'no-reply@thesparxitsolutions.com'  # Sender email address
 
 # AUTH_USER_MODEL = 'enroll.AuthLogin'
+LOGIN_URL = '/store/user_login/'
+
