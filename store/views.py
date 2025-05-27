@@ -102,7 +102,7 @@ def product_listing(request):
     categories = Category.objects.all()
     brands = Brand.objects.all()
     products = Product.objects.filter(is_approved=True)
-    
+
     active_attribute_keys = set()
     for product in products:
         specs = product.specifications or {}
@@ -110,31 +110,27 @@ def product_listing(request):
             active_attribute_keys.add(key.strip())
 
     all_attributes = Attribute.objects.filter(name__in=active_attribute_keys).prefetch_related('options')
+    attribute_filters = {}
+    attribute_counts = defaultdict(Counter)
 
-    attribute_filters = {}  
-    attribute_counts = defaultdict(Counter)  
     selected_categories = request.GET.getlist('categories[]')
     selected_brands = request.GET.getlist('brands[]')
 
+    # Extract selected attribute values from request
     selected_attribute_values = {}
     for key in request.GET:
         if key.startswith('attribute_') and key.endswith('[]'):
-            attr_slug = key[len('attribute_'):-2]  # strip 'attribute_' and '[]'
+            attr_slug = key[len('attribute_'):-2]
             attr_obj = all_attributes.filter(name__iexact=attr_slug.replace('-', ' ')).first()
             if attr_obj:
                 selected_attribute_values[attr_obj.name] = request.GET.getlist(key)
-                print("Selected attributes:", selected_attribute_values)
 
-
-
+    # Apply filters
     filtered_products = products
-
     if selected_categories:
         filtered_products = filtered_products.filter(category__id__in=selected_categories)
-        print(filtered_products, 'ccccccc')
 
     if selected_brands:
-        brand_names = Brand.objects.filter(id__in=selected_brands).values_list('brand_name', flat=True)
         filtered_products = filtered_products.filter(brand__id__in=selected_brands)
 
     for attr in all_attributes:
@@ -143,26 +139,35 @@ def product_listing(request):
         if selected_values:
             filters = [Q(**{f'specifications__{attr_key}__iexact': val}) for val in selected_values]
             filtered_products = filtered_products.filter(reduce(operator.or_, filters))
-            print(filtered_products, 'ggggggggg')
+
+    # ✅ Apply sorting before pagination
+    sort = request.GET.get('sort')
+    if sort == 'price_asc':
+        filtered_products = filtered_products.order_by('price')
+    elif sort == 'price_desc':
+        filtered_products = filtered_products.order_by('-price')
+    elif sort == 'name_asc':
+        filtered_products = filtered_products.order_by('product_name')
+    elif sort == 'name_desc':
+        filtered_products = filtered_products.order_by('-product_name')
 
     # Pagination
-    paginator = Paginator(filtered_products, 80)
-    page_number = request.GET.get('page')
+    paginator = Paginator(filtered_products, 30)
+    page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
+    print(page_obj,page_number)
 
-    # Count filter options based on current filtered products
+
+    # Attribute filter counts
     for product in filtered_products.distinct():
         specs = product.specifications or {}
         for key, value in specs.items():
             if key and value:
                 attribute_counts[key.strip()][value.strip()] += 1
 
-
-    # Build filter options with counts
     for attribute in all_attributes:
         dropdown_options = DropdownOption.objects.filter(attribute=attribute)
         attr_name = attribute.name.strip()
-
         options_with_count = [
             (option, attribute_counts[attr_name].get(option.name.strip(), 0))
             for option in dropdown_options
@@ -170,7 +175,7 @@ def product_listing(request):
         ]
         attribute_filters[attr_name] = options_with_count
 
-    # Count brand/category usage
+    # Brand and Category counts
     brand_counter = Counter()
     category_counter = Counter()
     for product in filtered_products:
@@ -180,9 +185,7 @@ def product_listing(request):
             category_counter[product.category] += 1
 
     brands_with_count = [(brand, brand_counter.get(brand, 0)) for brand in brands if brand_counter.get(brand, 0) > 0]
-
     categories_with_count = [(cat, category_counter.get(cat, 0)) for cat in categories if category_counter.get(cat, 0) > 0]
-
 
     # AJAX response
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -199,7 +202,7 @@ def product_listing(request):
                 'name': product.product_name,
                 'description': product.description[:100] + "...",
                 'price': product.price,
-                'brand': product.brand.brand_name if product.brand.brand_name else "",
+                'brand': product.brand.brand_name if product.brand else "",
                 'category': product.category.category_name if product.category else "",
                 'image': image_url,
                 'rating': product.reviews.aggregate(avg_rating=Avg('rating'))['avg_rating'] or 0
@@ -217,16 +220,13 @@ def product_listing(request):
                 for attr in all_attributes
             }
         }
-
-        
-
         return JsonResponse({
             'products': product_data,
             'has_next': page_obj.has_next(),
             **filters_json
         })
 
-    # Normal render
+    # Normal template render
     context = {
         'products': page_obj,
         'categories': categories_with_count,
@@ -238,6 +238,7 @@ def product_listing(request):
     }
 
     return render(request, 'store/product_listing.html', context)
+
 
 
 
